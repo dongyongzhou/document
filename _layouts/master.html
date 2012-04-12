@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>{{ page.title }}</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    {% for style in page.stylesheets %}
+    <link rel="stylesheet" href="{{ style }}" type="text/css" media="screen" charset="utf-8"/>
+    {% endfor %}
+    {% for script in page.javascripts %}
+    <script src="{{ script }}"></script>
+    {% endfor %}
+  </head>
+  <body>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>DonGYonG</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>首页</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>博客</a></li>
+            <li><a href='/doc/' id='docs-link' title='Docs'>文章</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>关于</a></li>
+            <li><a href='http://github.com/dongyongzhou' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://t.qq.com/eastream' title='微博' target='_blank' id='weibo-link'>微博</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div id='content'>
+        <div class="home-box" style="width:100%; line-height:200%;">
+          {{ content }}
+          <div class='clearfix'></div>
+        </div>
+      </div>
+    </div>
+
+    <div id='footer'>
+      Copyright &copy; 2012 Dongyong Zhou. Hosted by <a href='http://github.com/dongyongzhou/dongyongzhou.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>.
+    </div>
+  </body>
+</html>
