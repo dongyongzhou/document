@@ -10,7 +10,7 @@ title: Ruby on Rails
 
 ### Reference
 
-* [Action Mailer Basics](http://guides.rubyonrails.org/action_mailer_basics.html), Researching and Developing operating system.
+[Action Mailer Basics](http://guides.rubyonrails.org/action_mailer_basics.html) .
 
 Action Mailer allows you to send emails from your application using a mailer model and views. So, in Rails, emails are used by creating mailers that inherit from ActionMailer::Base and live in app/mailers. Those mailers have associated views that appear alongside controller views in app/views.
 
@@ -54,14 +54,15 @@ By inserting a call to UserMailer.welcome_email in the specify method.
 Action Mailer Configuration for GMail.
 Adding the following to appropriate config/environments/$RAILS_ENV.rb file:
 
-config.action_mailer.delivery_method = :smtp
-config.action_mailer.smtp_settings = {
-  :address              => "smtp.gmail.com",
-  :port                 => 587,
-  :domain               => 'baci.lindsaar.net',
-  :user_name            => '<username>',
-  :password             => '<password>',
-  :authentication       => 'plain',
-  :enable_starttls_auto => true  }
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.smtp_settings = {
+      :address              => "smtp.gmail.com",
+      :port                 => 587,
+      :domain               => 'baci.lindsaar.net',
+      :user_name            => '<username>',
+      :password             => '<password>',
+      :authentication       => 'plain',
+      :enable_starttls_auto => true  }
 
- 
+
+#### End 
