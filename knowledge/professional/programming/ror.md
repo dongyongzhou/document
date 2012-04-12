@@ -33,19 +33,26 @@ Letâ€™s add a method called welcome_email, that will send an email to the userâ€
 #### Create a Mailer View
 
 Refer to: http://guides.rubyonrails.org/action_mailer_basics.html
+
 Create a file called welcome_email.html.erb in app/views/user_mailer/. 
+
 This will be the template used for the email, formatted in HTML.
+
 It is also a good idea to make a text part for this email, to do this, create a file called welcome_email.text.erb
 When you call the mail method now, Action Mailer will detect the two templates (text and HTML) and automatically generate a multipart/alternative email.
 
 #### Wire It Up So That the System Sends the Email When in need
 
 There are several ways to do this
-+some people create Rails Observers to fire off emails.
-+others do it inside of the User Model. 
-+in Rails 3, mailers are really just another way to render a view. Instead of rendering a view and sending out the HTTP protocol, they are just sending it out through the Email protocols instead. Due to this, it makes sense to just have your controller tell the mailer to send an email when in need.
+
+1. some people create Rails Observers to fire off emails.
+
+2. others do it inside of the User Model. 
+
+3. in Rails 3, mailers are really just another way to render a view. Instead of rendering a view and sending out the HTTP protocol, they are just sending it out through the Email protocols instead. Due to this, it makes sense to just have your controller tell the mailer to send an email when in need.
 
 Sending Email in controllers  
+
 By inserting a call to UserMailer.welcome_email in the specify method.
     UserMailer.welcome_email(@user).deliver
 
