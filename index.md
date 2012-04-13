@@ -21,7 +21,7 @@ title: DonGYonG
 
 ## 专业技能
 
-专业技能。
+* [git](skill/professional/git.html)
 
 ## 业余技能
 
