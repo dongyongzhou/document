@@ -26,21 +26,21 @@ create    test/functional/user_mailer_test.rb
 
 #### 2.2 Edit the Mailer
 
-1. Complete List of Action Mailer Methods
+##### Complete List of Action Mailer Methods
 
 + headers – Specifies any header on the email you want, you can pass a hash of header field names and value pairs, or you can call headers[:field_name] = ‘value’
 
 + attachments – Allows you to add attachments to your email, for example attachments[‘file-name.jpg’] = File.read(‘file-name.jpg’)
 
-* Pass the file name and content and Action Mailer and the Mail gem will automatically guess the mime_type, set the encoding and create the attachment.
+Pass the file name and content and Action Mailer and the Mail gem will automatically guess the mime_type, set the encoding and create the attachment.
     attachments['filename.jpg'] = File.read('/path/to/filename.jpg')
 
-* Mail to turn an attachment into an inline attachment, you just call #inline on the attachments method within your Mailer:
+Mail to turn an attachment into an inline attachment, you just call #inline on the attachments method within your Mailer:
     attachments.inline['image.jpg'] = File.read('/path/to/image.jpg')
 
 + mail – Sends the actual email itself. You can pass in headers as a hash to the mail method as a parameter, mail will then create an email, either plain text, or multipart, depending on what email templates you have defined.
 
-2. Let’s add a method called welcome_email, that will send an email to the user’s registered email address:
+##### Let’s add a method called welcome_email, that will send an email to the user’s registered email address:
 app/mailers/user_mailer.rb
     def welcome_email(user)
       @user = user
@@ -48,7 +48,7 @@ app/mailers/user_mailer.rb
       mail(:to => user.email, :subject => "Welcome to My Awesome Site")
     end 
 
-3. Add a method called send_email, with Attachments, to Multiple Recipients.
+##### Add a method called send_email, with Attachments, to Multiple Recipients.
 
 * Attachments:
     attachments['image.jpg'] = File.read('/path/to/image.jpg')
