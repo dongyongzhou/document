@@ -22,6 +22,7 @@ title: DonGYonG
 ## 专业技能
 
 * [git](skill/professional/git.html)
+* [Markdown: Syntax](http://daringfireball.net/projects/markdown/syntax).[���İ汾](http://markdown.tw/)
 
 ## 业余技能
 
