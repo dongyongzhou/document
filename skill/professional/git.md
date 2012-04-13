@@ -23,14 +23,11 @@ When need help while using Git, there are three ways to get the manual page (man
 
     $ apt-get install git-core
 
->Copy
-
 #### Installing on Windows
 
 Download and install the latest version of [Git for Windows](http://code.google.com/p/msysgit/downloads/list)
 
     http://code.google.com/p/msysgit
->Copy
 
 ### Git Setup
 
