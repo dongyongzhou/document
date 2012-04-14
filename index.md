@@ -24,7 +24,7 @@ title: Document
 ## 专业技能
 
 * [git](skill/professional/git.html)
-* [参考资料](kill/professional/reference.html)
+* [参考资料](skill/professional/reference.html)
 
 ## 业余技能
 
