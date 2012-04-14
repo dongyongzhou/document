@@ -5,18 +5,20 @@ title: DonGYonG
 
 ## 开发实践
 
-* [Operating System](/operatingsystem/), Researching and Developing operating system.
+* [Operating System](knowledge/professional/os), Researching and Developing operating system.
 
 ## 专业知识
 
 * [Programming Language](knowledge/professional/programming)
 * [Hardware](knowledge/professional/hardware) 
-* [Operating System](knowledge/professional/system)
+* [Operating System](knowledge/professional/os)
+* [Android](knowledge/professional/android)
 
 ## 业余知识
 
 * [Psychology](knowledge/others/psychology)
 * [Philosophy](knowledge/others/philosophy) 
+* [History](knowledge/others/history) 
 * [Music](knowledge/others/music) 
 
 ## 专业技能
