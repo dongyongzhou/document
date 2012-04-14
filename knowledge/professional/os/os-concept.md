@@ -40,28 +40,34 @@ I/O resources.
 
 ### Threads
 
-A sequential execution stream within process (Sometimes called a °∞Lightweight process°±)
-including: 
--Execution stack
--TCB: thread control block(including thread state, id etc)
--CPU registers(PC)
+A sequential execution stream within process (Sometimes called a ‚ÄúLightweight process‚Äù)
+
+including:
+
+- Execution stack
+- TCB: thread control block(including thread state, id etc)
+- CPU registers(PC)
+
 Share:
--Contents of memory (global variables, heap)
--I/O state (file system, network connections, etc)
+
+- Contents of memory (global variables, heap)
+- I/O state (file system, network connections, etc)
 
 #### communications between threads in the same Process
 Share the memory resources allocated for Process.
 
 ### Inter-process Communication (IPC)
 
-Message system ®C processes communicate with each other without resorting to shared variables
+Message system ‚Äì processes communicate with each other without resorting to shared variables
 IPC facility provides two operations:
--send(message) ®C message size fixed or variable 
--receive(message)
+
+- send(message) ‚Äì message size fixed or variable 
+- receive(message)
 
 Implementation
-physical (e.g., shared memory, hardware bus, syscall/trap)
-logical (e.g., logical properties)
+
+- physical (e.g., shared memory, hardware bus, syscall/trap)
+- logical (e.g., logical properties)
 
 ### Address Spaces
 
@@ -70,5 +76,41 @@ including: TEXT DATA bss stack heap
 
 ## Thread Dispatching
 
+at least one thread in a process.
+
+### Thread Control Block (TCB)
+- Execution State: CPU registers, program counter, pointer to stack
+- Scheduling info: State, priority, CPU time
+- Various Pointers (for implementing scheduling queues)
+- Pointer to enclosing process? (PCB)?
+- Etc (add stuff as you find a need)
+
+### Queues
+
+### dispatcher
+
+#### get control back
+- Internal events: thread returns control voluntarily
+
+1. Blocking on I/O
+   :The act of requesting I/O implicitly yields the CPU
+2. Waiting on a ‚Äúsignal‚Äù from other thread
+:Thread asks to wait and thus yields the CPU
+3. Thread executes a yield()
+
+- External events: thread gets preempted
+
+1. timer interrupt 
+
+### Questions
+
+- How do we position stacks relative to each other?
+- What maximum size should we choose for the stacks?
+- What happens if threads violate this?
+- How might you catch violations?
+- are Thread queues in process`s resource?
+- where is the TCB of the thread that are in running state?
+- Unix nice()?
+- where is the dispatch loop
 
 ### 
