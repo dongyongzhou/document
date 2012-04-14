@@ -1,34 +1,35 @@
 ---
 layout: master
-title: DonGYonG
+title: Document
 ---
 
-## å¼€å‘å®è·µ
+## ¿¿¿¿
 
 * [Operating System](knowledge/professional/os), Researching and Developing operating system.
 
-## ä¸“ä¸šçŸ¥è¯†
+## ¿¿¿¿
 
 * [Programming Language](knowledge/professional/programming)
-* [Hardware](knowledge/professional/hardware) 
+* [Hardware](knowledge/professional/hardware)
 * [Operating System](knowledge/professional/os)
 * [Android](knowledge/professional/android)
 
-## ä¸šä½™çŸ¥è¯†
+## ¿¿¿¿
 
 * [Psychology](knowledge/others/psychology)
-* [Philosophy](knowledge/others/philosophy) 
-* [History](knowledge/others/history) 
-* [Music](knowledge/others/music) 
+* [Philosophy](knowledge/others/philosophy)
+* [History](knowledge/others/history)
+* [Music](knowledge/others/music)
 
-## ä¸“ä¸šæŠ€èƒ½
+## ¿¿¿¿
 
 * [git](skill/professional/git.html)
+* [¿¿¿¿](skill/professional/reference.html)
 
-## ä¸šä½™æŠ€èƒ½
+## ¿¿¿¿
 
 * [Sports](skill/others/sports)
 * [cooking](skill/others/cooking)
 
-## å…¶å®ƒ
+## ¿¿
 
