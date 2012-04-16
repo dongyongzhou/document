@@ -5,13 +5,15 @@ title: Ruby on Rails
 
 # Ruby on Rails
 
-## Ruby 
-
-### 参考资料
+## 参考资料
 
 [Ruby的官方网站](http://www.ruby-lang.org/en/)
 
 [Programming Ruby](http://www.rubycentral.com/pickaxe/)
+
+[Ruby On Rails官方网站](http://rubyonrails.org/)
+
+## Ruby 
 
 ### Ruby 变量
 
