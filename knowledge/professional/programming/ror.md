@@ -7,6 +7,12 @@ title: Ruby on Rails
 
 ## Ruby 
 
+### 参考资料
+
+[Ruby的官方网站](http://www.ruby-lang.org/en/)
+
+[Programming Ruby](http://www.rubycentral.com/pickaxe/)
+
 ### Ruby 变量
 
 Ruby属于动态类型。
