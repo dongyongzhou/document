@@ -113,4 +113,28 @@ at least one thread in a process.
 - Unix nice()?
 - where is the dispatch loop
 
+## Cooperating Threands
+
+### Threads 
+
+### Question
+
++ Why disable the globle interupt on entering and exsting handler?
+
+Protecting the behavior of saving or restoring the field of all the register, Some CPU might make these atomic(save all or save none).
+
++ What does ThreadHouseKeeping do?
+
+Notice waitToBeDestroyed thread and deallocate the TCB and stack.
+
++ Why allow cooperating threads?
+
+- share resource
+- speedup. overlap I/O and computation, multipleprocessors
+- modularity: 
+
+## Synchronization
+
+### atomic 
+
 ### 
