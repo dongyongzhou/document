@@ -135,6 +135,85 @@ Notice waitToBeDestroyed thread and deallocate the TCB and stack.
 
 ## Synchronization
 
-### atomic 
+**Synchronization**: using *atomic operations* to ensure cooperation between threads
+
+### mutual exclusion 
+
+**Mutual Exclusion**: ensuring that only one thread does a particular thing at a time
+
+### critial section
+
+**Critical Section**: piece of code that only one thread can execute at once
+
+- Critical section and mutual exclusion are two ways of describing the same thing
+- Critical section defines sharing granularity 
+
+### atomic operation
+
+do it all, or none
+
+- Hardware atomic. disable/enable interrupt, Load/store, swap . etc.
+- software. critial section/mutual exclusion: (using locks)
+
+**How can we build multi-instruction atomic operations?**
+
+Lock 
+
+Recall: dispatcher gets control in two ways. 
+
+- Internal: Thread does something to relinquish the CPU
+- External: Interrupts cause dispatcher to take CPU
+
+On a uniprocessor, can avoid context-switching by:
+
+- Avoiding internal events (although virtual memory tricky)
+- Preventing external events by disabling interrupts
+
+1. Lock
+
+**Lock**: prevents someone from accessing something
+
+- Lock before entering critical section (e.g., before accessing shared data)
+- Unlock when leaving, after accessing shared data
+- Wait if locked
+
+Important idea: all synchronization involves waiting
+
+Should sleep if waiting for long time
+
+**Implementation of Locks by Disabling Interrupts**
+
+Key idea: maintain a lock variable and impose mutual exclusion only during operations on that variable
+
+**Implementing Locks with test&set**
+
+Simple solution:
+
+		int value = 0; // Free
+		Acquire() {		while (test&set(value)); // while busy	}
+		Release() {		value = 0;	}
+Simple explanation:
+
+If lock is free, test&set reads 0 and sets value=1, so lock is now busy.  It returns 0 so while exits
+
+If lock is busy, test&set reads 1 and sets value=1 (no change). It returns 1, so while loop continues
+
+When we set value = 0, someone else can get lock
+
+2. Semaphores
+
+**Definition**: a Semaphore has a non-negative integer value and supports the following two operations:
+
+- P(): an atomic operation that waits for semaphore to become positive, then decrements it by 1 
+*Think of this as the wait() operation*
+
+= V(): an atomic operation that increments the semaphore by 1, waking up a waiting P, if any
+*This of this as the signal() operation*
+
+**Use case:**
+
+- Mutual Exclusion 
+- Scheduling Constraints
+
 
 ### 
