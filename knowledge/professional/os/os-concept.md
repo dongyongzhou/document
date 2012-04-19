@@ -185,6 +185,18 @@ Should sleep if waiting for long time
 
 Key idea: maintain a lock variable and impose mutual exclusion only during operations on that variable
 
+*For the case of sleep.*
+
+Since ints are disabled when you call sleep:
+
+Responsibility of the next thread to re-enable ints
+
+When the sleeping thread wakes up, returns to acquire and re-enables interrupts
+
+Problem:
+If the tread disable the interrupt. and crash, then The system will crash.
+
+
 **Implementing Locks with test&set**
 
 Simple solution:
@@ -211,6 +223,50 @@ When we set value = 0, someone else can get lock
 *This of this as the signal() operation*
 
 **Use case:**
+
+
+3. Monitor and Condition Variables
+
+Problem is that semaphores .
+They are used for both mutex and scheduling constraints
+
+**Condition Variable:** a queue of threads waiting for something inside a critical section
+
+**Key idea:** make it possible to go to sleep inside critical section by atomically releasing lock at time we go to sleep
+
+Contrast to semaphores: Can’t wait inside critical section
+
+**Operations**:
+
+- Wait(&lock): Atomically release lock and go to sleep. Re-acquire lock later, before returning. 
+- Signal(): Wake up one waiter, if any
+- Broadcast(): Wake up all waiters
+
+		Lock lock;
+    	Condition dataready;
+    	Queue queue;
+
+		AddToQueue(item) {
+    		lock.Acquire();	// Get Lock
+    		queue.enqueue(item);	// Add item
+    		dataready.signal();	// Signal any waiters
+    		lock.Release();	// Release Lock
+    	}
+
+		RemoveFromQueue() {
+    		lock.Acquire();	// Get Lock
+    		while (queue.isEmpty()) {
+    			dataready.wait(&lock); // If nothing, sleep
+     		}
+    		item = queue.dequeue();	// Get next item
+    		lock.Release();	// Release Lock
+    		return(item);
+    	}
+
+
+Use locks for mutual exclusion and condition variables for scheduling constraints
+
+**Monitor**: a lock and zero or more condition variables for managing concurrent access to shared data
 
 - Mutual Exclusion 
 - Scheduling Constraints
