@@ -30,6 +30,7 @@ title: Document
 
 ## 业余技能
 
+* [礼仪](skill/others/etiquette)
 * [Sports](skill/others/sports)
 * [cooking](skill/others/cooking)
 
