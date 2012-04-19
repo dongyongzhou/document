@@ -24,6 +24,7 @@ title: Document
 ## 专业技能
 
 * [git](skill/professional/git.html)
+* [VIM操作](skill/professional/vim.html)
 * [Eclipse操作](skill/professional/eclipse.html)
 * [参考资料](skill/professional/reference.html)
 
