@@ -12,3 +12,7 @@ title: Android Activity
 ## ActivityManager
 
 An activity’s state is managed by the runtime’s ActivityManager
+
+
+
+Activity Manager Service

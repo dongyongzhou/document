@@ -27,5 +27,7 @@ title: Android
 
 ## Android Building
 
+* [Setting up the building Environment](setup.html)
+* [Download Android Source Code](download.html)
 * [Android Source Code Structure](android-code-structure.html)
 
