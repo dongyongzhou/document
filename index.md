@@ -43,7 +43,10 @@ title: Document
 
 ## 人生哲理
 
-* [名人名言](reading)
+* [名人名言](sayings)
+
+## 资源引用
+
+* [网址](resources/website.html)
 
 ## 其它
-
