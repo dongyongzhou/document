@@ -13,6 +13,7 @@ title: Document
 * [Hardware](knowledge/professional/hardware)
 * [Operating System](knowledge/professional/os)
 * [Android](knowledge/professional/android)
+* [Software Engineering](knowledge/professional/softwareengineer)
 
 ## 业余知识
 
@@ -20,6 +21,7 @@ title: Document
 * [Philosophy](knowledge/others/philosophy)
 * [History](knowledge/others/history)
 * [Music](knowledge/others/music)
+* [健康](knowledge/others/health)
 
 ## 专业技能
 
@@ -33,6 +35,14 @@ title: Document
 * [礼仪](skill/others/etiquette)
 * [Sports](skill/others/sports)
 * [cooking](skill/others/cooking)
+
+## 读书频道
+
+* [读书](reading)
+
+## 人生哲理
+
+* [名人名言](reading)
 
 ## 其它
 
