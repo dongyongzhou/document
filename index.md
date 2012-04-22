@@ -17,6 +17,7 @@ title: Document
 
 ## 业余知识
 
+* [语言](knowledge/others/language)
 * [Psychology](knowledge/others/psychology)
 * [Philosophy](knowledge/others/philosophy)
 * [History](knowledge/others/history)
