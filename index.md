@@ -26,10 +26,20 @@ title: Document
 
 ## 专业技能
 
+Debug
+
+* [TRACE32-ICD](skill/professional/TRACE32-ICD.html)
+
+version control
+
 * [git](skill/professional/git.html)
 * [repo](skill/professional/repo.html)
+
+Editor
+
 * [VIM操作](skill/professional/vim.html)
 * [Eclipse操作](skill/professional/eclipse.html)
+
 * [参考资料](skill/professional/reference.html)
 
 ## 业余技能

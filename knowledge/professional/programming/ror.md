@@ -13,6 +13,8 @@ title: Ruby on Rails
 
 [Ruby On Rails官方网站](http://rubyonrails.org/)
 
+[Mr. Neighborly’s Humble Little Ruby Book](http://www.humblelittlerubybook.com/book/html/index.html)
+
 ## Ruby 
 
 ### Ruby 变量

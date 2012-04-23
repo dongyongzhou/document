@@ -56,6 +56,20 @@ compilation terminated.
 Solution:
 sudo apt-get install libc6-dev-i386
 
+### /usr/bin/ld: cannot find -lncurses
+
+>/usr/bin/ld: skipping incompatible /usr/lib/libncurses.so when searching for -lncurses
+/usr/bin/ld: skipping incompatible /usr/lib/libncurses.a when searching for -lncurses
+/usr/bin/ld: cannot find -lncurses
+collect2: ld returned 1 exit status
+
+Solution:
+
+sudo apt-get install libncurses5-dev
+
+or
+
+sudo apt-get install lib32ncurses5-dev
 
 
 
