@@ -8,4 +8,4 @@ title: Health
 
 ## 健康知识
 
-* [近视眼](nearsightedness.md)
+* [近视眼](nearsightedness.html)
