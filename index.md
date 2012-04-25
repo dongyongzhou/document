@@ -14,6 +14,7 @@ title: Document
 * [Operating System](knowledge/professional/os)
 * [Android](knowledge/professional/android)
 * [Software Engineering](knowledge/professional/softwareengineer)
+* [Server](knowledge/professional/server)
 
 ## 业余知识
 
