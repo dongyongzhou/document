@@ -268,8 +268,53 @@ Use locks for mutual exclusion and condition variables for scheduling constraint
 
 **Monitor**: a lock and zero or more condition variables for managing concurrent access to shared data
 
+- Condition variable: a queue of threads waiting inside critical section for an event to happen
+- Use condition variables to implement sched. constraints
+- Three Operations: Wait(), Signal(), and Broadcast()
+
+
 - Mutual Exclusion 
-- Scheduling Constraints
+- Scheduling Constraints:A thread waiting for an event to happen in another thread
+
+
+
+### For the Language support on Synchronization
+
+* C: lock.aquire ->action ->lock.release.  
+Pretty straightforward synchronization
+Just make sure you know all the code paths out of a critical section
+
+* C++ :Languages that support exceptions are problematic (easy to make a non-local exit without releasing lock).  almost the same, but for on exception, should catch and lock.release.
+* Java: Every object has an associated lock which gets automatically   acquired and released on entry and exit from a synchronized method
+
+	class Account {
+		private int balance;
+		// object constructor
+		public Account (int initialBalance) {
+			balance = initialBalance;
+		}
+		public synchronized int getBalance() {
+			return balance;
+		}
+		public synchronized void deposit(int amount) {
+			balance += amount;
+		}
+	}
+
+Since every Java object has an associated lock, this type of statement acquires and releases the object’s lock on entry and exit of the code block
+
+In addition to a lock, every object has a single condition variable associated with it
+
+How to wait inside a synchronization method of block:
+
+    void wait();
+    void wait(long timeout); // Wait for timeout
+    void wait(long timeout, int nanoseconds); //variant
+
+How to signal in a synchronized method or block:
+
+    void notify();	// wakes up oldest waiter
+    void notifyAll(); // like broadcast, wakes everyone
 
 
 ### 
