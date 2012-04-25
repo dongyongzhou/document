@@ -49,6 +49,7 @@ Editor
 * [礼仪](skill/others/etiquette)
 * [Sports](skill/others/sports)
 * [cooking](skill/others/cooking)
+* [舞蹈](skill/others/dance)
 
 ## 读书频道
 
