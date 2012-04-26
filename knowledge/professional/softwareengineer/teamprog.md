@@ -74,6 +74,13 @@ What to document?
 
 Everything (but don’t overwhelm people or no one will read)
 
+- Project objectives: goals, constraints, and priorities
+- Specifications: the manual plus performance specs
+- Meeting notes
+- Schedule: What is your anticipated timing?
+- Organizational Chart
+
+
 Standardize!
 
 One programming format: variable naming conventions, tab indents,etc.

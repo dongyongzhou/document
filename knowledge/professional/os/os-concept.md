@@ -317,4 +317,93 @@ How to signal in a synchronized method or block:
     void notifyAll(); // like broadcast, wakes everyone
 
 
-### 
+### Resource
+
+Resources – passive entities needed by threads to do their work. CPU time, disk space, memory
+
+Two types of resources:
+
+- Preemptable – can take it away.CPU, Embedded security chip
+- Non-preemptable – must leave it with the thread.Disk space, printer, chunk of virtual address space
+Critical section 
+
+Resources may require *exclusive access* or may be *sharable*
+
+Read-only files are typically sharable
+
+Printers are not sharable during time of printing
+
+One of the major tasks of an operating system is to manage resources
+
+
+### Starvation vs Deadlock
+
+**Starvation**: thread waits indefinitely
+
+**Deadlock**: circular waiting for resources
+
+Deadlock => Starvation but not vice versa
+
+- Starvation can end (but doesn’t have to)
+- Deadlock can’t end without external intervention
+
+Deadlock not always deterministic 
+
+Deadlock won’t always happen with the code
+Have to have exactly the right timing (“wrong” timing?)
+
+Deadlocks occur with *multiple resources*
+Means you can’t decompose the problem,
+Can’t solve deadlock for each resource independently
+
+**Four requirements for Deadlock**
+
+- Mutual exclusion
+- Hold and wait
+- No preemption
+- Circular wait
+
+**Methods for Handling Deadlocks**
+
+Allow system to enter deadlock and then recover
+
+- Requires deadlock detection algorithm
+- Some technique for forcibly preempting resources and/or terminating tasks
+
+Deadlock prevention: ensure that system will never enter a deadlock
+
+- Need to monitor all lock acquisitions
+- Selectively deny those that might lead to deadlock
+
+Ignore the problem and pretend that deadlocks never occur in the system
+Used by most operating systems, including UNIX
+
+
+**Deadlock Detection Algorithm**
+
+See if tasks can eventually terminate on their own
+
+
+**Techniques for Preventing Deadlock**
+
+- Infinite resources
+Not very realistic
+
+- No Sharing of resources (totally independent threads)
+Not very realistic
+
+- Don’t allow waiting 
+
+- Make all threads request everything they’ll need at the beginning
+
+- Force all threads to request resources in a particular order preventing any cyclic use of resources
+
+
+*Banker’s Algorithm for Preventing Deadlock*
+
+Toward right idea: 
+
+- State maximum resource needs in advance
+- Allow particular thread to proceed if:
+	(available resources - #requested) >= max 
+ remaining that might be needed by any thread
