@@ -6,6 +6,7 @@ title: Operating System
 ## Knowledge
 
 * [Operating System Concept](os-concept.html)
+* [Understanding Linux Kernel](linux.html)
 
 ## Developing
 
