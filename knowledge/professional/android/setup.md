@@ -72,4 +72,18 @@ or
 sudo apt-get install lib32ncurses5-dev
 
 
+### Error occurred during initialization of VM
+
+Buld Error 7:
+target Dex: core-hostdex
+Error occurred during initialization of VM
+Could not reserve enough space for object heap
+Could not create the Java virtual machine.
+make: *** [out/host/common/obj/JAVA_LIBRARIES/core-
+hostdex_intermediates/classes.dex] Error 1
+make: *** Waiting for unfinished jobs....
+
+solution:
+
+build/core/definitions.mk:1528: $(if $(findstring windows,$(HOST_OS)),,-JXms16M -JXmx**2048**M) \   2048->1536
 
