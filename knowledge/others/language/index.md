@@ -19,7 +19,7 @@ title: Language
 
 ### 学习内容
 
-[现代汉语语音](pronunciation.html)
+[现代汉语语音](chinese/pronunciation.html)
 
 现代汉语语汇
 
@@ -64,3 +64,20 @@ title: Language
 * [山东大学《现代汉语》精品课程，负责人：盛玉琪教授](http://www.yyxx.sdu.edu.cn/chinese/)
 * [华中师范大学《现代汉语》精品课程，负责人：邢福义教授](http://jpkc.ccnu.edu.cn/jpkcnew/guojiaji/xdhy/index.asp)
 * [暨南大学《现代汉语》精品课程，负责人：邵敬敏教授](http://jpkc.jnu.edu.cn/2007/xdhy/indexhtml.html)
+
+
+## English
+
+### 学习目标
+
+### 学习计划
+
+### 学习内容
+
+[English Pronunciation](english/pronunciation.html)
+
+[English Words]
+
+[English Grammar]
+
+## 参考资料
