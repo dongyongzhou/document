@@ -15,4 +15,8 @@ title: Sayings
 ![Picture](http://29.media.tumblr.com/tumblr_kzcyp0f6bB1qzwaddo1_500.jpg)
 
 
+### Life is ten percent what happens to you and ninety percent how you respond to it.
+
+by: Lou Holtz
+
 
