@@ -600,4 +600,36 @@ Must give long-running jobs a fraction of the CPU even when there are shorter jo
 - Queuing models
 - Implementation/Simulation:
 
+## Address Translation
+
+### 1 Virtualizing Resources
+
+Physical Reality: Processes/Threads share the same hardware
+
+- Need to multiplex CPU (CPU Scheduling)
+- Need to multiplex use of Memory (Today)
+
+**1.1 memory multiplexing?**
+
+- The complete working state of a process and/or kernel is defined by its data in memory (and registers)
+- Consequently, cannot just let different processes use the same memory
+- Probably don’t want different processes to even have access to each other’s memory (protection)
+
+**1.2 Important Aspects of Memory Multiplexing**
+
+**Controlled overlap:**
+
+- Processes should not collide in physical memory
+- Conversely, would like the ability to share memory when desired (for communication)
+
+**Protection:**
+
+- Prevent access to private memory of other processes
+- Different pages of memory can be given special behavior (Read Only, Invisible to user programs, etc)
+- Kernel data protected from User programs
+
+**Translation: **
+
+- Ability to translate accesses from one address space (virtual) to a different one (physical)
+- When translation exists, process uses virtual addresses, physical memory uses physical addresses
 
