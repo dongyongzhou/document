@@ -62,7 +62,7 @@ title: Language
 
 * [北京大学《现代汉语》精品课程，负责人：陆俭明教授](http://ccl.pku.edu.cn/course/)
 * [山东大学《现代汉语》精品课程，负责人：盛玉琪教授](http://www.yyxx.sdu.edu.cn/chinese/)
-* [华中师范大学《现代汉语》精品课程，负责人：邢福义教授](http://jpkc.ccnu.edu.cn/jpkcnew/guojiaji/xdhy/index.asp)
+* [华中师范大学《现代汉语》精品课程，负责人：邢福义教授](http://jpkc.ccnu.edu.cn/gjj/2004/xdhy/index.asp)
 * [暨南大学《现代汉语》精品课程，负责人：邵敬敏教授](http://jpkc.jnu.edu.cn/2007/xdhy/indexhtml.html)
 
 
