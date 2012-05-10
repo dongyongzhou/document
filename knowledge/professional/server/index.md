@@ -7,6 +7,11 @@ title: Server
 
  To be continued.
 
+## Testing 
+
+* [concurrent testing](test-concurrent.html)
+
+
 ## Problem
 
 [Problems](problems.html)

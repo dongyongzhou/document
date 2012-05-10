@@ -3,35 +3,19 @@ layout: master
 title: Operating System
 ---
 
-## Knowledge
+## Knowledge Hierarchy
 
 * [Operating System Concept](os-concept.html)
 * [Understanding Linux Kernel](linux.html)
 
-## Developing
+## Special Subject
 
-### Lab
+* [Linux sysfs file system](sysfs.html)
+* [Linux procfs file system](procfs.html)
+* [Linux debugfs file system](debugfs.html)
+* [Linux Debug](debug.html)
 
-## Schedule
-
-### Take Course
-
-#### Operating Systems and Systems Programming 
-
-+ 2012-4-10: Lecture01.What.is.an.Operating.System: done
-+ 2012-4-11: Lecture02.Operating.Systems.Structures: done
-+ 2012-4-11: Lecture03.Concurrency.Processes.Threads.and.Address.Spaces: done
-+ 2012-4-12: Lecture04.Thread.Dispatching: done
-
-#### 6.828: Operating System Engineering 
-
-To be continue
-
-### Read Books
-
-#### Operating System Concepts 
-
-To be continue
+## Development
 
 ## Reference
 

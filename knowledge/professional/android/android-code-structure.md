@@ -34,3 +34,16 @@ Provider, Media Provider, etc.), wall papers (including live wall papers), input
 * sdk/ - the home of Android SDK tools (ddms, traceview, ninepatch, etc.)
 * system/ - the home of the Android root file system, configuration files, init and init.rc, as well as some of the
 native daemons
+
+
+### Android Kernel Module Path
+
+/system/lib/modules/
+
+### Android insmod Kernel Module file 
+
+/system/core/rootdir/etc/init.xxx.rc
+
+    on boot
+        ....
+        insmod /system/lib/modules/xxx.ko

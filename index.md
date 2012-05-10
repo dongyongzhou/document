@@ -3,10 +3,6 @@ layout: master
 title: Document
 ---
 
-## 开发实践
-
-* [Operating System](knowledge/professional/os), Researching and Developing operating system.
-
 ## 专业知识
 
 * [Programming Language](knowledge/professional/programming)
@@ -52,6 +48,10 @@ Editor
 * [Sports](skill/others/sports)
 * [cooking](skill/others/cooking)
 * [舞蹈](skill/others/dance)
+
+## 开发实践
+
+* [Operating System](knowledge/professional/os), Researching and Developing operating system.
 
 ## 读书频道
 
