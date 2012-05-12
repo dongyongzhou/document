@@ -1,38 +1,62 @@
 ---
 layout: master
-title: Server
+title: Database problem
 ---
 
-## PERL certificate verify failed
+## mysql-server install failure
 
 ### Description
 
-LWP::Protocol::https::Socket: SSL connect attempt failed with unknown errorerror:14090086:SSL routines:SSL3_GET_SERVER_CERTIFICATE:certificate verify failed at /usr/share/perl5/LWP/Protocol/http.pm <https::Socket: SSL connect attempt failed with unknown errorerror:14090086:SSL routines:SSL3_GET_SERVER_CERTIFICATE:certificate verify failed at /usr/share/perl5/LWP/Protocol/http.pm>  line 51.
 
-### Solution one
+Setting up mysql-server-5.1 (5.1.62-0ubuntu0.11.04.1) ...
+AppArmor parser error for /etc/apparmor.d/usr.sbin.mysqld in /etc/apparmor.d/usr.sbin.mysqld at line 9: Could not open 'abstractions/mysql'
+start: Job failed to start
+invoke-rc.d: initscript mysql, action "start" failed.
+dpkg: error processing mysql-server-5.1 (--configure):
+ subprocess installed post-installation script returned error exit status 1
+dpkg: dependency problems prevent configuration of mysql-server:
+ mysql-server depends on mysql-server-5.1; however:
+  Package mysql-server-5.1 is not configured yet.
+dpkg: error processing mysql-server (--configure):
+ dependency problems - leaving unconfigured
+No apport report written because the error message indicates its a followup error from a previous failure.
+                                                                                                          Errors were encountered while processing:
+ mysql-server-5.1
+ mysql-server
+E: Sub-process /usr/bin/dpkg returned an error code (1)
 
-Turn off the verification
 
-You’re seeing this because the most recent versions of LWP::UserAgent require a signed certificate. 
+### Solution
 
-The easiest way to tell the library to ignore this check is to set a command line environment variable from bash:
+Try removing apparmor package:
 
-> export PERL_LWP_SSL_VERIFY_HOSTNAME=0
+    sudo apt-get remove apparmor 
 
-### Solution two
+and then re-attempt the installation with mysql-common package:
 
-Reference: 
+    sudo apt-get install mysql-common mysql-server
 
-[LWP::UserAgent - Web user agent class](http://cpan.uwinnipeg.ca/htdocs/libwww-perl/LWP/UserAgent.html#code_verify_hostname_code_gt_bool)
-The same with the first one.
+### Fails again: 
 
-When TRUE LWP will for secure protocol schemes ensure it connects to servers that have a valid certificate matching the expected hostname. If FALSE no checks are made and you can't be sure that you communicate with the expected peer. The no checks behaviour was the default for libwww-perl-5.837 and earlier releases.
 
-    my $ua = LWP::UserAgent->new(
-      ssl_opts => {
-        verify_hostname => 0,
-     #    SSL_ca_path => 'xxx',
-     #    SSL_ca_path => 'xxx',
-     },
-   );
+start: Job failed to start
+invoke-rc.d: initscript mysql, action "start" failed.
+dpkg: error processing mysql-server-5.1 (--configure):
+ subprocess installed post-installation script returned error exit status 1
+dpkg: dependency problems prevent configuration of mysql-server:
+ mysql-server depends on mysql-server-5.1; however:
+  Package mysql-server-5.1 is not configured yet.
+dpkg: error processing mysql-server (--configure):
+ dependency problems - leaving unconfigured
+No apport report written because the error message indicates its a followup error from a previous failure.
+                                                                                                          Errors were encountered while processing:
+ mysql-server-5.1
+ mysql-server
+E: Sub-process /usr/bin/dpkg returned an error code (1)
+
+
+### solution:
+
+    $ sudo dpkg -P --force depends mysql-server mysql-server-5.1 mysql-common mysql-server-core-5.1 php5-mysql mysql-client-5.1 mysql-client-core-5.1
+    $ sudo aptitude install mysql-server
 

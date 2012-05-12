@@ -11,9 +11,12 @@ title: Concurrent testing
 
 ##2 方案
 
+Httperf + autobench + gnuplot 
+
 ##3 测试工具Httperf 
 
-[项目主页](http://code.google.com/p/httperf)
+* [项目主页](http://www.hpl.hp.com/research/linux/httperf/)
+* [项目 on google code](http://code.google.com/p/httperf)
 
 ###3.1 介绍
 
@@ -29,13 +32,20 @@ The three distinguishing characteristics of httperf are
 
 ###3.2 安装
 
-[下载Httperf](http://code.google.com/p/httperf/downloads/list)
+
+* [下载Httperf: FTP](ftp://ftp.hpl.hp.com/pub/httperf/)
+* [下载Httperf: Sourceforge](http://sourceforge.net/projects/httperf/)
+* [下载Httperf: GoogleCode](http://code.google.com/p/httperf/downloads/list)
 
     $ tar xvf httperf-0.9.0.tar.gz
     $ cd httperf-0.9.0/
     $ ./configure
     $ make
     $ sudo make install
+
+###3.3 Usage
+
+[Httperf Doc](http://www.hpl.hp.com/research/linux/httperf/wisp98/httperf.pdf)
 
 ##4 测试工具autobench
 
@@ -107,7 +117,7 @@ bench2graph
 
     autobench --single_host --host1=192.168.8.8 --port1=80 --uri1=/logo.gif --quiet --low_rate=50 --high_rate=1500 --rate_step=50 --num_call=1 --num_conn=2000 --timeout=10 --file/tmp/result.tsv
 
-    autobench --single_host --host1 testhost.foo.com --uri1 /index.html --quiet --file bench.tsv
+    autobench --single_host --host1 xxx.com --uri1 /index.html --quiet --file bench.tsv
 
 Benchmark testhost.foo.com using the URI /index.html, don't display httperf output on STDOUT, and save the results in 'bench.tsv'.
 

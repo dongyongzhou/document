@@ -3,33 +3,31 @@ layout: master
 title: git
 ---
 
-# git
-
-
-## Reference
+##1 Reference
 
 * [Pro Git](http://progit.org/book/)
+* [Git Community Book 中文版](http://gitbook.liuhui998.com/index.html)
 
 When need help while using Git, there are three ways to get the manual page (manpage) help for any of the Git commands:
     $ git help <verb>
     $ git <verb> --help
     $ man git-<verb>
 
-## Environment Setting
+##2 Environment Setting
 
-### Installing Git
+###2.1 Installing Git
 
-#### Installing on Linux
+####2.1.1 Installing on Linux
 
     $ apt-get install git-core
 
-#### Installing on Windows
+####2.1.2 Installing on Windows
 
 Download and install the latest version of [Git for Windows](http://code.google.com/p/msysgit/downloads/list)
 
     http://code.google.com/p/msysgit
 
-### Git Setup
+###2.2 Git Setup
 
 Refer to [First-Time Git Setup](http://progit.org/book/ch1-5.html)
 
@@ -41,7 +39,7 @@ Git comes with a tool called git config that lets you get and set configuration 
 + ~/.gitconfig file: Specific to your user. You can make Git read and write to this file specifically by passing the --global option.
 + config file in the git directory (that is, .git/config) of whatever repository you’re currently using: Specific to that single repository. Each level overrides values in the previous level, so values in .git/config trump those in /etc/gitconfig.
 
-### Setup Identity
+###2.3 Setup Identity
 
 The first thing you should do when you install Git is to set your user name and e-mail address. 
 
@@ -53,17 +51,17 @@ If you want to override this with a different name or e-mail address for specifi
 
 Refer for more [First-Time Git Setup](http://progit.org/book/ch1-5.html)
 
-## Basic operation
+##3 Basic operation
 
-### Getting a Git Repository
+###3.1 Getting a Git Repository
 
-#### Initializing a Repository in an Existing Directory
+####3.1.1 Initializing a Repository in an Existing Directory
 
     $ git init
     $ git add .
     $ git commit -m 'initial project version'
 
-#### Cloning an Existing Repository
+####3.1.2 Cloning an Existing Repository
 
     $ git clone [repository url] [<directory>]
 
@@ -72,27 +70,27 @@ Git has a number of different transfer protocols you can use.
 + git:// protocol, 
 + http(s):// or user@server:/path.git, which uses the SSH transfer protocol.
 
-### Checking the Status of the Files
+###3.2 Checking the Status of the Files
 
     $ git status
 
-#### Tracking New Files
+####3.2.1 Tracking New Files
 
     $ git add [new file]
     $ git status
 
-#### Staging New Files
+####3.2.2 Staging New Files
 
     $ git add [modified file]
     $ git status
 
 If you modify a file after you run git add, you have to run git add again to stage the latest version of the file:
 
-### Ignoring Files
+###3.3 Ignoring Files
 
 create a file listing patterns to match them named .gitignore.
 
-### Viewing Your Staged and Unstaged Changes
+###3.4 Viewing Your Staged and Unstaged Changes
 
 To see what you’ve changed but not yet staged, type git diff with no other arguments, That command compares what is in your working directory with what is in your staging area. The result tells you the changes you’ve made that you haven’t yet staged.
 
@@ -100,7 +98,7 @@ To see what you’ve changed but not yet staged, type git diff with no other arg
 
 If you want to see what you’ve staged that will go into your next commit, you can use git diff --cached. (In Git versions 1.6.1 and later, you can also use git diff --staged, which may be easier to remember.) This command compares your staged changes to your last commit: 
 
-### Committing Your Changes
+###3.5 Committing Your Changes
 
     $ git commit
 
@@ -113,7 +111,7 @@ Alternatively, you can type your commit message inline with the commit command b
 
 Providing the -a option to the git commit command makes Git automatically stage every file that is already tracked before doing the commit, letting you skip the git add part:
 
-### Removing Files
+###3.6 Removing Files
 
 To remove a file from Git, you have to remove it from your tracked files (more accurately, remove it from your staging area) and then commit. The git rm command does that and also removes the file from your working directory so you don’t see it as an untracked file next time around.
 
@@ -128,39 +126,39 @@ You can pass files, directories, and file-glob patterns to the git rm command. T
 
     $ git rm log/\*.log
 
-### Moving Files
+###3.7 Moving Files
 
     $ git mv file_from file_to
 
 
-### Viewing the Commit History
+###3.8 Viewing the Commit History
 
     $ git log
 
-### Undoing Things
+###3.9 Undoing Things
 
-#### Changing Your Last Commit
+####3.9.1 Changing Your Last Commit
 
     $ git commit -m 'initial commit'
     $ git add forgotten_file
     $ git commit --amend
 
-#### Unstaging a Staged File
+####3.9.2 Unstaging a Staged File
 
     $ git reset HEAD <file>
 
-#### Unmodifying a Modified File
+####3.9.3 Unmodifying a Modified File
 
     $ git checkout -- <file>
 
-### Working with Remotes
+###3.10 Working with Remotes
 
 Managing remote repositories includes knowing how to 
 1. add remote repositories, 
 2. remove remotes that are no longer valid, 
 3. manage various remote branches and define them as being tracked or not
 
-#### Showing Your Remotes
+####3.10.1 Showing Your Remotes
 
     $ git remote
 origin — that is the default name Git gives to the server you cloned from:
@@ -171,11 +169,11 @@ You can also specify -v, which shows you the URL that Git has stored for the sho
 
 Notice that only the origin remote with an SSH URL(git@github.com:<who>/<repository>.git) is the one I can push to .
 
-#### Adding Remote Repositories
+####3.10.2 Adding Remote Repositories
 
     $ git remote add [shortname] [url]
 
-#### Fetching and Pulling from Your Remotes
+####3.10.3 Fetching and Pulling from Your Remotes
 
     $ git fetch [remote-name]
 
@@ -189,7 +187,7 @@ If you have a branch set up to track a remote branch (see the next section and C
 
 Running git pull generally fetches data from the server you originally cloned from and automatically tries to merge it into the code you’re currently working on.
 
-#### Pushing to Your Remotes
+####3.10.4 Pushing to Your Remotes
 
     $ git push [remote-name] [branch-name]
 
@@ -197,17 +195,33 @@ This command works only if you cloned from a server to which you have write acce
 If you and someone else clone at the same time and they push upstream and then you push upstream, your push will rightly be rejected. 
 You’ll have to pull down their work first and incorporate it into yours before you’ll be allowed to push.
 
-#### Inspecting a Remote
+####3.10.5 Inspecting a Remote
 
     $ git remote show [remote-name]
 
-#### Removing and Renaming Remotes
+####3.10.6 Removing and Renaming Remotes
 
     $ git remote rename old-name new-name
     $ git remote rm name
 
+###3.11 git format patch
 
-## Tagging
+Generate patch file for the commits.
+
+Base usage:
+
+    $ git format-patch -1 -o ./..
+
+Generate a patch for the last commit.
+
+###3.11 git am patch
+
+merge patch file into the source code.
+
+    $ cd source-code
+    $ git-am xxx.patch
+
+##4 Tagging
 
 $ git tag
 

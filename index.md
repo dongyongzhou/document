@@ -24,6 +24,8 @@ title: Document
 
 ## 专业技能
 
+* [开发环境设置](skill/professional/environment)
+
 Debug
 
 * [TRACE32-ICD](skill/professional/TRACE32-ICD.html)

@@ -5,7 +5,7 @@ title: Server
 
 ## Deployment 
 
- To be continued.
+* [Logrotate管理日志](logrotate.html)
 
 ## Testing 
 
@@ -14,5 +14,5 @@ title: Server
 
 ## Problem
 
-[Problems](problems.html)
+* [Problems](problems.html)
 
