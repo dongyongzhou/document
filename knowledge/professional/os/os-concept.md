@@ -633,3 +633,277 @@ Physical Reality: Processes/Threads share the same hardware
 - Ability to translate accesses from one address space (virtual) to a different one (physical)
 - When translation exists, process uses virtual addresses, physical memory uses physical addresses
 
+
+Preparation of a program for execution involves components at:
+
+- Compile time (i.e., “gcc”)
+- Link/Load time (unix “ld” does link)
+- Execution time (e.g. dynamic libs)
+
+**1.3 Address Space**
+
+All the addresses and state a process can touch
+
+Each process and kernel has different address space
+
+**two views of memory:**
+
+- View from the CPU (what program sees, virtual memory)
+- View from memory (physical memory)
+- Translation box (MMU) converts between the two views
+
+Translation helps to implement protection.
+If task A cannot even gain access to task B’s data, no way for A to adversely affect B
+
+
+With translation, every program can be linked/loaded into **same region of user address space**
+
+
+### 2 Segmentation
+
+**2.1 Uniprogramming** (no Translation or Protection)
+
+Application always runs at same place in physical memory since only one application at a time
+
+Application can access any physical address
+
+**2.2 Multiprogramming** (First Version)
+
+Multiprogramming without Translation or Protection
+Must somehow prevent address overlap between threads
+
+Trick: Use Loader/Linker: Adjust addresses while program loaded into memory (loads, stores, jumps)
+
+With this solution, no protection: bugs in any program can cause other programs to crash or even the OS
+
+
+**2.3 Multiprogramming (Version with Protection)
+
+use two special registers BaseAddr and LimitAddr to prevent user from straying outside designated area
+
+If user tries to access an illegal address, cause an error
+During switch, kernel loads new base/limit from TCB (Thread Control Block)
+
+Could use base/limit for dynamic address translation (often called “**segmentation**”) – **translation happens at execution**:
+
+- Alter address of every load/store by adding “base”
+- Generate error if address bigger than limit
+
+This gives program the illusion that it is running on its own dedicated machine, with memory starting at 0
+
+- Program gets continuous region of memory
+- Addresses within program do not have to be relocated when program placed in different region of DRAM
+
+
+Logical View: **multiple separate segments**
+
+- Typical: Code, Data, Stack
+- Others: memory sharing, etc
+
+Each segment is given region of contiguous memory
+
+- Has a base and limit
+- Can reside anywhere in physical memory
+
+**2.4 Implementation of Multi-Segment Model**
+
+Segment map resides in processor
+
+- Segment number mapped into base/limit pair
+- Base added to offset to generate physical address
+- Error check catches offset out of range
+
+As many chunks of physical memory as entries
+
+- Segment addressed by portion of virtual address
+- However, could be included in instruction instead:
+x86 Example: mov [es:bx],ax. 
+
+What is “V/N” (valid / not valid)?
+
+- Can mark segments as invalid; requires check as well
+
+
+**2.5 Fragmentation problem**
+
+- Not every process is the same size
+- Over time, memory space becomes fragmented
+
+Hard to do inter-process sharing
+
+- Want to share code segments when possible
+- Want to share memory between processes
+- Helped by providing multiple segments per process
+
+
+**2.6 Schematic View of Swapping**
+
+What if not all processes fit in memory?
+
+=>Swapping: Extreme form of Context Switch
+
+- In order to make room for next process, some or all of the previous process is moved to disk
+
+- This greatly increases the cost of context-switching
+
+
+Desirable alternative?
+
+- Some way to keep only active portions of a process in memory at any one time
+
+Need finer granularity control over physical memory
+
+**2.7 Problems with Segmentation**
+
+Must fit **variable-sized chunks** into physical memory
+
+May **move processes multiple times** to fit everything
+
+Limited options for **swapping** to disk
+
+Fragmentation: wasted space
+
+- External: free gaps between allocated chunks
+- Internal: don’t need all memory within allocated chunks
+
+
+
+###3 Paging
+
+Paging: Physical Memory in Fixed Size Chunks
+
+**3.1 Solution to fragmentation from segments?**
+
+- Allocate physical memory in fixed size chunks (“pages”)
+- Every chunk of physical memory is equivalent.Can use simple vector of bits to handle allocation:,Each bit represents page of physical memory
+
+**3.2 Should pages be as big as our previous segments?**
+
+- No: Can lead to lots of internal fragmentation
+:Typically have small pages (1K-16K)
+- Consequently: need multiple pages/segment
+
+**3.3 How to Implement Paging?**
+
+**Page Table** (One per process)
+
+- Resides in physical memory
+- Contains physical page and permission for each virtual page. Permissions include: Valid bits, Read, Write, etc
+
+**3.4 Virtual address mapping**
+
+- Offset from Virtual address copied to Physical Address
+(Example: 10 bit offset  1024-byte pages)
+- Virtual page # is all remaining bits
+(Example for 32-bits: 32-10 = 22 bits, i.e. 4 million entries)
+(Physical page # copied from table into physical address)
+- Check Page Table bounds and permissions
+
+**3.5 What about Sharing?**
+
+The processes have some page table items pointing to the same physical pages.
+
+**3.6 What needs to be switched on a context switch? **
+
+Page table pointer and limit
+
+
+**3.7 Analysis**
+
+**Pros**
+
+- Simple memory allocation
+- Easy to Share
+
+**Con**
+
+What if address space is sparse?
+
+- E.g. on UNIX, code starts at 0, stack starts at (231-1).
+- With 1K pages, need 4 million page table entries!
+
+What if table really big?
+
+- Not all pages used all the time  would be nice to have working set of page table in memory
+
+**How about combining paging and segmentation?**
+
+Good Idea. =>Multi-level Translation
+
+
+**3.8 Multi-level Translation**
+
+**What about a tree of tables?**
+
+- Lowest level page tablememory still allocated with bitmap
+- Higher levels often segmented
+
+Could have any number of levels. Example (top segment):
+
+
+**What must be saved/restored on context switch?**
+
+- Contents of **top-level segment registers**(save single PageTablePtr register)
+- Pointer to top-level table (page table)
+
+Valid bits on Page Table Entries 
+
+- Don’t need every 2nd-level table
+- Even when exist, 2nd-level tables can reside on disk if not in use
+
+**What about Sharing (Complete Segment)?**
+
+The processes have last some level page table items pointing to the same physical pages.
+
+**Multi-level Translation Analysis**
+
+Pros:
+
+- Only need to allocate as many page table entries as we need for application. In other words, sparse address spaces are easy
+- Easy memory allocation
+- Easy Sharing.Share at segment or page level (need additional reference counting)
+
+Cons:
+
+- One pointer per page (typically 4K – 16K pages today)
+- Page tables need to be contiguous
+.However, previous  keeps tables to exactly one page in size
+- Two (or more, if >2 levels) lookups per reference
+Seems very expensive!
+
+**3.9 Inverted Page Table**
+
+With all previous examples (“Forward Page Tables”)
+
+- Size of page table is at least as large as amount of virtual memory allocated to processes
+- Physical memory may be much less
+(Much of process space may be out on disk or not in use
+
+**use a hash table**
+
+Called an **“Inverted Page Table”**
+
+- Size is independent of virtual address space
+- Directly related to amount of physical memory
+- Very attractive option for 64-bit address spaces
+
+Cons: Complexity of managing hash changes
+Often in hardware!
+
+###4 Communication
+
+isolated processes, how can they communicate?
+
+**A Shared memory: **common mapping to physical page
+
+- As long as place objects in shared memory address range, threads from each process can communicate
+- Note that processes A and B can talk to shared memory through different addresses
+- In some sense, this violates the whole notion of protection that we have been developing
+
+**If address spaces don’t share memory**, all inter-address space communication must go through kernel (via **system calls**)
+
+- Byte stream producer/consumer (put/get): Example, communicate through **pipes** connecting stdin/stdout
+- Message passing (send/receive): Can use this to build remote procedure call (RPC) abstraction so that you can have one program make procedure calls to another
+- File System (read/write): File system is shared state!
+
+
