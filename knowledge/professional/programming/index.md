@@ -6,6 +6,7 @@ title: Programming Language
 ## Ruby on Rails
 
 * [Ruby on Rails](ror.html)
+* [User Authentication](user-authentication.html)
 
 ## C
 
