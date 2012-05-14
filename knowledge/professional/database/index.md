@@ -3,6 +3,14 @@ layout: master
 title: Database
 ---
 
+## Knownledge
+
+* [LDAP](ldap.html)
+
+## Development
+
+* [LDAP on ROR](ldap-ror.html)
+
 ## 数据库操作命令 
 
 MYSQL

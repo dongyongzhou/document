@@ -3,6 +3,10 @@ layout: master
 title: Server
 ---
 
+## Knownledge
+
+* [session and cookie](session-and-cookie.html) 
+
 ## Deployment 
 
 * [Rails Deployment](http://www.railsdeployment.com/)
