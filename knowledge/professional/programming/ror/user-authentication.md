@@ -105,4 +105,6 @@ Not so available for rails3
 
 ## Reference
 
+* [RailsCast](http://railscasts.com/)
+* [The Ruby Toolbox](https://www.ruby-toolbox.com/)
 * [Rails Authentication](https://www.ruby-toolbox.com/categories/rails_authentication.html)

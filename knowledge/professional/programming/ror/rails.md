@@ -3,6 +3,13 @@ layout: master
 title: Rails
 ---
 
+## 参考资料
+
+* [Ruby On Rails官方网站](http://rubyonrails.org/)
+* [RailsCast](http://railscasts.com/)
+* [The Ruby Toolbox](https://www.ruby-toolbox.com/)
+* [The RubyonRails API](http://api.rubyonrails.org/)
+
 ## before_filter
 
     before_filter :require_admin,     :only => [:destroy]

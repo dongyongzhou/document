@@ -5,13 +5,15 @@ title: Document
 
 ## 专业知识
 
-* [Programming Language](knowledge/professional/programming)
+* [Programming](knowledge/professional/programming)
 * [Hardware](knowledge/professional/hardware)
 * [Operating System](knowledge/professional/os)
 * [Android](knowledge/professional/android)
 * [Software Engineering](knowledge/professional/softwareengineer)
 * [Server](knowledge/professional/server)
 * [Database](knowledge/professional/database)
+* [Network](knowledge/professional/network)
+* [Information Security](knowledge/professional/security)
 
 ## 业余知识
 

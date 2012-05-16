@@ -5,8 +5,9 @@ title: Programming Language
 
 ## Ruby on Rails
 
-* [Ruby on Rails](ror/ror.html)
+* [Ruby](ror/ruby.html)
 * [Rails](ror/rails.html)
+* [Rails View](ror/rails-view.html)
 * [User Authentication](ror/user-authentication.html)
 * [Problems](ror/ror-problem.html)
 
