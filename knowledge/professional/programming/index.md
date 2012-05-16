@@ -5,8 +5,10 @@ title: Programming Language
 
 ## Ruby on Rails
 
-* [Ruby on Rails](ror.html)
-* [User Authentication](user-authentication.html)
+* [Ruby on Rails](ror/ror.html)
+* [Rails](ror/rails.html)
+* [User Authentication](ror/user-authentication.html)
+* [Problems](ror/ror-problem.html)
 
 ## C
 
