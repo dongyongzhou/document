@@ -1,6 +1,6 @@
 ---
 layout: master
-title: Rails View : checkboxes
+title: Rails View checkboxes
 ---
 
 ## Overview
