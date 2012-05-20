@@ -80,6 +80,7 @@ This is an important performance tuning point.
 
 ### Kernel – Apps Hardware Watchdog
 
+
 ## Debuging datas
 
 ###1 Dmesg Buffer

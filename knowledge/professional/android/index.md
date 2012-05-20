@@ -12,8 +12,13 @@ title: Android
 ### Android Application Framework
 
 * [Activity](activity.html)
+* [Android Error Handling Mechanism](error-handling-mechanism.html)
 
 ### Android Application
+
+### Others
+
+* [Android Bootup Sequence](bootup.html)
 
 ## Android Debug
 

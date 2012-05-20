@@ -18,8 +18,10 @@ All work lists can be manage in three states lists
 
 ## Doing List
 
+* Understanding Android Error handling Mechanism. 
 * server testing 
 * Linux fs
+* Android Bootup
 
 ## Done List
 
