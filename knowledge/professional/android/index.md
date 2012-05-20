@@ -19,6 +19,7 @@ title: Android
 
 * [Logcat](logcat.html)
 * [Adb shell am](am.html)
+* [Android User Space Debugging](debugging.html)
 
 ## Android Development
 

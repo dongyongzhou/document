@@ -7,6 +7,79 @@ title: Linux Debug
 
 To be continued.
 
+## Debuging Method
+
+### Watchdog Bark
+
+If the Linux kernel cannot schedule the watchdog kicking work queue because either the processor is **spinning around in an int-locked state** or the **processor is hanging due to a bus freeze**, watchdog bark FIQ is invoked.
+
+Watchdog bark FIQ is handled in TrustZone (TZ) code.
+
+The TZ FIQ handler checks to see if watchdog bark has happened and saves the register values, such as Program Counters (PC), link registers (LR), R13, etc., for all CPUs.
+
+To debug show:
+
+- CPU registers at the time of watchdog bark
+- Call stack for all Linux processes at the time of failure
+- Items in global work queue at the time of failure
+
+For Crash dumps
+
+- CPU Register Dump
+- Process Call Stack
+- Kernel dmesg
+- Interrupt Status
+- Kernel Global Work Queue
+
+### Kernel – Panic
+
+- BUG() or BUG_ON(<condition>)
+
+General way to check the sanity of the variable status in kernel
+
+CONFIG_BUG needs to be set
+
+If CONFIG_DEBUG_BUGVERBOSE is set, it is printing the filename and line number showing where the BUG line is and causes a kernel panic; otherwise, it is just hanging.
+
+- Oops message
+
+    arch/arm/kernel/trap.c
+
+Oops message is generated from:
+
+    Oops – Undefined instruction
+    Oops – Bad mode
+    Oops – Bad syscall
+
+- Page fault
+
+    arch/arm/mm/fault.c
+
+    1 Alignment exception
+    2 Unhandled prefetch abort
+    3 Unable to handle kernel address (kernel page fault)
+    4 Unable to handle page fault (user page fault)
+
+### Kernel – Low Memory Killer
+
+**Description**
+
+Low memory killer is part of the kernel that monitors the remaining available memory.
+
+If the available memory goes under the **determined threshold**, it chooses a victim process and kills it.
+
+It calculates **available memory** by summing up active + inactive pages.
+
+If available memory size goes down to a threshold, e.g., 6144*4 Kbytes, it picks the process that has a 15 adj value and kills it until it gets enough memory back.
+
+It sends SIGKILL to the process to kill it. More debug messages could be printed by changing lowmem_debug_level.
+
+This is an important performance tuning point.
+
+### Kernel – sys/proc fs List
+
+### Kernel – Apps Hardware Watchdog
+
 ## Debuging datas
 
 ###1 Dmesg Buffer
