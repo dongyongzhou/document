@@ -906,4 +906,123 @@ isolated processes, how can they communicate?
 - Message passing (send/receive): Can use this to build remote procedure call (RPC) abstraction so that you can have one program make procedure calls to another
 - File System (read/write): File system is shared state!
 
+## Caching and TLBS
+
+### Concepts
+
+**Cache**: a repository for copies that can be accessed more quickly than the original. Make frequent case fast and infrequent case less dominant
+
+Can cache: memory locations, address translations, pages, file blocks, file names, network routes, etc…
+
+Only good if:
+Frequent case frequent enough and
+Infrequent case not too expensive
+
+Important measure: Average Access time = (Hit Rate x Hit Time) + (Miss Rate x Miss Time)
+
+
+
+### Memory Hierarchy
+
+Take advantage of the principle of locality to:
+
+- Present as much memory as in the cheapest technology
+- Provide access at speed offered by the fastest technology
+
+
+- Registers
+- On-Chip Cache
+- Second Level Cache(SRAM)
+- Main Memory (DRAM)
+- Secondary Storage(Disk)
+- Tertiary Storage(Tape)
+- Network.
+
+### Locality
+
+**Temporal Locality** (Locality in Time):
+Keep recently accessed data items closer to processor
+
+- In order to take advantage of the temporal locality, that is the locality in time, the memory hierarchy will keep those more recently accessed data items closer to the processor because chances are (points to the principle), the processor will access them again soon.
+
+**Spatial Locality **(Locality in Space):
+Move contiguous blocks to the upper levels 
+
+- In order to take advantage of the spatial locality, not ONLY do we move the item that has just been accessed to the upper level, but we ALSO move the data items that are adjacent to it.
+
+### Sources of Cache Misses
+
+- **Compulsory (cold start)**: first reference to a block
+
+:
+
+    “Cold” fact of life: not a whole lot you can do about it
+    Note: When running “billions” of instruction, Compulsory Misses are insignificant
+
+- Capacity:
+
+:
+
+    Cache cannot contain all blocks access by the program
+    Solution: increase cache size
+
+- Conflict (collision):
+
+:
+
+    Multiple memory locations mapped to same cache location
+    Solutions: increase cache size, or increase associativity(For example, say using a 2-way set associative cache instead of directed mapped cache.)
+
+
+- Two others:
+
+:
+
+    Coherence (Invalidation): other process (e.g., I/O) updates memory 
+    Policy: Due to non-optimal replacement policy
+
+Those are referred to as invalidation misses caused by another process, such as IO , update the main memory so you have to flush the cache to avoid inconsistency between memory and cache.
+
+### Direct Mapped Cache
+
+- Address=>Cache tag + cache index + byte select
+- Cache=>cache tag + valid bit + cache block(cache data)
+
+**Cache index** selects a cache block
+
+**“Byte select”** selects byte within cache block
+ 
+    Example: Block Size=32B blocks
+
+**Cache tag **fully identifies the cached data
+
+Data with same “cache index” shares the same cache entry
+
+    Conflict misses
+
+### Set Associative Cache
+
+**N-way set associative:** N entries per Cache Index
+
+- N direct mapped caches operates in parallel
+
+Example: Two-way set associative cache
+
+- Two tags in the set are compared to input in parallel
+- Data is selected based on the tag result
+
+### Fully Associative Cache
+
+Fully Associative: Every block can hold any line
+
+- Address does not include a cache index
+- Compare Cache Tags of all Cache Entries in Parallel
+
+Example: Block Size=32B blocks
+
+- We need N 27-bit comparators
+- Still have byte select to choose from within block
+
+If cache full, which cached byte do you evict?
+Specific eviction policy
 
