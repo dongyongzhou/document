@@ -21,7 +21,7 @@ Software watchdog
 
 REFERENCE
 
-[http://rq2-79.iteye.com/blog/1408331](http://rq2-79.iteye.com/blog/1408331 "深入探索 高效的Java异常处理框架")
+* [深入探索 高效的Java异常处理框架](http://rq2-79.iteye.com/blog/1408331)
 
 
 ###3.1 Overview
@@ -230,6 +230,79 @@ android.app.Application和java.lang.Thread.UncaughtExceptionHandler。
 Application：用来管理应用程序的全局状态。在应用程序启动时Application会首先创建，然后才会根据情况(Intent)来启动相应的Activity和Service。可在自定义加强版的Application中注册未捕获异常处理器。
 
 Thread.UncaughtExceptionHandler：线程未捕获异常处理器，用来处理未捕获异常。如果程序出现了未捕获异常，默认会弹出系统中强制关闭对话框。我们需要实现此接口，并注册为程序中默认未捕获异常处理。这样当未捕获异常发生时，就可以做一些个性化的异常处理操作。
+
+提示定义:
+
+./frameworks/base/core/res/res/values/strings.xml:    <string name="aerr_application">Unfortunately, <xliff:g id="application">%1$s</xliff:g> has stopped.</string>
+./frameworks/base/core/res/res/values/strings.xml:    <string name="aerr_process">Unfortunately, the process <xliff:g id="process">%1$s</xliff:g> has
+
+    <!-- Text of the alert that is displayed when an application has crashed. -->
+    <string name="aerr_application">Unfortunately, <xliff:g id="application">%1$s</xliff:g> has stopped.</string>
+    <!-- Text of the alert that is displayed when an application has crashed. -->
+    <string name="aerr_process">Unfortunately, the process <xliff:g id="process">%1$s</xliff:g> has
+        stopped.</string>
+
+
+##4 ANR: Android Not Response
+
+###4.1 Overview
+
+ANR就是Application Not Responding的全称，即应用程序无响应。如果某个应用程序有一段时间响应不够灵敏而出现响应超时时，Android系统会弹出一个对话框上面写道，XXX is not responding给出两个按钮一个为force close一个为wait。用户可以选择让程序继续运行，但是，他们在使用你的应用程序时，并不希望每次都要处理这个对话框。因此，在程序里对响应性能的设计很重要，这样，系统不会显示ANR给用户。
+
+一般说来，如果应用程序不能响应用户输入的话，系统会显示一个ANR。例如，一个应用程序阻塞在一些I/O操作上（通常是网络访问），这时，应用程序的主线程就不能再处理用户的输入事件。经过一定的时间后，系统认为应用程序已经挂起，并显示ANR来让用户选择杀死应用程序。
+
+###4.2 ANR 根源
+
+在Android里，应用程序的响应性是由Activity Manager和Window Manager系统服务监视的。当它监测到以下情况中的一个时，Android就会针对特定的应用程序显示ANR：
+
+- 在5秒内没有响应输入的事件（例如，按键按下，屏幕触摸） 
+- BroadcastReceiver在10秒内没有执行完毕
+
+###4.3 ANR 机制
+
+###4.3 ANR 分类
+
+###4.4 ANR 深入分析
+
+
+    <!-- Title of the alert when an application is not responding. -->
+    <string name="anr_title"></string>
+    <!-- Text of the alert that is displayed when an application is not responding. -->
+    <string name="anr_activity_application"><xliff:g id="application">%2$s</xliff:g> is not responding.\n\nWould you like to close it?</string>
+    <!-- Text of the alert that is displayed when an application is not responding. -->
+    <string name="anr_activity_process">Activity <xliff:g id="activity">%1$s</xliff:g> is not responding.\n\nWould you like to close it?</string>
+    <!-- Text of the alert that is displayed when an application is not responding. -->
+    <string name="anr_application_process"><xliff:g id="application">%1$s</xliff:g> is not responding. Would you like to close it?</string>
+    <!-- Text of the alert that is displayed when an application is not responding. -->
+    <string name="anr_process">Process <xliff:g id="process">%1$s</xliff:g> is not responding.\n\nWould you like to close it?</string>
+    <!-- Button allowing the user to close an application that is not responding. This will kill the application. -->
+    <string name="force_close">OK</string>
+
+
+###4.5 ANR 解决
+
+Android应用程序通常是运行在一个单独的线程（例如，main）里。这意味着你的应用程序所做的事情如果在主线程里占用了太长的时间的话，就会引发ANR对话框，因为你的应用程序并没有给自己机会来处理输入事件或者Intent广播。
+
+因此，运行在主线程里的任何方法都尽可能少做事情。特别是，Activity应该在它的关键生命周期方法（如onCreate()和onResume()）里尽可能少的去做创建操作。潜在的耗时操作，例如网络或数据库操作，或者高耗时的计算如改变位图尺寸，应该在子线程里（或者以数据库操作为例，通过异步请求的方式）来完成。然而，不是说你的主线程阻塞在那里等待子线程的完成——也不是调用Thread.wait()或是Thread.sleep()。替代的方法是，主线程应该为子线程提供一个Handler，以便完成时能够提交给主线程。以这种方式设计你的应用程序，将能保证你的主线程保持对输入的响应性并能避免由于5秒输入事件的超时引发的ANR对话框。这种做法应该在其它显示UI的线程里效仿，因为它们都受相同的超时影响。
+
+IntentReceiver执行时间的特殊限制意味着它应该做：在后台里做小的、琐碎的工作如保存设定或者注册一个Notification。和在主线程里调用的其它方法一样，应用程序应该避免在BroadcastReceiver里做耗时的操作或计算。但不再是在子线程里做这些任务（因为BroadcastReceiver的生命周期短），替代的是，如果响应Intent广播需要执行一个耗时的动作的话，应用程序应该启动一个Service。顺便提及一句，你也应该避免在Intent Receiver里启动一个Activity，因为它会创建一个新的画面，并从当前用户正在运行的程序上抢夺焦点。如果你的应用程序在响应Intent广播时需要向用户展示什么，你应该使用Notification Manager来实现。
+
+一般来说，在应用程序里，100到200ms是用户能感知阻滞的时间阈值。因此，这里有一些额外的技巧来避免ANR，并有助于让你的应用程序看起来有响应性。
+
+- 如果你的应用程序为响应用户输入正在后台工作的话，可以显示工作的进度（ProgressBar和ProgressDialog对这种情况来说很有用）。 
+特别是游戏，在子线程里做移动的计算。
+- 如果你的应用程序有一个耗时的初始化过程的话，考虑可以显示一个Splash Screen或者快速显示主画面并异步来填充这些信息。在这两种情况下，你都应该显示正在进行的进度，以免用户认为应用程序被冻结了。
+
+###
+
+##5 Trace
+
+./frameworks/base/services/java/com/android/server/am/DeviceMonitor.java
+
+    private static final File BASE = new File("/data/anr/");
+
+
+/data/anr/traces.txt
 
 
 ActivityManager

@@ -6,10 +6,12 @@ title: Eclipse operation
 # Eclipse
  
 ## Reference
-- 
+
+ 
 * [List of key bindings](http://help.eclipse.org/indigo/index.jsp?topic=%2Forg.eclipse.platform.doc.user%2Freference%2Fref-keybindings.htm)
-- 
+
 ## Eclipse 快捷操作
+
 The list of available key bindings in Eclipse depends on many factors, including what view or editor is selected, whether a dialog is open, what plug-ins are installed, and what operating and windowing system is being used. At any time, you can obtain a list of available key bindings using Key Assist (  Help > Key Assist... or Ctrl+Shift+L). The following tables list some popular key bindings available in the Eclipse SDK.
 
 - Ctrl+1 快速修复
