@@ -12,9 +12,10 @@ title: Reading
 
 ## 待阅读书目
 
+*《认识自已，接纳自已》
 
-## 阅读中书目
+## 阅读书目
 
 * [明朝那些事儿](mingchaonaxieshier.html)
-
+* [拆掉思维里的墙](teardown-thewall-inmind.html)
 
