@@ -242,6 +242,13 @@ Thread.UncaughtExceptionHandler：线程未捕获异常处理器，用来处理�
     <string name="aerr_process">Unfortunately, the process <xliff:g id="process">%1$s</xliff:g> has
         stopped.</string>
 
+./frameworks/base/core/res/res/values-xxxx/strings.xml:    <string name="aerr_application" msgid="932628488013092776">"Unfortunately, <xliff:g id="APPLICATION">%1$s</xliff:g> has stopped."</string>
+
+./frameworks/base/services/java/com/android/server/am/AppErrorDialog.java:                    com.android.internal.R.string.aerr_application,
+
+./frameworks/base/services/java/com/android/server/am/ActivityManagerService.java:                        Dialog d = new AppErrorDialog(mContext, res, proc);
+./frameworks/base/services/java/com/android/server/am/ActivityManagerService.java:            if (res == AppErrorDialog.FORCE_QUIT_AND_REPORT) 
+
 
 ##4 ANR: Android Not Response
 
@@ -278,6 +285,7 @@ ANR就是Application Not Responding的全称，即应用程序无响应。如果
     <!-- Button allowing the user to close an application that is not responding. This will kill the application. -->
     <string name="force_close">OK</string>
 
+./frameworks/base/core/res/res/values-pt/strings.xml
 
 ###4.5 ANR 解决
 
