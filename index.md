@@ -64,6 +64,7 @@ Editor
 ## 人生哲理
 
 * [名人名言](sayings)
+* [爱情观](sayings/love.html)
 
 ## 资源引用
 
