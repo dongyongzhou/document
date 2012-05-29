@@ -19,6 +19,8 @@ title: Reading
 ## 阅读书目
 
 * [明朝那些事儿](mingchaonaxieshier.html)
-* 聆听父亲 : 张大春
 * [拆掉思维里的墙](teardown-thewall-inmind.html)
 * 《Critical Thinking: Tools for Taking Charge of Your Professional and Personal Life》: Richard W. Paul
+* 《聆听父亲》 : 张大春
+* 《四喜忧国》 : 张大春
+* 《认得几个字》 : 张大春
