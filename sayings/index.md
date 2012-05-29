@@ -20,3 +20,6 @@ title: Sayings
 by: Lou Holtz
 
 
+### 人永远都是在成为他自已所期盼的样子
+
+

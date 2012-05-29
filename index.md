@@ -65,6 +65,7 @@ Editor
 
 * [名人名言](sayings)
 * [爱情观](sayings/love.html)
+* [I say](sayings/isay.html)
 
 ## 资源引用
 
