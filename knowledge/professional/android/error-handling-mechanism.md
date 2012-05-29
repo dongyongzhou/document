@@ -231,10 +231,11 @@ Application：用来管理应用程序的全局状态。在应用程序启动时
 
 Thread.UncaughtExceptionHandler：线程未捕获异常处理器，用来处理未捕获异常。如果程序出现了未捕获异常，默认会弹出系统中强制关闭对话框。我们需要实现此接口，并注册为程序中默认未捕获异常处理。这样当未捕获异常发生时，就可以做一些个性化的异常处理操作。
 
-提示定义:
+**错误提示定义**:
 
-./frameworks/base/core/res/res/values/strings.xml:    <string name="aerr_application">Unfortunately, <xliff:g id="application">%1$s</xliff:g> has stopped.</string>
-./frameworks/base/core/res/res/values/strings.xml:    <string name="aerr_process">Unfortunately, the process <xliff:g id="process">%1$s</xliff:g> has
+    ./frameworks/base/core/res/res/values/strings.xml:    <string name="aerr_application">Unfortunately, <xliff:g id="application">%1$s</xliff:g> has stopped.</string>
+    ./frameworks/base/core/res/res/values/strings.xml:    <string name="aerr_process">Unfortunately, the process <xliff:g id="process">%1$s</xliff:g> has
+    ./frameworks/base/core/res/res/values-xxxx/strings.xml:    <string name="aerr_application" msgid="932628488013092776">"Unfortunately, <xliff:g id="APPLICATION">%1$s</xliff:g> has stopped."</string>
 
     <!-- Text of the alert that is displayed when an application has crashed. -->
     <string name="aerr_application">Unfortunately, <xliff:g id="application">%1$s</xliff:g> has stopped.</string>
@@ -242,12 +243,9 @@ Thread.UncaughtExceptionHandler：线程未捕获异常处理器，用来处理�
     <string name="aerr_process">Unfortunately, the process <xliff:g id="process">%1$s</xliff:g> has
         stopped.</string>
 
-./frameworks/base/core/res/res/values-xxxx/strings.xml:    <string name="aerr_application" msgid="932628488013092776">"Unfortunately, <xliff:g id="APPLICATION">%1$s</xliff:g> has stopped."</string>
-
-./frameworks/base/services/java/com/android/server/am/AppErrorDialog.java:                    com.android.internal.R.string.aerr_application,
-
-./frameworks/base/services/java/com/android/server/am/ActivityManagerService.java:                        Dialog d = new AppErrorDialog(mContext, res, proc);
-./frameworks/base/services/java/com/android/server/am/ActivityManagerService.java:            if (res == AppErrorDialog.FORCE_QUIT_AND_REPORT) 
+    ./frameworks/base/services/java/com/android/server/am/AppErrorDialog.java:                    com.android.internal.R.string.aerr_application,
+    ./frameworks/base/services/java/com/android/server/am/ActivityManagerService.java:                        Dialog d = new AppErrorDialog(mContext, res, proc);
+    ./frameworks/base/services/java/com/android/server/am/ActivityManagerService.java:            if (res == AppErrorDialog.FORCE_QUIT_AND_REPORT) 
 
 
 ##4 ANR: Android Not Response
@@ -271,6 +269,7 @@ ANR就是Application Not Responding的全称，即应用程序无响应。如果
 
 ###4.4 ANR 深入分析
 
+./frameworks/base/core/res/res/values-pt/strings.xml
 
     <!-- Title of the alert when an application is not responding. -->
     <string name="anr_title"></string>
@@ -285,7 +284,8 @@ ANR就是Application Not Responding的全称，即应用程序无响应。如果
     <!-- Button allowing the user to close an application that is not responding. This will kill the application. -->
     <string name="force_close">OK</string>
 
-./frameworks/base/core/res/res/values-pt/strings.xml
+./frameworks/base/services/java/com/android/server/am/AppNotRespondingDialog.java:                    resid = com.android.internal.R.string.anr_activity_application;
+
 
 ###4.5 ANR 解决
 
