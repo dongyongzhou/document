@@ -243,9 +243,12 @@ Thread.UncaughtExceptionHandler：线程未捕获异常处理器，用来处理�
     <string name="aerr_process">Unfortunately, the process <xliff:g id="process">%1$s</xliff:g> has
         stopped.</string>
 
-    ./frameworks/base/services/java/com/android/server/am/AppErrorDialog.java:                    com.android.internal.R.string.aerr_application,
-    ./frameworks/base/services/java/com/android/server/am/ActivityManagerService.java:                        Dialog d = new AppErrorDialog(mContext, res, proc);
-    ./frameworks/base/services/java/com/android/server/am/ActivityManagerService.java:            if (res == AppErrorDialog.FORCE_QUIT_AND_REPORT) 
+
+
+./frameworks/base/services/java/com/android/server/am/AppErrorDialog.java:                    com.android.internal.R.string.aerr_application,
+
+./frameworks/base/services/java/com/android/server/am/ActivityManagerService.java:                        Dialog d = new AppErrorDialog(mContext, res, proc);
+./frameworks/base/services/java/com/android/server/am/ActivityManagerService.java:            if (res == AppErrorDialog.FORCE_QUIT_AND_REPORT) 
 
 
 ##4 ANR: Android Not Response
