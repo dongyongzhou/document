@@ -243,12 +243,65 @@ Thread.UncaughtExceptionHandler：线程未捕获异常处理器，用来处理�
     <string name="aerr_process">Unfortunately, the process <xliff:g id="process">%1$s</xliff:g> has
         stopped.</string>
 
+**错误提示显示**:
 
+    ./frameworks/base/services/java/com/android/server/am/AppErrorDialog.java:                    com.android.internal.R.string.aerr_application,
 
-./frameworks/base/services/java/com/android/server/am/AppErrorDialog.java:                    com.android.internal.R.string.aerr_application,
+**错误提示调用**:
 
-./frameworks/base/services/java/com/android/server/am/ActivityManagerService.java:                        Dialog d = new AppErrorDialog(mContext, res, proc);
-./frameworks/base/services/java/com/android/server/am/ActivityManagerService.java:            if (res == AppErrorDialog.FORCE_QUIT_AND_REPORT) 
+    ./frameworks/base/services/java/com/android/server/am/ActivityManagerService.java:            Dialog d = new AppErrorDialog(mContext, res, proc);
+    ./frameworks/base/services/java/com/android/server/am/ActivityManagerService.java:            if (res == AppErrorDialog.FORCE_QUIT_AND_REPORT) 
+
+调用机制：
+
+handleApplicationCrash->crashApplicationv->mHandler.sendMessage(SHOW_ERROR_MSG)
+
+     * Used by {@link com.android.internal.os.RuntimeInit} to report when an application crashes.
+
+处理对话框：
+ActivityManagerService. final Handler mHandler{
+
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+            case SHOW_ERROR_MSG: {
+                HashMap data = (HashMap) msg.obj;
+                synchronized (ActivityManagerService.this) {
+                    ProcessRecord proc = (ProcessRecord)data.get("app");
+                    if (proc != null && proc.crashDialog != null) {
+                        Slog.e(TAG, "App already has crash dialog: " + proc);
+                        return;
+                    }
+                    AppErrorResult res = (AppErrorResult) data.get("result");
+                    if (!mSleeping && !mShuttingDown) {
+                        Dialog d = new AppErrorDialog(mContext, res, proc);
+                        d.show();
+                        proc.crashDialog = d;
+                    } else {
+                        // The device is asleep, so just pretend that the user
+                        // saw a crash dialog and hit "force quit".
+                        res.set(0);
+                    }
+                }
+
+                ensureBootCompleted();
+            } break;
+
+更上一层
+
+    ./base/core/java/com/android/internal/os/RuntimeInit.java
+
+RuntimeInit.UncaughtHandler->handleApplicationCrash
+
+    private static class UncaughtHandler implements Thread.UncaughtExceptionHandler {
+                // Bring up crash dialog, wait for it to be dismissed
+                ActivityManagerNative.getDefault().handleApplicationCrash(
+                        mApplicationObject, new ApplicationErrorReport.CrashInfo(e));
+
+可见RuntimeInit也是继承UncaughtExceptionHandler接收处理未捕捉异常。通过实现 UncaughtExceptionHandler就可以达到目的。
+
+Use this to log a message when a thread exits due to an uncaught exception.  
+The framework catches these for the main threads, 
+so this should only matter for threads created by applications.
 
 
 ##4 ANR: Android Not Response

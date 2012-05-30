@@ -14,7 +14,7 @@ title: Operating System
 * [Linux procfs file system](procfs.html)
 * [Linux debugfs file system](debugfs.html)
 * [Linux Debug](debug.html)
-
+* [Linux Kernel Crash](linux-crash.html)
 ## Development
 
 ## Reference
