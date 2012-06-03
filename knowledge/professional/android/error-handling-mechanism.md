@@ -259,7 +259,8 @@ handleApplicationCrash->crashApplicationv->mHandler.sendMessage(SHOW_ERROR_MSG)
      * Used by {@link com.android.internal.os.RuntimeInit} to report when an application crashes.
 
 处理对话框：
-ActivityManagerService. final Handler mHandler{
+
+    ActivityManagerService. final Handler mHandler{
 
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -357,9 +358,19 @@ IntentReceiver执行时间的特殊限制意味着它应该做：在后台里做
 特别是游戏，在子线程里做移动的计算。
 - 如果你的应用程序有一个耗时的初始化过程的话，考虑可以显示一个Splash Screen或者快速显示主画面并异步来填充这些信息。在这两种情况下，你都应该显示正在进行的进度，以免用户认为应用程序被冻结了。
 
-###
-
 ##5 Trace
+
+/frameworks/base/services/java/com/android/server/am/ActivityManagerService.java
+
+setBroadcastTimeoutLocked->
+handleMessage:BROADCAST_TIMEOUT_MSG ->
+broadcastTimeoutLocked->appNotResponding->dumpStackTraces
+
+serviceTimeout->appNotResponding->dumpStackTraces
+
+ActivityStack
+handleMessage: PAUSE_TIMEOUT_MSG/LAUNCH_TICK_MSG
+logAppTooSlow->dumpStackTraces
 
 ./frameworks/base/services/java/com/android/server/am/DeviceMonitor.java
 
@@ -368,6 +379,54 @@ IntentReceiver执行时间的特殊限制意味着它应该做：在后台里做
 
 /data/anr/traces.txt
 
+
+##6 Tombstone
+
+    .frameworks/base/services/java/com/android/server/BootReceiver.java
+
+BootReceiver->
+onReceive->
+logBootEvents->
+
+        // Start watching for new tombstone files; will record them as they occur.
+        // This gets registered with the singleton file observer thread.
+        sTombstoneObserver = new FileObserver(TOMBSTONE_DIR.getPath(), FileObserver.CLOSE_WRITE) {
+            @Override
+            public void onEvent(int event, String path) {
+                try {
+                    String filename = new File(TOMBSTONE_DIR, path).getPath();
+                    addFileToDropBox(db, prefs, headers, filename, LOG_SIZE, "SYSTEM_TOMBSTONE");
+                } catch (IOException e) {
+                    Slog.e(TAG, "Can't log tombstone", e);
+                }
+            }
+        };
+
+##7 Android Framework Reboot
+
+    .frameworks/base/services/java/com/android/server/PowerManagerService.java:        mContext.enforceCallingOrSelfPermission(android.Manifest.permission.REBOOT, null);
+    .frameworks/base/services/java/com/android/server/PowerManagerService.java:        mContext.enforceCallingOrSelfPermission(android.Manifest.permission.REBOOT, null);
+    .frameworks/base/services/java/com/android/server/Watchdog.java:                android.Manifest.permission.REBOOT, null);
+
+.frameworks/base/services/java/com/android/server/PowerManagerService.java:
+
+
+
+###7.1 Watchdog
+
+    .frameworks/base/services/java/com/android/server/Watchdog.java
+
+Watchdog->
+init->
+RebootReceiver/RebootRequestReceiver->
+checkReboot->rebootSystem
+
+
+    void rebootSystem(String reason) {
+        Slog.i(TAG, "Rebooting system because: " + reason);
+        PowerManagerService pms = (PowerManagerService) ServiceManager.getService("power");
+        pms.reboot(reason);
+    }
 
 ActivityManager
 

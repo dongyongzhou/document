@@ -137,6 +137,13 @@ ApplicationThread中的scheduleLaunchActivity方法, 在这个里面主要是根
 An activity’s state is managed by the runtime’s ActivityManager
 
 
-Activity Manager Service
+## Activity Manager Service
+
+ActivityManagerService提供了一个ArrayList mHistory来管理所有的activity，activity在AMS中的形式是ActivityRecord，task在AMS中的形式为TaskRecord，进程在AMS中的管理形式为ProcessRecord。如下图所示
+
+![](http://hi.csdn.net/attachment/201112/25/0_1324812260QNUm.gif)
+
+A **task** is a collection of activities that users interact with when performing a certain job. The activities are arranged in a stack (the "back stack"), in the order in which each activity is opened.
 
 
+[Tasks and Back Stack](http://developer.android.com/guide/topics/fundamentals/tasks-and-back-stack.html)

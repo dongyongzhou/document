@@ -48,6 +48,7 @@ is captured from the context of a freshly booted kernel and not from the context
 crashed kernel. Kdump uses Kexec to boot into a second kernel whenever the system
 crashes. This second kernel, often called a crash or a capture kernel, boots with very
 little memory and captures the dump image.
+
 The first kernel reserves a section of memory that the second kernel uses to boot. Kexec
 enables booting the capture kernel without going through BIOS hence the contents of
 the first kernel’s memory are preserved, which is essentially the kernel crash dump.
