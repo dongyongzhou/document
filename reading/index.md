@@ -25,3 +25,12 @@ title: Reading
 * 《四喜忧国》 : 张大春
 * 《认得几个字》 : 张大春
 * [活法1](huofa-1.html)
+
+## 阅读经典
+
+* [荀子-劝学篇](xunzi-quanxue.html)
+
+##参考资料
+
+* [国学网](http://www.guoxue.com/)
+* [中国历史文化](http://www.uus8.com/China/)
