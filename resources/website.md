@@ -18,6 +18,10 @@ title: Website
 
 * [The Critical Thinking Community](http://www.criticalthinking.org//)
 
+## 开源资源
+ 
+* [opencores](http://opencores.org/)
+
 ## 公共服务
 
 * [中国铁道客户服务中心](http://www.12306.cn/mormhweb/)
