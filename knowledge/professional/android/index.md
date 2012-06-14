@@ -16,15 +16,17 @@ title: Android
 
 ### Android Application
 
-### Others
+### Android special subject
 
 * [Android Bootup Sequence](bootup.html)
+* [Android Signal mechanism](signal-mechanism.html)
 
-## Android Debug
+### Android Debugging Mechanism
 
 * [Logcat](logcat.html)
 * [Adb shell am](am.html)
 * [Android User Space Debugging](debugging.html)
+* [Android Trace File](trace-file.html)
 
 ## Android Development
 
@@ -39,3 +41,8 @@ title: Android
 * [Android Source Code Structure](android-code-structure.html)
 * [Android Source Code Building](android-code-building.html)
 
+## Refernece & Resource
+
+* [Android 源代码在线查看](http://source.android.com/source/downloading.html)
+* [Android Developers](http://developer.android.com/index.html)
+* [Android Open source project](http://source.android.com/index.html)

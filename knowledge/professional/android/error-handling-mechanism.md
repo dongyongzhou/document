@@ -23,7 +23,6 @@ REFERENCE
 
 * [深入探索 高效的Java异常处理框架](http://rq2-79.iteye.com/blog/1408331)
 
-
 ###3.1 Overview
 
 **异常**是指在程序中出现的异常状况.
@@ -360,6 +359,8 @@ IntentReceiver执行时间的特殊限制意味着它应该做：在后台里做
 
 ##5 Trace
 
+如何生成Trace呢？
+
 /frameworks/base/services/java/com/android/server/am/ActivityManagerService.java
 
 setBroadcastTimeoutLocked->
@@ -369,6 +370,7 @@ broadcastTimeoutLocked->appNotResponding->dumpStackTraces
 serviceTimeout->appNotResponding->dumpStackTraces
 
 ActivityStack
+
 handleMessage: PAUSE_TIMEOUT_MSG/LAUNCH_TICK_MSG
 logAppTooSlow->dumpStackTraces
 
@@ -377,7 +379,22 @@ logAppTooSlow->dumpStackTraces
     private static final File BASE = new File("/data/anr/");
 
 
+
 /data/anr/traces.txt
+
+
+###5.1 dumpStackTraces
+
+// First collect all of the stacks of the most important pids.
+
+// Next measure CPU usage.
+
+// sending signal 
+                        synchronized (observer) {
+                            Process.sendSignal(firstPids.get(i), Process.SIGNAL_QUIT);
+                            observer.wait(200);  // Wait for write-close, give up after 200msec
+                        }
+
 
 
 ##6 Tombstone

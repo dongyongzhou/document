@@ -65,6 +65,48 @@ Once the core processor sees the problem, the kernel sends a signal to the debug
     system/core/debuggerd.c 
     bionic/linker/debugger.c
 
+        if(WIFSTOPPED(status)){
+            n = WSTOPSIG(status);
+            switch(n) {
+            case SIGSTOP:
+                XLOG("stopped -- continuing\n");
+                n = ptrace(PTRACE_CONT, tid, 0, 0);
+                if(n) {
+                    LOG("ptrace failed: %s\n", strerror(errno));
+                    goto done;
+                }
+                continue;
+
+            case SIGABRT:
+                isAnr = true;
+            case SIGILL:
+            case SIGBUS:
+            case SIGFPE:
+            case SIGSEGV:
+            case SIGSTKFLT: {
+                XLOG("stopped -- fatal signal\n");
+                need_cleanup = engrave_tombstone(cr.pid, tid, debug_uid, n, isAnr);
+                kill(tid, SIGSTOP);
+                goto done;
+            }
+
+            default:
+                XLOG("stopped -- unexpected signal\n");
+                goto done;
+            }
+        } else {
+            XLOG("unexpected waitpid response\n");
+            goto done;
+        }
+
+SIGABRT
+SIGILL
+SIGBUS
+SIGFPE
+SIGSEGV
+SIGSTKFLT
+
+
 ### How
 
 The daemon generates a Tombstone Log (/data/tombstones/tombstone_xx) by getting a stack dump from each user process and the current CPU register value.
@@ -99,7 +141,6 @@ Every time there is a broadcast event, e.g., Wi-Fi on/off, GPS on/off, boot comp
 check the trace log to see the status of each thread in the process and try to find where it hangs.
 
     /data/anr/traces.txt
-
 
 ## Android Software Watchdog
 

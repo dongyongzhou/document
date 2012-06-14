@@ -91,6 +91,9 @@ Each signal type has a predefined default action, which is one of:
 - The process stops until restarted by a SIGCONT signal.
 - The process ignores the signal.
 
+***For SIGKILL and SIGSTOP the action is "always", not just "default".***
+
+
 **2.2.2.2 Installing Signal Handlers**
 
 The signal function modifies the default action associated with the receipt of signal signum:
@@ -159,3 +162,50 @@ Some other flavors of Unix can cause the read() call to fail with an EINTER erro
 
 Subtle differences like these complicate the writing of portable code that uses signals.
 
+## UNIX signal 集合
+
+    信号名字    BSD Linux Mac Solaris  默认动作    说明
+    SIGABRT    x     x   x     x     终止+core  异常终止(abort)
+    SIGALRM    x     x   x     x     终止       闹钟超时(alarm)
+    SIGBUS     x     x   x     x     终止+core  总线错误
+    SIGCANCEL                  x     忽略       线程库内部使用
+    SIGCHLD    x     x   x     x     忽略       子进程暂停或终止
+    SIGCONT    x     x   x     x     忽略       通知已暂停进程继续
+    SIGEMT     x     x   x     x     终止+core  来自PDP-11之(emulator trap)指令
+    SIGFPE     x     x   x     x     终止+core  算术异常
+    SIGFREEZE                  x     忽略       检查点冻结
+    SIGHUP     x     x   x     x     终止       拨号连接被挂断，通常由会话首进程接收
+    SIGILL     x     x   x     x     终止+core  非法硬件指令
+    SIGINFO    x         x           忽略       C-T产生
+    SIGINT     x     x   x     x     终止       DELETE或C-C产生
+    SIGIO      x     x   x     x     终止/忽略   异步I/O
+    SIGIOT     x     x   x     x     终止+core  PDP-11之指令，四个系统将其值定义为SIGABRT
+    SIGKILL    x     x   x     x     终止       **终止，无法忽略和捕捉**
+    SIGLWP                     x     忽略       线程库内部使用
+    SIGPIPE    x     x   x     x     终止       写管道或SOCK_STREAM时接收数据进程已经终止
+    SIGPOLL          x         x     终止       轮询事件，俩系统将其等同于SIGIO
+    SIGPROF    x     x   x     x     终止       setitimer设置的梗概统计间隔计时器到期
+    SIGPWR           x         x     终止/忽略   如果存在电池，则当电量低时警告
+    SIGQUIT    x     x   x     x     终止+core  C-\产生
+    SIGSEGV    x     x   x     x     终止+core  内存段访问异常
+    SIGSTKFLT        x               终止       协处理器故障，早期Linux定义信号
+    SIGSTOP    x     x   x     x     暂停       **暂停，无法忽略和捕捉**
+    SIGSYS     x     x   x     x     终止+core  无效系统调用
+    SIGTERM    x     x   x     x     终止       kill发送之默认终止信号
+    SIGTHAW                    x     忽略       检查点解冻
+    SIGTRAP    x     x   x     x     终止+core  PDP-11的TRAP指令
+    SIGTSTP    x     x   x     x     暂停       C-Z产生
+    SIGTTIN    x     x   x     x     暂停       后台读控制tty
+    SIGTTOU    x     x   x     x     暂停       后台写控制tty
+    SIGURG     x     x   x     x     忽略       紧急情况（套接字）
+    SIGUSR1    x     x   x     x     终止       用户定义信号
+    SIGUSR2    x     x   x     x     终止       用户定义信号
+    SIGVALRM   x     x   x     x     终止       虚拟时间闹钟（setitimer）
+    SIGWAITING                 x     忽略       线程库内部使用
+    SIGWINCH   x     x   x     x     忽略       终端窗口大小改变
+    SIGXCPU    x     x   x     x     终止+core  超过CPU资源限制（setrlimit）
+    SIGXFSZ    x     x   x     x     终止+core  超过文件长度限制（setrlimit）
+    SIGXRES                    x     忽略       超过资源限制
+
+
+![](http://hi.csdn.net/attachment/201111/21/0_1321885982nxIp.gif)
