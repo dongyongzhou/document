@@ -396,6 +396,7 @@ logAppTooSlow->dumpStackTraces
                         }
 
 
+/frameworks/base/core/java/android/os/Process.java:    public static final int SIGNAL_QUIT = 3;
 
 ##6 Tombstone
 

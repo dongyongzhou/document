@@ -60,6 +60,8 @@ Android也是Linux系统。所以其信号处理方式不会有本质的改变�
 
 ### SIGQUIT （ 整型值为 3）
 
+- SIGQUIT         3       Quit (POSIX). 退出           终止+core
+	
 没有遵循传统UNIX信号模型的默认行为 （终止 + core ）。
 
 Android Dalvik应用收到该信号后，**会打印改应用中所有线程的当前状态，并且并不是强制退出**。这些状态通常保存在一个特定的叫做trace的文件中。
