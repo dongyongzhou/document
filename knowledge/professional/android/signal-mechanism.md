@@ -52,6 +52,16 @@ To be continued...
 3. java 应用中使用 Procees.sendSignal()等
 4. adb shell kill -num pid
 
+### SIGQUIT （ 整型值为 3）
+
+详情见：
+[trace file](trace-file.html)
+
+
+### SIGILL, SIGABRT, SIGBUS, SIGFPE, SIGSEGV, SIGSTKFLT
+
+
+
 ## Android信号如何处理
 
 信号处理的行为是以进程级的。就是说不同的进程可以分别设置不同的信号处理方式而互不干扰。同一进程中的不同线程虽然可以设置不同的信号屏蔽字，但是却共享相同的信号处理方式 （也就是说 在一个线程里改变信号处理方式，将作用于该进程中的所有线程）。
@@ -111,6 +121,17 @@ Android Dalvik应用收到该信号后，**会打印改应用中所有线程的�
 ## android信号机制如何应用
 
 To be continued...
+
+
+例如 Crash the native process
+
+// For some reason, the JVM needs two of these to get the hint
+
+            Log.i(TAG, "Native crash pressed -- about to kill -11 self");
+            Process.sendSignal(Process.myPid(), 11);
+            Process.sendSignal(Process.myPid(), 11);
+            Log.i(TAG, "Finished kill -11, should be dead or dying");
+
 
 ## android信号定义
 

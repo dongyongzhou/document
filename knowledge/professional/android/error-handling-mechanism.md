@@ -208,11 +208,14 @@ throws关键字用于方法体外部的方法声明部分，用来声明方法�
 - StackOverflowError	栈溢出错误
 - NoClassDefFoundError	找不到指定的类错误
 
+
 ###3.6 to Android
 
 在发生语言级错误时，应该使用Java Exception机制管理Error。
 
 如果所有方法都层层上抛获取的异常，最终AndroidRuntime（DALVI）会进行处理，处理也很简单，就是打印异常消息和堆栈信息。如果抛出 的是Error或RuntimeException，则该方法的调用者可选择处理该异常。有关异常的转译会在下面说明。
+
+因为Android上的应用和服务都是Java的代码，它的Error和 Exception都是沿用Java的，比如Error有 AssertionError，VirtualMachineError，OutOfMemoryError和其他的Error类。Exception有 RuntimeException和IOException，
 
 **Question**
 

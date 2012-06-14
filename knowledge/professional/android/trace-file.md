@@ -222,9 +222,10 @@ dvm对三个信号分别所做的特殊用途：
 
 1. SIGUSR1 被用来做手工垃圾收集。处理函数是 HandleSigUsr1()
 
-    /*
-     * Respond to a SIGUSR1 by forcing a GC.
-     */
+/*
+* Respond to a SIGUSR1 by forcing a GC.
+*/
+
     static void handleSigUsr1()
     {
         LOGI("SIGUSR1 forcing GC (no HPROF)");
@@ -232,19 +233,23 @@ dvm对三个信号分别所做的特殊用途：
     }
 
 2. SIGUSR2 被用来做 JIT的调试。如果JIT下编译时打开，收到SIGUSR2时dvm会dump出相关的调试信息。
- 
-   
+
      #if defined(WITH_JIT) && defined(WITH_JIT_TUNING)
-    /* Sample callback function for dvmJitScanAllClassPointers */
+
+/* Sample callback function for dvmJitScanAllClassPointers */
+ 
     void printAllClass(void *ptr)
     {
         ClassObject **classPP = (ClassObject **) ptr;
         LOGE("class %s", (*classPP)->descriptor);
     }
-    /*
-     * Respond to a SIGUSR2 by dumping some JIT stats and possibly resetting
-     * the code cache.
-     */
+
+
+/*
+* Respond to a SIGUSR2 by dumping some JIT stats and possibly resetting
+* the code cache.
+*/
+
     static void handleSigUsr2()
     {
         static int codeCacheResetCount = 0;
@@ -262,7 +267,7 @@ dvm对三个信号分别所做的特殊用途：
         }
         dvmCheckInterpStateConsistency();
     }
-     #endif
+    #endif
 
 SIGUSR1、SIGUSR2两个信号都仅用于DVM的内部实现的调试。可以在终端通过adb发送SIGUSR1和SIGUSR2信号来观察它的行为。
 
