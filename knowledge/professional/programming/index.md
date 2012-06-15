@@ -9,6 +9,7 @@ title: Programming Language
 * [Rails](ror/rails.html)
 * [Rails View](ror/rails-view.html)
 * [User Authentication](ror/user-authentication.html)
+* [Rails Email Services](ror/email-service.html)
 * [Problems](ror/ror-problem.html)
 
 ## C
