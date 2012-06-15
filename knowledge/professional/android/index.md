@@ -18,7 +18,7 @@ title: Android
 
 ### Android special subject
 
-* [Android Bootup Sequence](bootup.html)
+* [Android Startup Sequence](startup.html)
 * [Android Signal mechanism](signal-mechanism.html)
 
 ### Android Debugging Mechanism
