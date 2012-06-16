@@ -9,6 +9,9 @@ title: Android
 
 ### Android User-Space Native
 
+* [Dalvik](dalvik.html)
+
+
 ### Android Application Framework
 
 * [Activity](activity.html)

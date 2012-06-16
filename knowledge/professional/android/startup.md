@@ -201,12 +201,191 @@ GPS, radio, bluetooth, NFC, lights
 
 ## Zygote启动
 
-To be continued...
+###1. Zygote starts from /init.rc
+
+    service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server
+        class main
+        socket zygote stream 666
+        onrestart write /sys/android_power/request_state wake
+        onrestart write /sys/power/state on
+        onrestart restart media
+        onrestart restart netd
+
+###2. This translates to frameworks/base/cmds/app_process/app_main.cpp:main()
+###3. The command app_process then launches frameworks/base/core/java/com/android/internal/os/ZygoteInit.java in a Dalvik VM via frameworks/base/core/jni/AndroidRuntime.cpp:start()
+即是使用Dalvik启动system server
+
+    int main(int argc, const char* const argv[])
+
+        } else if (strcmp(arg, "--start-system-server") == 0) {
+            startSystemServer = true;
+
+    if (zygote) {
+        runtime.start("com.android.internal.os.ZygoteInit",
+                startSystemServer ? "start-system-server" : "");
+
+
+![DVM实例启动的全过程](http://hi.csdn.net/attachment/201203/17/0_1331996781qLjc.gif)
+
+###4. ZygoteInit.main() then
+
+1. Registers for zygote socket
+2. Pre-loads classes defined in frameworks/base/preloaded-classes (1800+)
+3. Pre-loads resources preloaded_drawables and preloaded_color_state_lists from frameworks/base/core/
+4. Runs garbage collector (to clean the memory as much as possible)
+5. Forks itself to **start systemserver**，先是启动Dalvik Virtual Machine
+6. Starts listening for requests to fork itself for other apps
+
 
 ## System Server启动
 
-To be continued...
+###1. When Zygote forks itself to launch the systemserver process
 
+    frameworks/base/core/java/com/android/internal/os/ZygoteInit.java:startSystemServer()
+    public static void main(String argv[]) {
+            if (argv[1].equals("start-system-server")) {
+                startSystemServer();
+            } 
+
+    private static boolean startSystemServer()
+
+        /* Hardcoded command line to start the system server */
+        String args[] = {
+            "--setuid=1000",
+            "--setgid=1000",
+            "--setgroups=1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1018,1021,3001,3002,3003,3006,3007,3008",
+            "--capabilities=130104352,130104352",
+            "--runtime-init",
+            "--nice-name=system_server",
+            "com.android.server.SystemServer",
+
+
+            /* Request to fork the system server process */
+            pid = Zygote.forkSystemServer(
+                    parsedArgs.uid, parsedArgs.gid,
+                    parsedArgs.gids,
+                    parsedArgs.debugFlags,
+                    null,
+                    parsedArgs.permittedCapabilities,
+                    parsedArgs.effectiveCapabilities);
+
+it executes 
+
+    frameworks/base/services/java/com/android/server/SystemServer.java:main()
+
+###2. The SystemServer:java.main() method loads android_servers JNI lib from *frameworks/base/services/jni* and invokes *init1()* native method
+
+    public static void main(String[] args) {
+
+        System.loadLibrary("android_servers");
+        init1(args);
+
+
+    /**
+     * This method is called from Zygote to initialize the system. This will cause the native
+     * services (SurfaceFlinger, AudioFlinger, etc..) to be started. After that it will call back
+     * up into init2() to start the Android services.
+     */
+
+    native public static void init1(String[] args);
+
+###3. Before init1() runs, the JNI loader first runs 
+
+    frameworks/base/services/jni/onload.cpp:JNI_OnLoad(),
+
+ which registers native services - to be used as JNI counterparts to Java-based service manager loaded later
+
+###4. Now frameworks/base/services/jni/com_android_server_SystemServer.cpp:init1() is
+invoked, which simply wraps a call to frameworks/base/cmds/system_server/library/system_init.cpp:system_5. The system_init.cpp:system_init() function
+
+frameworks/base/services/jni/com_android_server_SystemServer.cpp:init1()
+
+    static JNINativeMethod gMethods[] = {
+    /* name, signature, funcPtr */
+    { "init1", "([Ljava/lang/String;)V", (void*) android_server_SystemServer_init1 },
+    };
+
+    static void android_server_SystemServer_init1(JNIEnv* env, jobject clazz)
+    {
+        system_init();
+    }
+
+frameworks/base/cmds/system_server/library/system_init.cpp:system_5
+
+a. First starts native services (some optionally):
+
+- i. frameworks/base/services/surfaceflinger/SurfaceFlinger.cpp
+- ii. frameworks/base/services/sensorservice/SensorService.cpp
+- iii. frameworks/base/services/audioflinger/AudioFlinger.cpp
+- iv. frameworks/base/media/libmediaplayerservice/MediaPlayerService.cpp
+- v. frameworks/base/camera/libcameraservice/CameraService.cpp
+- vi. frameworks/base/services/audioflinger/AudioPolicyService.cpp
+
+b. Then goes back to frameworks/base/services/java/com/android/server/SystemServer.java:init2(),
+again via frameworks/base/core/jni/AndroidRuntime.cpp:start() JNI call
+
+    jclass clazz = env->FindClass("com/android/server/SystemServer");
+    if (clazz == NULL) {
+        return UNKNOWN_ERROR;
+    }
+
+    jmethodID methodId = env->GetStaticMethodID(clazz, "init2", "()V");
+    if (methodId == NULL) {
+        return UNKNOWN_ERROR;
+    }
+    env->CallStaticVoidMethod(clazz, methodId);
+
+
+###6. The SystemServer.java:init2() method then starts Java service managers in **a separate thread (ServerThread)**, readies them, and registers each one with 
+
+frameworks/base/services/java/com/android/server/SystemServer.java
+
+    public static final void init2() {
+        Slog.i(TAG, "Entered the Android system server!");
+        Thread thr = new ServerThread();
+        thr.setName("android.server.ServerThread");
+        thr.start();
+    }
+
+    class ServerThread extends Thread {
+    private static final String TAG = "SystemServer";
+    private static final String ENCRYPTING_STATE = "trigger_restart_min_framework";
+    private static final String ENCRYPTED_STATE = "1";
+
+    ContentResolver mContentResolver;
+
+    void reportWtf(String msg, Throwable e) {
+        Slog.w(TAG, "***********************************************");
+        Log.wtf(TAG, "BOOT FAILURE " + msg, e);
+    }
+
+    @Override
+    public void run() {
+            ....
+            Slog.i(TAG, "Power Manager");
+            power = new PowerManagerService();
+            ServiceManager.addService(Context.POWER_SERVICE, power);
+           ....
+     
+    frameworks/base/core/java/android/os/ServiceManager:addService()
+
+(which in turn delegates to to ServiceManagerNative.java, which effectively talks to servicemanager daemon previously started by init)
+
+- a. frameworks/base/services/java/com/android/server/PowerManagerService.java
+- b. frameworks/base/services/java/com/android/server/am/ActivityManagerService.java
+- c. frameworks/base/services/java/com/android/server/TelephonyRegistry.java
+- d. frameworks/base/services/java/com/android/server/PackageManagerService.java
+- e. frameworks/base/services/java/com/android/server/BatteryService.java
+- f. frameworks/base/services/java/com/android/server/VibratorService.java
+- g. etc
+
+###7. Finally frameworks/base/services/java/com/android/server/am/ActivityManagerService.java:finishBooting() sets sys.boot_completed=1 and sends out
+
+- a. a broadcast intent with **android.intent.action.PRE_BOOT_COMPLETED** action (to give apps a
+chance to reach to boot upgrades)
+- b. an activity intent with **android.intent.category.HOME** category to launch the Home (or Launcher)
+application
+- c. a broadcast intent with **android.intent.action.BOOT_COMPLETED** action, which launches applications subscribed to this intent (while using android.permission.RECEIVE_BOOT_COMPLETED)
 
 ## Reference
 
