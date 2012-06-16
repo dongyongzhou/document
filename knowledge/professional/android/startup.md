@@ -217,9 +217,9 @@ servicemanager代码在
 	system\core\libsysutils\src
 
 
-    ServiceManager的启动为什么要在Service启动之前呢？
+**ServiceManager的启动要在Service启动之前**
 
-    因为在C/S模式中，他会作为S（服务端）要运行着，为的是让之后启动的Service调用他的addService（）函数来注册。ServiceManager跟Service之间的通信是基于Binder的IPC机制
+因为在C/S模式中，他会作为S（服务端）要运行着，为的是让之后启动的Service调用他的addService（）函数来注册。ServiceManager跟Service之间的通信是基于Binder的IPC机制
 
 frameworks/base/core/java/android/os/ServiceManager.java
 
