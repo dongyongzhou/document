@@ -76,15 +76,127 @@ Interrupt Controllers (PIC)
 
 ## Android init启动
 
-To be continued...
+### Source code
 
-init的源文件多放在system/core/init下
+- init的源文件多放在system/core/init下
+- init.rc放在system/core/rootdir/init.rc下
+- 不同平台（device）的init.rc放在device/下
 
-init.rc放在system/core/rootdir/init.rc下。
+### Overview
 
-不同平台（device）的init.rc放在device/下。
+- 所有其他进程的祖先都是/init(PID=1)
+- Custom initialization script (with its own language)， Different than more traditional /etc/inittab and SysV-init-levels initialization options
+- The init program never exists (if it were, the kernel would panic), so it continues to monitor started services
 
 ### init分析
+
+When started by the kernel, init parses and executes commands from two files:
+
+- /init.rc - provides generic initialization instructions (see system/core/rootdir/init.rc)
+- /init.board-name.rc - provides machine-specific initialization instructions - sometimes overriding /init.rc
+
+    /init.goldfish.rc for the emulator
+    /init.trout.rc for HTC’s ADP1
+    /init.herring.rc for Samsung’s Nexus S (see device/samsung/crespo/init.herring.rc)
+
+### init’s language
+
+The init’s language consists of four broad classes of statements (see system/core/init/readme.txt)
+
+#### **Actions** - named sequences of commands queued to be executed on a unique trigger
+
+    `on <trigger>
+     <command>
+     <command>
+     <command>`
+
+#### **Triggers** - named events that trigger actions
+
+* `early-init, init, early-fs, fs, post-fs, early-boot, boot` - built-in stages of init
+* `<name>=<value>` - fires when a system property is set to `<name>=<value>`
+* `device-added-<path>` - fires when a device node at `<path>` is added
+* `device-removed-<path>` - fires when a device node at `<path>` is removed
+* `service-exited-<name>` - fires when a service by `<name>` exists
+
+#### **Commands** - a command to be queued and run
+
+* chdir `<directory>` - change working directory
+* chmod `<octal-mode> <path>` - change file access permissions
+* chown `<owner> <group> <path>` - change file user and group ownership
+* chroot `<directory>` - change process root directory
+* class_start `<serviceclass>` - start all non-running services of the specified class
+* class_stop `<serviceclass>` - stop all running services of the specified class
+* domainname `<name>` - set the domain name.
+* exec `<path> [ <argument> ]*` - fork and execute `<path> <argument> ... (blocks init until
+exec returns)`
+* export `<name> <value>` - set globally visible environment variable `<name> =<value>`
+* `hostname <name>` - set the host name
+* `ifup <interface>` - bring the network interface <interface> online
+* `import <filename>` - parse and process <filename> init configuration file (extends the current script)
+* `insmod <path> `- install the kernel module at `<path>`
+* `loglevel <level>` - initialize the logger to `<level>`
+* `mkdir <path> [mode] [owner] [group]` - create a directory at `<path> `and optionally change its default permissions `(755) and user (root) / group (root) `ownership
+* `mount <type> <device> <dir> [ <mountoption> ]*` - attempt to mount named <device> at
+`<dir> `with the optional `<mountoption>`s
+* `setprop <name> <value> - set system property <name>=<value>`
+* `setrlimit <resource> <cur> <max> - set the rlimit for a <resource>`
+* `start <service> - start named <service> if it is not already running`
+* `stop <service> - stop name <service> if it is currently running`
+* `symlink <target> <path> - symbolically link <path> to <target>`
+* `sysclktz <mins_west_of_gmt> - set the system clock base (0 for GMT)`
+* `trigger <event> - trigger an event - i.e. call one action from another`
+* `write <path> <string> [ <string> ]* - write arbitrary <string>`s to file by specified
+`<path>`
+
+#### Services - persistent daemon programs to be launched (optionally) restarted if they exit
+
+    `service <name> <pathname> [ <argument> ]*
+    <option>
+    <option>
+    ...`
+
+#### Options - modifiers to services, modifying how/when they are run re/launched
+
+* critical - a device-critical service - devices goes into recovery if the service exits more than 4 times in 4 minutes
+* disabled - not started by default - i.e. it has to be started explicitly by name
+* `setenv <name> <value> - set the environment variable <name>=<value> in the service`
+* `socket <name> <dgram|stream|seqpacket> <perm> [ <user> [ <group> ] ] - create a unix
+domain socket named /dev/socket/<name> and pass its fd to the service`
+* `user <username> - change service’s effective user ID to <username>`
+* `group <groupname> [ <groupname> ]* - change service’s effective group ID to <groupname> (additional groups are supplemented via setgroups())`
+* oneshot - ignore service exist (default is to auto-restart)
+* `class <name> - set the class name of the service (defaults to default) so that all services of a particular class can be started/stopped together`
+* onrestart - execute a command on restart
+
+
+### init启动分析
+
+
+### The default init.rc script
+
+1. Starts ueventd
+2. Initializes the system clock and logger
+3. Sets up global environment
+4. Sets up the file system (mount points and symbolic links)
+5. Configures kernel timeouts and scheduler
+6. Configures process groups
+7. Mounts the file systems
+8. Creates a basic directory structure on /data and applies permissions
+9. Applies permissions on /cache
+10. Applies permissions on certain /proc points
+11. Initializes local network (i.e. localhost)
+12. Configures the parameters for the low memory killer
+13. Applies permissions for systemserver and daemons
+14. Defines TCP buffer sizes for various networks
+15. Configures and (optionally) loads various daemons (i.e. services): ueventd, console, adbd, servicemanager, vold, netd, debuggerd, rild, **zygote (which in turn starts system_server)**, mediaserver, bootanimation(one time), and various Bluetooth daemons (like dbus-daemon, bluetoothd, etc.), installd, racoon, mtpd, keystore
+
+### Nexus S’ init.herring.rc additionally
+
+1. Sets up product info
+2. Initializes device-driver-specific info, file system structures, and permissions: battery, wifi, phone, uart_switch,
+GPS, radio, bluetooth, NFC, lights
+3. Initializes and (re)mounts file systems
+4. Loads additional device-specific daemons
 
 
 ## Zygote启动

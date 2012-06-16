@@ -248,6 +248,5 @@ Watchdog本身继承Thread，是一个线程类。此为WatchDog初始化。
 - 在剩下的30s内，做一些收尾工作，如重新初始化trace file。最后直接将SystemServer进程kill，并且退出系统。Init进程会重新启动SystemServer进程，让其回到可用状态。
 
 
-## Source Code List
-
+## The End
 
