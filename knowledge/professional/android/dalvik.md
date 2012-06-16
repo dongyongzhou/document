@@ -64,6 +64,11 @@ JSON parser (org.json), XML SAX parser (org.xml.sax), XML Pull Parser (org.xmlpu
 
     * ~ 1:8 ratio of Dalvik to native code (mostly due to optimizations, like inlining)
 
+### Source code
+
+* [android.googlesource.com/platform/dalvik.git](https://android.googlesource.com/platform/dalvik.git)
+* [GITHUB android / platform_dalvik](https://github.com/android/platform_dalvik/tree/master/vm)
+
 ## Dalvik Startup
 
 ### Overview
@@ -216,7 +221,7 @@ start启动的类"com.android.internal.os.ZygoteInit"
 ## abbreviations
 
 - JIT:  Just-In-Time，运行时编译执行的技术， Java语言即采用该技术
-- JNI:　Java Native Interface
+- JNI:　Java Native Interface. 它是提供java跟native层实现交互的一个机制！native层都是C/C++实现的，java不能直接调用。所以就要用到JNI。
 
 ## Reference
 

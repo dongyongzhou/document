@@ -188,7 +188,8 @@ domain socket named /dev/socket/<name> and pass its fd to the service`
 12. Configures the parameters for the low memory killer
 13. Applies permissions for systemserver and daemons
 14. Defines TCP buffer sizes for various networks
-15. Configures and (optionally) loads various daemons (i.e. services): ueventd, console, adbd, servicemanager, vold, netd, debuggerd, rild, **zygote (which in turn starts system_server)**, mediaserver, bootanimation(one time), and various Bluetooth daemons (like dbus-daemon, bluetoothd, etc.), installd, racoon, mtpd, keystore
+15. Configures and (optionally) loads various daemons (i.e. services): ueventd, console, adbd, **servicemanager**, vold, netd, debuggerd, rild, **zygote (which in turn starts system_server)**, mediaserver, bootanimation(one time), and various Bluetooth daemons (like dbus-daemon, bluetoothd, etc.), installd, racoon, mtpd, keystore
+
 
 ### Nexus S’ init.herring.rc additionally
 
@@ -198,6 +199,35 @@ GPS, radio, bluetooth, NFC, lights
 3. Initializes and (re)mounts file systems
 4. Loads additional device-specific daemons
 
+### ServiceManager启动
+
+
+    service servicemanager /system/bin/servicemanager
+    class core
+    user system
+    group system
+    critical
+    onrestart restart zygote
+    onrestart restart media
+    onrestart restart surfaceflinger
+    onrestart restart drm
+
+servicemanager代码在
+
+	system\core\libsysutils\src
+
+
+    ServiceManager的启动为什么要在Service启动之前呢？
+
+    因为在C/S模式中，他会作为S（服务端）要运行着，为的是让之后启动的Service调用他的addService（）函数来注册。ServiceManager跟Service之间的通信是基于Binder的IPC机制
+
+frameworks/base/core/java/android/os/ServiceManager.java
+
+里面的几个函数：
+
+- addservice():用来给service注册用的，
+- checkservice():一般主要给应用程序来寻找所需要用到的service的Binder的，
+- getservice():用来提供service的IBinder实例的。
 
 ## Zygote启动
 
