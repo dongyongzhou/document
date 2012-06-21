@@ -6,6 +6,9 @@ title: Operating System
 ## Knowledge Hierarchy
 
 * [Operating System Concept](os-concept.html)
+
+## Linux
+
 * [Understanding Linux Kernel](linux.html)
 
 ## Special Subject
@@ -25,7 +28,6 @@ title: Operating System
 ### Course
 
 * [6.828: Operating System Engineering](http://pdos.csail.mit.edu/6.828/2011/)
-
 * [Operating Systems and Systems Programming](http://www-inst.eecs.berkeley.edu/~cs162/sp12/)
 
 ### Books

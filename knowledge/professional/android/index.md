@@ -5,24 +5,36 @@ title: Android
 
 ## Android Research
 
+* [Android Architecture(to be continued...)](android-architecture.html)
+
 ### Android Linux Kernel
+
+* [Android Linux Kernel Overview(to be continued...)](android-linux-kernel.html)
 
 ### Android User-Space Native
 
+* [Android user-space Native Overview(to be continued...)](android-native.html)
 * [Dalvik](dalvik.html)
-
 
 ### Android Application Framework
 
+* [Android application framework Overview(to be continued...)](android-native.html)
 * [Activity](activity.html)
 * [Android Error Handling Mechanism](error-handling-mechanism.html)
 
 ### Android Application
 
+* [Android application Overview(to be continued...)](android-application.html)
+* [Android application startup sequence(to be continued...)](android-application-startup.html)
+
 ### Android special subject
 
 * [Android Startup Sequence](startup.html)
 * [Android Signal mechanism](signal-mechanism.html)
+
+### Android Security Mechanism
+
+* [Android Rooting principle(to be continued...)](android-rooting.html)
 
 ### Android Debugging Mechanism
 
