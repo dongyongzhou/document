@@ -10,6 +10,7 @@ title: Operating System
 ## Linux
 
 * [Understanding Linux Kernel](linux.html)
+* [Linux memory management](Linux-memory-management.html)
 
 ## Special Subject
 
