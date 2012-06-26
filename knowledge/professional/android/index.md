@@ -31,6 +31,7 @@ title: Android
 
 * [Android Startup Sequence](startup.html)
 * [Android Signal mechanism](signal-mechanism.html)
+* [Android Reboot](android-reboot.html)
 
 ### Android Security Mechanism
 

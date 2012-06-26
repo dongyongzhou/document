@@ -170,7 +170,7 @@ __linker_init()  (bionic/linker/linker.c) -> debugger_init() (bionic/linker/debu
 ### 内容
 
  *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-    Build fingerprint: 'qcom/msm7627a/msm7627a:4.0.4/IMM76I/eng.yaoyongl.20120604.020144:eng/debug,test-keys'
+    Build fingerprint: 'xxx'
     pid: 1373, tid: 1373  >>> com.android.development <<<
     signal 11 (SIGSEGV), code 0 (?), fault addr 0000055d
      r0 00000000  r1 0000000b  r2 0000055d  r3 0000000b
