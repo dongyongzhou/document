@@ -16,6 +16,9 @@ title: Ruby
 
 ## Ruby 
 
+* [File Operation](ruby-file-operation.html)
+* [String Operation](ruby-string-operation.html)
+
 ### Ruby 变量
 
 Ruby属于动态类型。
@@ -62,4 +65,4 @@ $开头：全局变量（Global variable）。
 
   作用域：常量可以定义在类里,但不像实变量,它们可以在类的外部访问.
 
-### 4. End 
+## End 
