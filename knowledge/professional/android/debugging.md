@@ -3,13 +3,26 @@ layout: master
 title: Android User Space Debugging
 ---
 
-## Content
+## Overview
 
+## Android User Space Errors
+
+### Non – Framework Errors
+
+- Application Not Responding (ANR)
 - Java Exception
-- Dalvik VM Crash (Tombstone Log)
-- ANR
+- Native Crash/Dalvik VM Crash (Tombstone Log)
+- Abnormal Binder Threads
+- High CPU Utilization
 
-## Methods
+### Framework Reboot
+
+- Android Watchdog fires
+- Fatal Exception in System Process
+- Native Crash in System Process
+- Excessive JNI References
+
+## Methods of Collecting Logs
 
 - ADB
 - Tomstone (similar to dmesg from Android framework point of view)
