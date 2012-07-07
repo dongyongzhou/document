@@ -9,6 +9,25 @@ title: Android Activity
 
 ## Activity Lifecycle
 
+## Activity and Threads
+
+### Android APK应用程序有哪些线程呢？
+
+至少包含三个线程
+
+- Binder Thread： ViewRoot.W
+- Binder Thread： ApplicationThread对象。
+
+两者都负责接收Linux Binder驱动发送的IPC调用
+
+- UI Thread，处理用户消息，绘制界面
+
+
+### Android应用自定义tread and UI thread区别
+
+- UI Thread从ActivityThread运行的，已添加Looper对象，即已经为该线程创建了消息队列。可以Activity中定义handler对象，可以接受发送的消息。
+- 自定义tread：是一个祼线程，不能直接在Thread中定义Handler对象，即不能给Thread对象发消息。
+
 ## Activity class view
 
 ![Activity 类图](http://hi.csdn.net/attachment/201106/27/62017_1309154560MBjJ.png)

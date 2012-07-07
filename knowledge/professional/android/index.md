@@ -18,7 +18,7 @@ title: Android
 
 ### Android Application Framework
 
-* [Android application framework Overview(to be continued...)](android-native.html)
+* [Android application framework Overview](android-framework-overview.html)
 * [Activity](activity.html)
 * [Android Error Handling Mechanism](error-handling-mechanism.html)
 
@@ -36,6 +36,23 @@ title: Android
 ### Android Security Mechanism
 
 * [Android Rooting principle(to be continued...)](android-rooting.html)
+
+### Android Error Handling Mechanism
+
+#### Non – Framework Errors
+
+* [Application Not Responding (ANR)](anr.html)
+* [Java Exception
+* [Native Crash/Dalvik VM Crash (Tombstone Log)
+* [Abnormal Binder Threads
+* [High CPU Utilization
+
+#### Framework Reboot
+
+* [Android Watchdog fires
+* [Fatal Exception in System Process
+* [Native Crash in System Process
+* [Excessive JNI References
 
 ### Android Debugging Mechanism
 
