@@ -97,6 +97,17 @@ You may also be interested in testing the Next Generation of WebScarab.
 [Adam Judson: "Tamper Data" for Firefox -](https://addons.mozilla.org/en-US/firefox/addon/966) 
 
 
-## how to set **Secure** Attribute
+## how to set **Secure** Attribute for ROR
+
+config/initializers/session_store.rb
+
+       X::Application.config.session_store :cookie_store, :key => '_xx_session', **:secure => 'true'**
+
+
+testing
+
+     Cache-Control: max-age=0, private, must-revalidate
+     Set-Cookie: _graveyard_session=BAh7CCIQX2NzcmZfdG9rZW4iMVU5Q3hRS2VSUXdPK2szZVEwYWhHMWU2N0dzOUJpZGJqNS9pNGY0TEhEUUk9Ig9zZXNzaW9uX2lkIiU5ZjY4OTM2Y2Q4MGE5ODg0NTkxODI5MzY2NTE2YzY5NyIMdXNlcl9pZCINZG9uZ3lvbmc%3D--8044df0cded48531a9b21f2fcb7e95d81aba39a9; path=/;** secure;** HttpOnly
+
 
 
