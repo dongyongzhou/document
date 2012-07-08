@@ -69,11 +69,63 @@ frameworks/base/services/java/com/android/server/am/ActivityManagerService.java
 
 ### 超时检测
 
-#### WindowManager
+#### 在5秒内没有响应输入的事件（例如，按键按下，屏幕触摸） 
+
+**./base/services/input/InputDispatcher.cpp**
+
+bool InputDispatcherThread::threadLoop() {
+
+void InputDispatcher::dispatchOnce() {
+
+void InputDispatcher::dispatchOnceInnerLocked(nsecs_t* nextWakeupTime) {
+
+bool InputDispatcher::dispatchKeyLocked(nsecs_t currentTime, KeyEntry* entry,
+
+findFocusedWindowTargetsLocked->
+
+    // If there is no currently focused window and no focused application
+    // If the currently focused window is paused then keep waiting.
+    // If the currently focused window is still working on previous events then keep waiting.
+
+int32_t InputDispatcher::handleTargetsNotReadyLocked(nsecs_t currentTime,
+
+    if (currentTime >= mInputTargetWaitTimeoutTime) {
+        onANRLocked(currentTime, applicationHandle, windowHandle,
+                entry->eventTime, mInputTargetWaitStartTime);
 
 
+onANRLocked->
 
-./base/services/java/com/android/server/wm/InputMonitor.java:                    Slog.i(WindowManagerService.TAG, "Input event dispatching timed out sending to "
+
+    void InputDispatcher::doNotifyANRLockedInterruptible(
+        CommandEntry* commandEntry) {
+    mLock.unlock();
+
+    nsecs_t newTimeout = mPolicy->notifyANR(
+            commandEntry->inputApplicationHandle, commandEntry->inputWindowHandle);
+
+    mLock.lock();
+
+    resumeAfterTargetsNotReadyTimeoutLocked(newTimeout,
+            commandEntry->inputWindowHandle != NULL
+                    ? commandEntry->inputWindowHandle->getInputChannel() : NULL);
+    }
+
+**./base/services/java/com/android/server/wm/InputManager.java**
+
+   /*
+     * Callbacks from native.
+     */
+    private final class Callbacks {
+
+        @SuppressWarnings("unused")
+        public long notifyANR(InputApplicationHandle inputApplicationHandle,
+                InputWindowHandle inputWindowHandle) {
+            return mWindowManagerService.mInputMonitor.notifyANR(
+                    inputApplicationHandle, inputWindowHandle);
+        }
+
+**./base/services/java/com/android/server/wm/InputMonitor.java**
 
     /* Notifies the window manager about an application that is not responding.
      * Returns a new timeout to continue waiting in nanoseconds, or 0 to abort dispatch.
@@ -82,30 +134,99 @@ frameworks/base/services/java/com/android/server/am/ActivityManagerService.java
      */
     public long notifyANR(InputApplicationHandle inputApplicationHandle,
 
-
-
-
-
-./base/services/java/com/android/server/am/ActivityRecord.java:    public boolean keyDispatchingTimedOut() {
-./base/services/java/com/android/server/am/ActivityRecord.java:                    info.putString("shortMsg", "keyDispatchingTimedOut");
-./base/services/java/com/android/server/am/ActivityRecord.java:                    "keyDispatchingTimedOut");
-
-
-
-    /** Returns the key dispatching timeout for this application token. */
-    public long getKeyDispatchingTimeout() {
-        synchronized(service) {
-            ActivityRecord r = getWaitingHistoryRecordLocked();
-            if (r != null && r.app != null
-                    && (r.app.instrumentationClass != null || r.app.usingWrapper)) {
-                return ActivityManagerService.INSTRUMENTATION_KEY_DISPATCHING_TIMEOUT;
+                    Slog.i(WindowManagerService.TAG, "Input event dispatching timed out sending to "
+        if (appWindowToken != null && appWindowToken.appToken != null) {
+            try {
+                // Notify the activity manager about the timeout and let it decide whether
+                // to abort dispatching or keep waiting.
+                boolean abort = appWindowToken.appToken.keyDispatchingTimedOut();
+                if (! abort) {
+                    // The activity manager declined to abort dispatching.
+                    // Wait a bit longer and timeout again later.
+                    return appWindowToken.inputDispatchingTimeoutNanos;
+                }
+            } catch (RemoteException ex) {
             }
-
-            return ActivityManagerService.KEY_DISPATCHING_TIMEOUT;
         }
-    }
+        return 0; // abort dispatching
+
+
+**./base/services/java/com/android/server/am/ActivityRecord.java**
+
+    public boolean keyDispatchingTimedOut() {
+
+        if (anrApp != null) {
+            service.appNotResponding(anrApp, r, this,
+                    "keyDispatchingTimedOut");
+        }
+
+
+**frameworks/base/services/java/com/android/server/am/ActivityManagerService.java**
+
+    final void appNotResponding(ProcessRecord app, ActivityRecord activity,
+
+        File tracesFile = dumpStackTraces(true, firstPids, processStats, lastPids);
+
+
+#### BroadcastReceiver在10秒内没有执行完毕
+
+/frameworks/base/services/java/com/android/server/am/ActivityManagerService.java
+
+AmS: setBroadcastTimeoutLocked-> handleMessage:BROADCAST_TIMEOUT_MSG -> broadcastTimeoutLocked->appNotResponding->dumpStackTraces
 
 ### 超时处理
+
+appNotResponding中
+
+#### 1 dumpStackTraces
+
+File tracesFile = dumpStackTraces(true, firstPids, processStats, lastPids);
+ 
+    final void appNotResponding(ProcessRecord app, ActivityRecord activity,
+
+
+    /**
+     * If a stack trace dump file is configured, dump process stack traces.
+     * @param clearTraces causes the dump file to be erased prior to the new
+     *    traces being written, if true; when false, the new traces will be
+     *    appended to any existing file content.
+     * @param firstPids of dalvik VM processes to dump stack traces for first
+     * @param lastPids of dalvik VM processes to dump stack traces for last
+     * @return file containing stack traces, or null if no dump file is configured
+    public static File dumpStackTraces(boolean clearTraces, ArrayList<Integer> firstPids,
+
+
+可以通过dalvik.vm.stack-trace-file 设置dumpStackTraces保存路径，默认为/data/anr/traces.txt
+
+保存内容：
+
+- // First collect all of the stacks of the most important pids.
+
+实现方式为Process.sendSignal(firstPids.get(i), Process.SIGNAL_QUIT);
+
+- // Next measure CPU usage.
+
+    Process.sendSignal(stats.pid, Process.SIGNAL_QUIT);
+
+#### 2 dumpStackTraces
+
+           String tracesPath = SystemProperties.get("dalvik.vm.stack-trace-file", null);
+            if (tracesPath != null && tracesPath.length() != 0) {
+                File traceRenameFile = new File(tracesPath);
+                String newTracesPath;
+                int lpos = tracesPath.lastIndexOf (".");
+                if (-1 != lpos)
+                    newTracesPath = tracesPath.substring (0, lpos) + "_" + app.processName + tracesPath.substring (lpos);
+                else
+                    newTracesPath = tracesPath + "_" + app.processName;
+                traceRenameFile.renameTo(new File(newTracesPath));
+
+                Process.sendSignal(app.pid, 6);
+                SystemClock.sleep(1000);
+                Process.sendSignal(app.pid, 6);
+                SystemClock.sleep(1000);
+            }
+
 
 ## How to analyse
 
