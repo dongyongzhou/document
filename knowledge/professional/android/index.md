@@ -43,7 +43,7 @@ title: Android
 #### Non – Framework Errors
 
 * [Application Not Responding (ANR)](anr.html)
-* [Java Exception
+* [Java Exception](java-exception.html)
 * [Native Crash/Dalvik VM Crash (Tombstone Log)
 * [Abnormal Binder Threads
 * [High CPU Utilization

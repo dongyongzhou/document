@@ -167,7 +167,74 @@ __linker_init()  (bionic/linker/linker.c) -> debugger_init() (bionic/linker/debu
         }
 
 
+
 ### 内容
+
+#### 保存位置
+
+    static int find_and_open_tombstone(bool isAnr)
+    snprintf(path, sizeof(path), TOMBSTONE_DIR"/tombstone%s_%02d", isAnr == true? "NoCrash":"", oldest);
+
+- 如果是ANR类型引起的，即   SIGABRT，那么就会生成
+
+case SIGABRT:
+                isAnr = true;
+
+/tombstoneNoCrash_xx
+
+- 如果不是ANR类型引起的，即   SIGILL、SIGBUS、SIGFPE、SIGSEGV、SIGSTKFLT。那么就会生成
+        
+/tombstone_xx
+
+#### 保存内容
+
+    dump_crash_report(fd, pid, tid, true);
+    dump_crash_report(fd, pid, tid, true);
+    dump_logs(fd, pid, true);
+    dump_sibling_thread_report(fd, pid, tid);
+    dump_logs(fd, pid, false);
+
+
+    void dump_crash_banner(int tfd, unsigned pid, unsigned tid, int sig)
+    {
+    char data[1024];
+    char *x = 0;
+    FILE *fp;
+
+    sprintf(data, "/proc/%d/cmdline", pid);
+    fp = fopen(data, "r");
+    if(fp) {
+        x = fgets(data, 1024, fp);
+        fclose(fp);
+    }
+
+    _LOG(tfd, false,
+         "*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***\n");
+    dump_build_info(tfd);
+    _LOG(tfd, false, "pid: %d, tid: %d  >>> %s <<<\n",
+         pid, tid, x ? x : "UNKNOWN");
+
+    if(sig) dump_fault_addr(tfd, tid, sig);
+    }
+
+    
+
+    void dump_crash_report(int tfd, unsigned pid, unsigned tid, bool at_fault)
+    dump_registers(tfd, tid, at_fault);
+    parse_elf_info(milist, tid);
+    dump_pc_and_lr(tfd, tid, milist, stack_depth, at_fault);
+    dump_stack_and_code(tfd, tid, milist, stack_depth, sp_list, at_fault);
+    dump_dalvik(tfd, milist, tid, at_fault);
+
+
+
+    static void dump_logs(int tfd, unsigned pid, bool tailOnly)
+    {
+        dump_log_file(tfd, pid, "/dev/log/system", tailOnly);
+        dump_log_file(tfd, pid, "/dev/log/main", tailOnly);
+    }
+
+#### tombstones 例子
 
  *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
     Build fingerprint: 'xxx'

@@ -184,7 +184,6 @@ File tracesFile = dumpStackTraces(true, firstPids, processStats, lastPids);
  
     final void appNotResponding(ProcessRecord app, ActivityRecord activity,
 
-
     /**
      * If a stack trace dump file is configured, dump process stack traces.
      * @param clearTraces causes the dump file to be erased prior to the new
@@ -195,20 +194,92 @@ File tracesFile = dumpStackTraces(true, firstPids, processStats, lastPids);
      * @return file containing stack traces, or null if no dump file is configured
     public static File dumpStackTraces(boolean clearTraces, ArrayList<Integer> firstPids,
 
-
 可以通过dalvik.vm.stack-trace-file 设置dumpStackTraces保存路径，默认为/data/anr/traces.txt
 
-保存内容：
+**保存内容：**
 
-- // First collect all of the stacks of the most important pids.
+- First collect all of the stacks of the most important pids.
+
+            if (firstPids != null) {
+                try {
+                    int num = firstPids.size();
+                    for (int i = 0; i < num; i++) {
+                        synchronized (observer) {
+                            Process.sendSignal(firstPids.get(i), Process.SIGNAL_QUIT);
+                            observer.wait(200);  // Wait for write-close, give up after 200msec
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    Log.wtf(TAG, e);
+                }
+            }
 
 实现方式为Process.sendSignal(firstPids.get(i), Process.SIGNAL_QUIT);
 
-- // Next measure CPU usage.
+保存位置：/data/anr/trace.txt->trace_<process-name>
+
+**那么保存的进程有哪些呢？**
+
+// Dump thread traces as quickly as we can, starting with "interesting" processes.
+
+            firstPids.add(app.pid);
+
+先保存本进程的PID
+
+            for (int i = mLruProcesses.size() - 1; i >= 0; i--) {
+                ProcessRecord r = mLruProcesses.get(i);
+                if (r != null && r.thread != null) {
+                    int pid = r.pid;
+                    if (pid > 0 && pid != app.pid && pid != parentPid && pid != MY_PID) {
+                        if (r.persistent) {
+                            firstPids.add(pid);
+                        } else {
+                            lastPids.put(pid, Boolean.TRUE);
+                        }
+                    }
+                }
+            }
+
+再保存运行的进程中，是永恒运行的进程。
+
+所以保存的信息的进程包括：
+
+    currentAPP
+    system_server
+    com.android.systemui
+    com.android.phone
+    sys.DeviceHealth
+
+- Next measure CPU usage.
 
     Process.sendSignal(stats.pid, Process.SIGNAL_QUIT);
 
-#### 2 dumpStackTraces
+保存位置： logcat main buffer
+
+        Slog.e(TAG, info.toString());
+
+
+
+    E/ActivityManager(  344): ANR in com.android.development (com.android.development/.BadBehaviorActivity)
+    E/ActivityManager(  344): Reason: keyDispatchingTimedOut
+    E/ActivityManager(  344): Load: 10.17 / 10.07 / 10.06
+    E/ActivityManager(  344): CPU usage from 22512ms to 29261ms later with 99% awake:
+    E/ActivityManager(  344):   2.2% 344/system_server: 1.9% user + 0.2% kernel
+    E/ActivityManager(  344):   1.3% 126/adbd: 0% user + 1.3% kernel
+    E/ActivityManager(  344):   1.3% 19165/kworker/0:2: 0% user + 1.3% kernel
+    E/ActivityManager(  344):   0% 9/sync_supers: 0% user + 0% kernel
+    E/ActivityManager(  344):   0.1% 89/yaffs-bg-1: 0% user + 0.1% kernel
+    E/ActivityManager(  344): 3.1% TOTAL: 0.5% user + 2.5% kernel
+    E/ActivityManager(  344): CPU usage from 18421ms to 18974ms later:
+    E/ActivityManager(  344):   8.9% 344/system_server: 8.9% user + 0% kernel
+    E/ActivityManager(  344):     8.9% 433/InputDispatcher: 3.5% user + 5.3% kernel
+    E/ActivityManager(  344):     3.5% 353/FinalizerDaemon: 3.5% user + 0% kernel
+    E/ActivityManager(  344):     1.7% 359/er.ServerThread: 1.7% user + 0% kernel
+    E/ActivityManager(  344):   1.3% 19165/kworker/0:2: 0% user + 1.3% kernel
+    E/ActivityManager(  344): 10% TOTAL: 7.2% user + 3.6% kernel
+
+
+#### Collect tombstones
 
            String tracesPath = SystemProperties.get("dalvik.vm.stack-trace-file", null);
             if (tracesPath != null && tracesPath.length() != 0) {
@@ -227,6 +298,9 @@ File tracesFile = dumpStackTraces(true, firstPids, processStats, lastPids);
                 SystemClock.sleep(1000);
             }
 
+位置： /data/tombstones/
+
+tombstoneNoCrash_xx
 
 ## How to analyse
 
@@ -251,3 +325,4 @@ IntentReceiver执行时间的特殊限制意味着它应该做：在后台里做
 ## Reference
 
 * [Designing for Responsiveness](http://developer.android.com/guide/practices/responsiveness.html)
+* [Android ANR问题的分析和解决](http://wenku.it168.com/d_000083535.shtml)
