@@ -29,7 +29,6 @@ To be continued...
 - Excessive JNI references
 
 
-
 ## SIGILL, SIGABRT, SIGBUS, SIGFPE, SIGSEGV, SIGSTKFLT如何传递？
 
 To be continued...
@@ -131,7 +130,6 @@ __linker_init()  (bionic/linker/linker.c) -> debugger_init() (bionic/linker/debu
 
     handle_crashing_process()->engrave_tombstone() (system/core/debuggerd/debuggerd.c)
 
-
         if(WIFSTOPPED(status)){
             n = WSTOPSIG(status);
             switch(n) {
@@ -166,8 +164,6 @@ __linker_init()  (bionic/linker/linker.c) -> debugger_init() (bionic/linker/debu
             goto done;
         }
 
-
-
 ### 内容
 
 #### 保存位置
@@ -175,14 +171,14 @@ __linker_init()  (bionic/linker/linker.c) -> debugger_init() (bionic/linker/debu
     static int find_and_open_tombstone(bool isAnr)
     snprintf(path, sizeof(path), TOMBSTONE_DIR"/tombstone%s_%02d", isAnr == true? "NoCrash":"", oldest);
 
-- 如果是ANR类型引起的，即   SIGABRT，那么就会生成
+- 如果是ANR类型引起的，即SIGABRT(源自anrNoResponding)，那么就会生成
 
-case SIGABRT:
-                isAnr = true;
+    case SIGABRT:
+         isAnr = true;
 
 /tombstoneNoCrash_xx
 
-- 如果不是ANR类型引起的，即   SIGILL、SIGBUS、SIGFPE、SIGSEGV、SIGSTKFLT。那么就会生成
+- 如果不是ANR类型引起的，即SIGILL、SIGBUS、SIGFPE、SIGSEGV、SIGSTKFLT。那么就会生成
         
 /tombstone_xx
 

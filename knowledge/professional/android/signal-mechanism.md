@@ -40,7 +40,6 @@ A signal is a small message that notifies a process that an event of some type h
 1. 重用SIGUSR1 和 SIGUSR2两个信号
 2. 需要连续产生相同的信号而又要处理时，在期间加入延迟
 
-
 ## Android信号如何产生
 
 To be continued...
@@ -57,9 +56,56 @@ To be continued...
 详情见：
 [trace file](trace-file.html)
 
+主要用于产生trace调试信息。
+
+    frameworks/base/services/java/com/android/server/am/ActivityManagerService.java:                            Process.sendSignal(firstPids.get(i), Process.SIGNAL_QUIT);
+    frameworks/base/services/java/com/android/server/am/ActivityManagerService.java:                                Process.sendSignal(stats.pid, Process.SIGNAL_QUIT);
+    frameworks/base/services/java/com/android/server/am/ActivityManagerService.java:            Process.sendSignal(app.pid, Process.SIGNAL_QUIT);
+
 
 ### SIGILL, SIGABRT, SIGBUS, SIGFPE, SIGSEGV, SIGSTKFLT
 
+    /** This method sends the specified signal to each of the persistent apps */
+    public void signalPersistentProcesses(int sig) throws RemoteException {
+
+
+                    Process.sendSignal(r.pid, sig);
+
+
+    /*
+     * This will deliver the specified signal to all the persistent processes. Currently only
+     * SIGUSR1 is delivered. All others are ignored.
+     */
+    frameworks/base/core/java/android/app/IActivityManager.java:    public void signalPersistentProcesses(int signal) throws RemoteException;
+
+
+    frameworks/base/core/java/android/app/ActivityManagerNative.java:            signalPersistentProcesses(sig);
+    frameworks/base/core/java/android/app/ActivityManagerNative.java:    public void signalPersistentProcesses(int sig) throws RemoteException {
+
+
+#### SIGABRT 6 Abort (ANSI). 异常终止(abort) 终止+core
+
+ANR时用于产生tombstone, 名字为tombstoneNoCrash_xx
+
+#### SIGILL 4 Illegal instruction (ANSI).非法硬件指令 终止+core
+#### SIGBUS 7 BUS error (4.2 BSD).总线错误 终止+core
+#### SIGSTOP         19      /* Stop, unblockable (POSIX).  */
+
+
+dalvik/vm/Init.cpp
+
+
+/*
+ * Handle a SIGBUS, which frequently occurs because somebody replaced an
+ * optimized DEX file out from under us.
+ */
+
+
+static void busCatcher(int signum, siginfo_t* info, void* context)
+
+#### SIGFPE 8 Floating-point exception (ANSI).算术异常 终止+core
+#### SIGSEGV 11 Segmentation violation (ANSI).内存段访问异常 终止+core
+#### SIGSTKFLT 16 Stack fault.协处理器故障，早期Linux定义信号 终止
 
 
 ## Android信号如何处理
@@ -136,6 +182,46 @@ To be continued...
 ## android信号定义
 
 prebuilt/linux-x86/toolchain/i686-linux-glibc2.7-4.4.3/sysroot/usr/include/bits/signum.h
+
+
+/* Signals.  */
+
+    #define SIGHUP          1       /* Hangup (POSIX).  */
+    #define SIGINT          2       /* Interrupt (ANSI).  */
+    #define SIGQUIT         3       /* Quit (POSIX).  */
+    #define SIGILL          4       /* Illegal instruction (ANSI).  */
+    #define SIGTRAP         5       /* Trace trap (POSIX).  */
+    #define SIGABRT         6       /* Abort (ANSI).  */
+    #define SIGIOT          6       /* IOT trap (4.2 BSD).  */
+    #define SIGBUS          7       /* BUS error (4.2 BSD).  */
+    #define SIGFPE          8       /* Floating-point exception (ANSI).  */
+    #define SIGKILL         9       /* Kill, unblockable (POSIX).  */
+    #define SIGUSR1         10      /* User-defined signal 1 (POSIX).  */
+    #define SIGSEGV         11      /* Segmentation violation (ANSI).  */
+    #define SIGUSR2         12      /* User-defined signal 2 (POSIX).  */
+    #define SIGPIPE         13      /* Broken pipe (POSIX).  */
+    #define SIGALRM         14      /* Alarm clock (POSIX).  */
+    #define SIGTERM         15      /* Termination (ANSI).  */
+    #define SIGSTKFLT       16      /* Stack fault.  */
+    #define SIGCLD          SIGCHLD /* Same as SIGCHLD (System V).  */
+    #define SIGCHLD         17      /* Child status has changed (POSIX).  */
+    #define SIGCONT         18      /* Continue (POSIX).  */
+    #define SIGSTOP         19      /* Stop, unblockable (POSIX).  */
+    #define SIGTSTP         20      /* Keyboard stop (POSIX).  */
+    #define SIGTTIN         21      /* Background read from tty (POSIX).  */
+    #define SIGTTOU         22      /* Background write to tty (POSIX).  */
+    #define SIGURG          23      /* Urgent condition on socket (4.2 BSD).  */
+    #define SIGXCPU         24      /* CPU limit exceeded (4.2 BSD).  */
+    #define SIGXFSZ         25      /* File size limit exceeded (4.2 BSD).  */
+    #define SIGVTALRM       26      /* Virtual alarm clock (4.2 BSD).  */
+    #define SIGPROF         27      /* Profiling alarm clock (4.2 BSD).  */
+    #define SIGWINCH        28      /* Window size change (4.3 BSD, Sun).  */
+    #define SIGPOLL         SIGIO   /* Pollable event occurred (System V).  */
+    #define SIGIO           29      /* I/O now possible (4.2 BSD).  */
+    #define SIGPWR          30      /* Power failure restart (System V).  */
+    #define SIGSYS          31      /* Bad system call.  */
+    #define SIGUNUSED       31
+
 
 ## Reference
 

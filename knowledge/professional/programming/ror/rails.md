@@ -10,6 +10,30 @@ title: Rails
 * [The Ruby Toolbox](https://www.ruby-toolbox.com/)
 * [The RubyonRails API](http://api.rubyonrails.org/)
 
+## Rails 运行模式
+
+### development
+
+每次修改后，下一个请求以后都会自动生效，因为reload了code
+
+config/environments/development.rb
+
+    # In the development environment your application's code is reloaded on
+    # every request.  This slows down response time but is perfect for development
+    # since you don't have to restart the webserver when you make code changes.
+    config.cache_classes = false
+
+### Production 
+
+每次修改后，不会自动生效
+
+config/environments/production.rb
+
+    # The production environment is meant for finished, "live" apps.
+    # Code is not reloaded between requests
+    config.cache_classes = true
+
+
 ## before_filter
 
     before_filter :require_admin,     :only => [:destroy]
