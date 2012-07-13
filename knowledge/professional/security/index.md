@@ -11,6 +11,7 @@ title: security
 
 ## Deployment 
 
+* [Base Security Configuration for server deployment](base-security-configuration.html)
 * [TLS Configuration for Servers](tls-configuration.html)
 
 ## Testing 

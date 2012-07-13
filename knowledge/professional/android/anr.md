@@ -22,8 +22,17 @@ ANR就是Application Not Responding的全称，即应用程序无响应。如果
 
 InputManager kicks out the timer when it dispatches a key event to the UI chain of the foreground process. If it does not respond within time, WindowManager detects and prints out the message with the trace log and kills the process. An alert message also displays on the screen.
 
+超时时间的计数一般是从按键分发给app开始。超时的原因一般有两种：
+
+(1)当前的事件没有机会得到处理（即UI线程正在处理前一个事件，没有及时的完成或者looper被某种原因阻塞住了）
+
+(2)当前的事件正在处理，但没有及时完成
+
+
 - BroadcastReceiver在10秒内没有执行完毕
 ( If **BroadcastReceiver** does not finish executing within 10 sec, ActivityManager triggers ANR.)
+
+- ServiceTimeout(20 seconds) --小概率类型. Service在特定的时间内无法处理完成
 
 Every time there is a broadcast event, e.g., Wi-Fi on/off, GPS on/off, boot complete message, etc., it kicks a timeout before it broadcasts the event to all the processes that had registered a receiver. If there is a process not responding with a complete message back within a given time, ActivityManager kills that process and prints out the log.
 
@@ -304,9 +313,42 @@ tombstoneNoCrash_xx
 
 ## How to analyse
 
-check the trace log to see the status of each thread in the process and try to find where it hangs.
+### 先看LOG CPU usage:
+
+从LOG可以看出ANR的类型，CPU的使用情况，如果CPU使用量接近100%，说明当前设备很忙，有可能是CPU饥饿导致了ANR
+
+如果CPU使用量很少，说明主线程被BLOCK了
+
+如果IOwait很高，说明ANR有可能是主线程在进行I/O操作造成的
+
+### check the trace log to see the status of each thread in the process and try to find where it hangs.
 
     /data/anr/traces.txt
+
+    DALVIK THREADS:
+    (mutexes: tll=0 tsl=0 tscl=0 ghl=0)
+    "main" prio=5 tid=1 TIMED_WAIT
+      | group="main" sCount=1 dsCount=0 obj=0x40a73538 self=0x1548e28
+      | sysTid=8172 nice=0 sched=0/0 cgrp=ux handle=1074406760
+      | schedstat=( 0 0 0 ) utm=33 stm=26 core=0
+      at java.lang.VMThread.sleep(Native Method)
+      at java.lang.Thread.sleep(Thread.java:1031)
+      at java.lang.Thread.sleep(Thread.java:1013)
+      at com.android.development.BadBehaviorActivity$6.onClick(BadBehaviorActivity.java:180)
+      at android.view.View.performClick(View.java:3511)
+      at android.view.View$PerformClick.run(View.java:14105)
+      at android.os.Handler.handleCallback(Handler.java:605)
+      **at android.os.Handler.dispatchMessage(Handler.java:92)**
+      **at android.os.Looper.loop(Looper.java:137)**
+      at android.app.ActivityThread.main(ActivityThread.java:4482)
+      at java.lang.reflect.Method.invokeNative(Native Method)
+      at java.lang.reflect.Method.invoke(Method.java:511)
+      at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:787)
+      at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:554)
+      at dalvik.system.NativeStart.main(Native Method)
+
+说明主线程在等待下条消息进入消息队列
+
 
 ## How to fix
 
@@ -326,3 +368,4 @@ IntentReceiver执行时间的特殊限制意味着它应该做：在后台里做
 
 * [Designing for Responsiveness](http://developer.android.com/guide/practices/responsiveness.html)
 * [Android ANR问题的分析和解决](http://wenku.it168.com/d_000083535.shtml)
+* [android anr分析方法](http://blog.csdn.net/gemmem/article/details/7446421)
