@@ -23,10 +23,10 @@ title: Android Activity
 - UI Thread，处理用户消息，绘制界面
 
 
-### Android应用自定义tread and UI thread区别
+### Android应用自定义thread and UI thread区别
 
 - UI Thread从ActivityThread运行的，已添加Looper对象，即已经为该线程创建了消息队列。可以Activity中定义handler对象，可以接受发送的消息。
-- 自定义tread：是一个祼线程，不能直接在Thread中定义Handler对象，即不能给Thread对象发消息。
+- 自定义thread：是一个祼线程，不能直接在Thread中定义Handler对象，即不能给Thread对象发消息。
 
 ## Activity class view
 
@@ -51,7 +51,7 @@ ActivityThread主要用来启动应用程序的主线程，并且管理在应用
 
 ActivityThread是怎么启动应用程序的呢？
 
-ActivityThread中有一个main函数，在这个里面，将启动应用程序并建立消息循环。，系统会为主线程自动创建消息循环。
+ActivityThread中有一个main函数，在这个里面，将启动应用程序并建立消息循环。系统会为主线程自动创建消息循环。
 
     public static void main(String[] args) {
         SamplingProfilerIntegration.start();
@@ -111,7 +111,7 @@ ActivityThread中有一个main函数，在这个里面，将启动应用程序�
 ![](http://hi.csdn.net/attachment/201106/27/62017_1309154561sT75.png)
 
 
-### ActivityManagerService:
+### ActivityManagerService
 
 在ActivityManagerService中，也有一个用来管理activity的地方：mHistory栈，这个mHistory栈里存放的是服务端的activity记录HistoryActivity（class HistoryRecord extendsIApplicationToken.Stub）。处于栈顶的就是当前running状态的activity。
 
@@ -158,11 +158,37 @@ An activity’s state is managed by the runtime’s ActivityManager
 
 ## Activity Manager Service
 
+### AMS 主要功能
+
+- 统一调度各应用程序的Activity。应用程序运行activity->先报告AmS->AmS决定是否可能启动,通知应用程序运行指定的Activity。
+- 内存管理。Activity退出时，其进程不会被杀死，只有在内存紧张时才由AmS杀死，
+- 进程序管理。向外提供查询系统正在运行的进程信息API。
+
 ActivityManagerService提供了一个ArrayList mHistory来管理所有的activity，activity在AMS中的形式是ActivityRecord，task在AMS中的形式为TaskRecord，进程在AMS中的管理形式为ProcessRecord。如下图所示
 
 ![](http://hi.csdn.net/attachment/201112/25/0_1324812260QNUm.gif)
 
 A **task** is a collection of activities that users interact with when performing a certain job. The activities are arranged in a stack (the "back stack"), in the order in which each activity is opened.
 
-
 [Tasks and Back Stack](http://developer.android.com/guide/topics/fundamentals/tasks-and-back-stack.html)
+
+### 进程数据类ProcessRecord
+
+frameworks/base/services/java/com/android/server/am
+
+记录一个进程中的相关信息
+
+- 进程文件信息
+- 进信息内存信息
+- 进程包含的Activity、provider、Service等。
+
+### HistoryRecord
+
+保存每个Activity的信息
+
+- 环境信息
+- 运行状态信息
+
+### TaskRecord
+
+AmS使用任务的概念确保Activity启动和退出的顺序。

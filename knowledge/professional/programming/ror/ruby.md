@@ -13,6 +13,7 @@ title: Ruby
 * [Mr. Neighborly’s Humble Little Ruby Book](http://www.humblelittlerubybook.com/book/html/index.html)
 * [RailsCast](http://railscasts.com/)
 * [The Ruby Toolbox](https://www.ruby-toolbox.com/)
+* [Get to the Point!](http://johnwlong.com/slides/gettothepoint/)
 
 ## Ruby 
 
