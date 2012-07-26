@@ -10,6 +10,58 @@ title: Rails
 * [The Ruby Toolbox](https://www.ruby-toolbox.com/)
 * [The RubyonRails API](http://api.rubyonrails.org/)
 
+## Rails 运行模式
+
+### development
+
+每次修改后，下一个请求以后都会自动生效，因为reload了code
+
+config/environments/development.rb
+
+    # In the development environment your application's code is reloaded on
+    # every request.  This slows down response time but is perfect for development
+    # since you don't have to restart the webserver when you make code changes.
+    config.cache_classes = false
+
+### Production 
+
+每次修改后，不会自动生效
+
+config/environments/production.rb
+
+    # The production environment is meant for finished, "live" apps.
+    # Code is not reloaded between requests
+    config.cache_classes = true
+
+
+注意到DocumentRoot和Directory是指向public這個靜态档案的目录。设定好之后，执行sudo apache2ctl restart便会启用。如果之后你的Rails有任何修改要重新载入，但是并不想把Apache重启，请在你的Rails应用程序目录下執行
+
+    touch tmp/restart.txt
+
+即可，這样Passenger就会知道要重新载入Rails，而不需要重启Apache。
+
+## controller间 Action 调用
+
+### 简单跳转
+
+redirect_to :controller => "controller B", :action => "action b", :id => "1"
+
+### 需要在一个controller A中调用controller B的action, 这里不是简简单单的redirect或者是render, 只是在逻辑上需要执行controller B的action代码，view还是由A来render, 并且A中所有的全局变量也继承到B中, 下面是解决办法: 
+
+    def exeRedirect (options={})
+      params.merge!(options)
+      c = ActionController.const_get(Inflector.classify("#{params[:controller]}_controller")).new
+      c.process(request,response)
+  
+      #如果需要当前的实例变量也由B来覆盖，那么开启下面一行, 并且在执行后需要调用return
+      #c.instance_variables.each {|v| self.instance_variable_set(v,c.instance_variable_get(v))}
+    end
+
+
+    #在controlelr A中定义上面的方法然后调用:
+    exeRedirect :controller => controllerB, :action => actionB
+
+
 ## before_filter
 
     before_filter :require_admin,     :only => [:destroy]

@@ -22,8 +22,17 @@ ANR就是Application Not Responding的全称，即应用程序无响应。如果
 
 InputManager kicks out the timer when it dispatches a key event to the UI chain of the foreground process. If it does not respond within time, WindowManager detects and prints out the message with the trace log and kills the process. An alert message also displays on the screen.
 
+超时时间的计数一般是从按键分发给app开始。超时的原因一般有两种：
+
+(1)当前的事件没有机会得到处理（即UI线程正在处理前一个事件，没有及时的完成或者looper被某种原因阻塞住了）
+
+(2)当前的事件正在处理，但没有及时完成
+
+
 - BroadcastReceiver在10秒内没有执行完毕
 ( If **BroadcastReceiver** does not finish executing within 10 sec, ActivityManager triggers ANR.)
+
+- ServiceTimeout(20 seconds) --小概率类型. Service在特定的时间内无法处理完成
 
 Every time there is a broadcast event, e.g., Wi-Fi on/off, GPS on/off, boot complete message, etc., it kicks a timeout before it broadcasts the event to all the processes that had registered a receiver. If there is a process not responding with a complete message back within a given time, ActivityManager kills that process and prints out the log.
 
@@ -69,11 +78,63 @@ frameworks/base/services/java/com/android/server/am/ActivityManagerService.java
 
 ### 超时检测
 
-#### WindowManager
+#### 在5秒内没有响应输入的事件（例如，按键按下，屏幕触摸） 
+
+**./base/services/input/InputDispatcher.cpp**
+
+bool InputDispatcherThread::threadLoop() {
+
+void InputDispatcher::dispatchOnce() {
+
+void InputDispatcher::dispatchOnceInnerLocked(nsecs_t* nextWakeupTime) {
+
+bool InputDispatcher::dispatchKeyLocked(nsecs_t currentTime, KeyEntry* entry,
+
+findFocusedWindowTargetsLocked->
+
+    // If there is no currently focused window and no focused application
+    // If the currently focused window is paused then keep waiting.
+    // If the currently focused window is still working on previous events then keep waiting.
+
+int32_t InputDispatcher::handleTargetsNotReadyLocked(nsecs_t currentTime,
+
+    if (currentTime >= mInputTargetWaitTimeoutTime) {
+        onANRLocked(currentTime, applicationHandle, windowHandle,
+                entry->eventTime, mInputTargetWaitStartTime);
 
 
+onANRLocked->
 
-./base/services/java/com/android/server/wm/InputMonitor.java:                    Slog.i(WindowManagerService.TAG, "Input event dispatching timed out sending to "
+
+    void InputDispatcher::doNotifyANRLockedInterruptible(
+        CommandEntry* commandEntry) {
+    mLock.unlock();
+
+    nsecs_t newTimeout = mPolicy->notifyANR(
+            commandEntry->inputApplicationHandle, commandEntry->inputWindowHandle);
+
+    mLock.lock();
+
+    resumeAfterTargetsNotReadyTimeoutLocked(newTimeout,
+            commandEntry->inputWindowHandle != NULL
+                    ? commandEntry->inputWindowHandle->getInputChannel() : NULL);
+    }
+
+**./base/services/java/com/android/server/wm/InputManager.java**
+
+   /*
+     * Callbacks from native.
+     */
+    private final class Callbacks {
+
+        @SuppressWarnings("unused")
+        public long notifyANR(InputApplicationHandle inputApplicationHandle,
+                InputWindowHandle inputWindowHandle) {
+            return mWindowManagerService.mInputMonitor.notifyANR(
+                    inputApplicationHandle, inputWindowHandle);
+        }
+
+**./base/services/java/com/android/server/wm/InputMonitor.java**
 
     /* Notifies the window manager about an application that is not responding.
      * Returns a new timeout to continue waiting in nanoseconds, or 0 to abort dispatch.
@@ -82,36 +143,212 @@ frameworks/base/services/java/com/android/server/am/ActivityManagerService.java
      */
     public long notifyANR(InputApplicationHandle inputApplicationHandle,
 
-
-
-
-
-./base/services/java/com/android/server/am/ActivityRecord.java:    public boolean keyDispatchingTimedOut() {
-./base/services/java/com/android/server/am/ActivityRecord.java:                    info.putString("shortMsg", "keyDispatchingTimedOut");
-./base/services/java/com/android/server/am/ActivityRecord.java:                    "keyDispatchingTimedOut");
-
-
-
-    /** Returns the key dispatching timeout for this application token. */
-    public long getKeyDispatchingTimeout() {
-        synchronized(service) {
-            ActivityRecord r = getWaitingHistoryRecordLocked();
-            if (r != null && r.app != null
-                    && (r.app.instrumentationClass != null || r.app.usingWrapper)) {
-                return ActivityManagerService.INSTRUMENTATION_KEY_DISPATCHING_TIMEOUT;
+                    Slog.i(WindowManagerService.TAG, "Input event dispatching timed out sending to "
+        if (appWindowToken != null && appWindowToken.appToken != null) {
+            try {
+                // Notify the activity manager about the timeout and let it decide whether
+                // to abort dispatching or keep waiting.
+                boolean abort = appWindowToken.appToken.keyDispatchingTimedOut();
+                if (! abort) {
+                    // The activity manager declined to abort dispatching.
+                    // Wait a bit longer and timeout again later.
+                    return appWindowToken.inputDispatchingTimeoutNanos;
+                }
+            } catch (RemoteException ex) {
             }
-
-            return ActivityManagerService.KEY_DISPATCHING_TIMEOUT;
         }
-    }
+        return 0; // abort dispatching
+
+
+**./base/services/java/com/android/server/am/ActivityRecord.java**
+
+    public boolean keyDispatchingTimedOut() {
+
+        if (anrApp != null) {
+            service.appNotResponding(anrApp, r, this,
+                    "keyDispatchingTimedOut");
+        }
+
+
+**frameworks/base/services/java/com/android/server/am/ActivityManagerService.java**
+
+    final void appNotResponding(ProcessRecord app, ActivityRecord activity,
+
+        File tracesFile = dumpStackTraces(true, firstPids, processStats, lastPids);
+
+
+#### BroadcastReceiver在10秒内没有执行完毕
+
+/frameworks/base/services/java/com/android/server/am/ActivityManagerService.java
+
+AmS: setBroadcastTimeoutLocked-> handleMessage:BROADCAST_TIMEOUT_MSG -> broadcastTimeoutLocked->appNotResponding->dumpStackTraces
 
 ### 超时处理
 
+appNotResponding中
+
+#### 1 dumpStackTraces
+
+File tracesFile = dumpStackTraces(true, firstPids, processStats, lastPids);
+ 
+    final void appNotResponding(ProcessRecord app, ActivityRecord activity,
+
+    /**
+     * If a stack trace dump file is configured, dump process stack traces.
+     * @param clearTraces causes the dump file to be erased prior to the new
+     *    traces being written, if true; when false, the new traces will be
+     *    appended to any existing file content.
+     * @param firstPids of dalvik VM processes to dump stack traces for first
+     * @param lastPids of dalvik VM processes to dump stack traces for last
+     * @return file containing stack traces, or null if no dump file is configured
+    public static File dumpStackTraces(boolean clearTraces, ArrayList<Integer> firstPids,
+
+可以通过dalvik.vm.stack-trace-file 设置dumpStackTraces保存路径，默认为/data/anr/traces.txt
+
+**保存内容：**
+
+- First collect all of the stacks of the most important pids.
+
+            if (firstPids != null) {
+                try {
+                    int num = firstPids.size();
+                    for (int i = 0; i < num; i++) {
+                        synchronized (observer) {
+                            Process.sendSignal(firstPids.get(i), Process.SIGNAL_QUIT);
+                            observer.wait(200);  // Wait for write-close, give up after 200msec
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    Log.wtf(TAG, e);
+                }
+            }
+
+实现方式为Process.sendSignal(firstPids.get(i), Process.SIGNAL_QUIT);
+
+保存位置：/data/anr/trace.txt->trace_<process-name>
+
+**那么保存的进程有哪些呢？**
+
+// Dump thread traces as quickly as we can, starting with "interesting" processes.
+
+            firstPids.add(app.pid);
+
+先保存本进程的PID
+
+            for (int i = mLruProcesses.size() - 1; i >= 0; i--) {
+                ProcessRecord r = mLruProcesses.get(i);
+                if (r != null && r.thread != null) {
+                    int pid = r.pid;
+                    if (pid > 0 && pid != app.pid && pid != parentPid && pid != MY_PID) {
+                        if (r.persistent) {
+                            firstPids.add(pid);
+                        } else {
+                            lastPids.put(pid, Boolean.TRUE);
+                        }
+                    }
+                }
+            }
+
+再保存运行的进程中，是永恒运行的进程。
+
+所以保存的信息的进程包括：
+
+    currentAPP
+    system_server
+    com.android.systemui
+    com.android.phone
+    sys.DeviceHealth
+
+- Next measure CPU usage.
+
+    Process.sendSignal(stats.pid, Process.SIGNAL_QUIT);
+
+保存位置： logcat main buffer
+
+        Slog.e(TAG, info.toString());
+
+
+
+    E/ActivityManager(  344): ANR in com.android.development (com.android.development/.BadBehaviorActivity)
+    E/ActivityManager(  344): Reason: keyDispatchingTimedOut
+    E/ActivityManager(  344): Load: 10.17 / 10.07 / 10.06
+    E/ActivityManager(  344): CPU usage from 22512ms to 29261ms later with 99% awake:
+    E/ActivityManager(  344):   2.2% 344/system_server: 1.9% user + 0.2% kernel
+    E/ActivityManager(  344):   1.3% 126/adbd: 0% user + 1.3% kernel
+    E/ActivityManager(  344):   1.3% 19165/kworker/0:2: 0% user + 1.3% kernel
+    E/ActivityManager(  344):   0% 9/sync_supers: 0% user + 0% kernel
+    E/ActivityManager(  344):   0.1% 89/yaffs-bg-1: 0% user + 0.1% kernel
+    E/ActivityManager(  344): 3.1% TOTAL: 0.5% user + 2.5% kernel
+    E/ActivityManager(  344): CPU usage from 18421ms to 18974ms later:
+    E/ActivityManager(  344):   8.9% 344/system_server: 8.9% user + 0% kernel
+    E/ActivityManager(  344):     8.9% 433/InputDispatcher: 3.5% user + 5.3% kernel
+    E/ActivityManager(  344):     3.5% 353/FinalizerDaemon: 3.5% user + 0% kernel
+    E/ActivityManager(  344):     1.7% 359/er.ServerThread: 1.7% user + 0% kernel
+    E/ActivityManager(  344):   1.3% 19165/kworker/0:2: 0% user + 1.3% kernel
+    E/ActivityManager(  344): 10% TOTAL: 7.2% user + 3.6% kernel
+
+
+#### Collect tombstones
+
+           String tracesPath = SystemProperties.get("dalvik.vm.stack-trace-file", null);
+            if (tracesPath != null && tracesPath.length() != 0) {
+                File traceRenameFile = new File(tracesPath);
+                String newTracesPath;
+                int lpos = tracesPath.lastIndexOf (".");
+                if (-1 != lpos)
+                    newTracesPath = tracesPath.substring (0, lpos) + "_" + app.processName + tracesPath.substring (lpos);
+                else
+                    newTracesPath = tracesPath + "_" + app.processName;
+                traceRenameFile.renameTo(new File(newTracesPath));
+
+                Process.sendSignal(app.pid, 6);
+                SystemClock.sleep(1000);
+                Process.sendSignal(app.pid, 6);
+                SystemClock.sleep(1000);
+            }
+
+位置： /data/tombstones/
+
+tombstoneNoCrash_xx
+
 ## How to analyse
 
-check the trace log to see the status of each thread in the process and try to find where it hangs.
+### 先看LOG CPU usage:
+
+从LOG可以看出ANR的类型，CPU的使用情况，如果CPU使用量接近100%，说明当前设备很忙，有可能是CPU饥饿导致了ANR
+
+如果CPU使用量很少，说明主线程被BLOCK了
+
+如果IOwait很高，说明ANR有可能是主线程在进行I/O操作造成的
+
+### check the trace log to see the status of each thread in the process and try to find where it hangs.
 
     /data/anr/traces.txt
+
+    DALVIK THREADS:
+    (mutexes: tll=0 tsl=0 tscl=0 ghl=0)
+    "main" prio=5 tid=1 TIMED_WAIT
+      | group="main" sCount=1 dsCount=0 obj=0x40a73538 self=0x1548e28
+      | sysTid=8172 nice=0 sched=0/0 cgrp=ux handle=1074406760
+      | schedstat=( 0 0 0 ) utm=33 stm=26 core=0
+      at java.lang.VMThread.sleep(Native Method)
+      at java.lang.Thread.sleep(Thread.java:1031)
+      at java.lang.Thread.sleep(Thread.java:1013)
+      at com.android.development.BadBehaviorActivity$6.onClick(BadBehaviorActivity.java:180)
+      at android.view.View.performClick(View.java:3511)
+      at android.view.View$PerformClick.run(View.java:14105)
+      at android.os.Handler.handleCallback(Handler.java:605)
+      **at android.os.Handler.dispatchMessage(Handler.java:92)**
+      **at android.os.Looper.loop(Looper.java:137)**
+      at android.app.ActivityThread.main(ActivityThread.java:4482)
+      at java.lang.reflect.Method.invokeNative(Native Method)
+      at java.lang.reflect.Method.invoke(Method.java:511)
+      at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:787)
+      at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:554)
+      at dalvik.system.NativeStart.main(Native Method)
+
+说明主线程在等待下条消息进入消息队列
+
 
 ## How to fix
 
@@ -130,3 +367,5 @@ IntentReceiver执行时间的特殊限制意味着它应该做：在后台里做
 ## Reference
 
 * [Designing for Responsiveness](http://developer.android.com/guide/practices/responsiveness.html)
+* [Android ANR问题的分析和解决](http://wenku.it168.com/d_000083535.shtml)
+* [android anr分析方法](http://blog.csdn.net/gemmem/article/details/7446421)

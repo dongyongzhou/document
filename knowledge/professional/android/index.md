@@ -32,6 +32,7 @@ title: Android
 * [Android Startup Sequence](startup.html)
 * [Android Signal mechanism](signal-mechanism.html)
 * [Android Reboot](android-reboot.html)
+* [Android Input event handling](input-event-handling.html)
 
 ### Android Security Mechanism
 
@@ -42,7 +43,7 @@ title: Android
 #### Non – Framework Errors
 
 * [Application Not Responding (ANR)](anr.html)
-* [Java Exception
+* [Java Exception](java-exception.html)
 * [Native Crash/Dalvik VM Crash (Tombstone Log)
 * [Abnormal Binder Threads
 * [High CPU Utilization
@@ -81,3 +82,5 @@ title: Android
 * [Android 源代码在线查看](http://source.android.com/source/downloading.html)
 * [Android Developers](http://developer.android.com/index.html)
 * [Android Open source project](http://source.android.com/index.html)
+* [Android核心分析](http://blog.csdn.net/maxleng/article/details/5471557)
+* [Simba's Android blog](http://blog.csdn.net/yuleslie/article/category/904490)

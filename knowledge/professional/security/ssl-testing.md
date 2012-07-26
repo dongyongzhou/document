@@ -104,8 +104,8 @@ bash script that uses sslscan and openssl to check for various flaws - ssl versi
 
 ### testing
 
-$ nmap --script ssl-enum-ciphers --script-args sslenum=weak -p 443 <host>
-$ nmap --script ssl-enum-ciphers -p 443 <host>
+    $ nmap --script ssl-enum-ciphers --script-args sslenum=weak -p 443 <host>
+    $ nmap --script ssl-enum-ciphers -p 443 <host>
 
 
 

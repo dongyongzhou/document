@@ -11,6 +11,7 @@ title: security
 
 ## Deployment 
 
+* [Base Security Configuration for server deployment](base-security-configuration.html)
 * [TLS Configuration for Servers](tls-configuration.html)
 
 ## Testing 
@@ -23,3 +24,6 @@ title: security
 
 * [Problems](problems.html)
 
+## Reference
+
+* [The Open Web Application Security Project](https://www.owasp.org/index.php/Main_Page)
