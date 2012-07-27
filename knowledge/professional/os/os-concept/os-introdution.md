@@ -58,3 +58,54 @@ Operating systems can **provide an array of fault containment, fault tolerance, 
 
 
 
+## How is the OS implemented
+
+### Policy vs. Mechanism
+
+- Policy: What do you want to do?
+- Mechanism: How are you going to do it?
+- Should be separated, since policies change 
+
+### Algorithms used
+
+Linear, Tree-based, Log Structured, etc…
+
+### Event models used
+
+Threads vs. event loops
+
+### Backward compatibility issues
+
+- Very important for Windows 2000/XP/Vista/…
+- POSIX tries to help here
+
+### System generation/configuration
+
+How to make generic OS fit on specific hardware
+
+
+## Virtual Machines
+
+Software **emulation** of an abstract machine
+
+- Make it look like hardware has features you want
+- Programs from one hardware & OS on another one
+
+Programming simplicity
+
+- Each process thinks it has all memory/CPU time
+- Each process thinks it owns all devices
+- Different Devices appear to have same interface
+- Device Interfaces more powerful than raw hardware
+
+    - Bitmapped display  windowing system
+    - Ethernet card  reliable, ordered, networking (TCP/IP)
+
+Fault Isolation
+
+- Processes unable to directly impact other processes
+- Bugs cannot crash whole machine
+
+Protection and Portability
+
+- Java interface safe and stable across many platforms

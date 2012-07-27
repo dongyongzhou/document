@@ -6,7 +6,8 @@ title: Operating System
 ## Knowledge Hierarchy
 
 * [Operating System Concept](os-concept.html)
-* [Introduction](os-introduction.html)
+* [Introduction](os-concept/os-introduction.html)
+* [Concurrency](os-concept/os-concurrency.html)
 
 ## Linux
 
