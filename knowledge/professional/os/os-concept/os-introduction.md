@@ -109,3 +109,30 @@ Fault Isolation
 Protection and Portability
 
 - Java interface safe and stable across many platforms
+
+
+## Uniprograming and Multiprograming
+
+### Uniprogramming: one thread at a time
+
+- MS/DOS, early Macintosh, Batch processing
+- Easier for operating system builder
+- Get rid of concurrency (only one thread accessing resources!)
+
+### Multiprogramming: more than one thread at a time
+
+- Multics, UNIX/Linux, OS/2, Windows NT – 7, Mac OS X
+- Often called “multitasking”, but multitasking has other meanings (talk about this later)
+
+
+### Challenges of Multiprograming
+
+- Each applications wants to own the machine  **virtual machine abstraction**
+
+- Applications **compete with each other for resources**
+
+    - Need to arbitrate access to shared resources  **concurrency**
+    - Need to protect applications from each other  **protection**
+
+- Applications need to communicate/cooperate with each other  **concurrency**
+
