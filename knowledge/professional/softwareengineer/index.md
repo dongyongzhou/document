@@ -9,7 +9,8 @@ title: Software Engineering
 
 ## Software Engineering Practising
 
-[Use cases](usecases.html)
+* [UML](uml.html)
+* [Use cases](usecases.html)
 
 ## Programming in a Project Team
 
