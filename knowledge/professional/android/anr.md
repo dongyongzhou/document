@@ -22,17 +22,17 @@ ANR就是Application Not Responding的全称，即应用程序无响应。如果
 
 InputManager kicks out the timer when it dispatches a key event to the UI chain of the foreground process. If it does not respond within time, WindowManager detects and prints out the message with the trace log and kills the process. An alert message also displays on the screen.
 
-超时时间的计数一般是从按键分发给app开始。超时的原因一般有两种：
+超时时间的计数一般是从按键分发给app开始。此类超时的原因一般有两种：
 
-(1)当前的事件没有机会得到处理（即UI线程正在处理前一个事件，没有及时的完成或者looper被某种原因阻塞住了）
-
-(2)当前的事件正在处理，但没有及时完成
-
+    (1)当前的事件没有机会得到处理（即UI线程正在处理前一个事件，没有及时的完成或者looper被某种原因阻塞住了）
+    (2)当前的事件正在处理，但没有及时完成
 
 - BroadcastReceiver在10秒内没有执行完毕
 ( If **BroadcastReceiver** does not finish executing within 10 sec, ActivityManager triggers ANR.)
 
 - ServiceTimeout(20 seconds) --小概率类型. Service在特定的时间内无法处理完成
+
+Service在20秒内没有执行完毕
 
 Every time there is a broadcast event, e.g., Wi-Fi on/off, GPS on/off, boot complete message, etc., it kicks a timeout before it broadcasts the event to all the processes that had registered a receiver. If there is a process not responding with a complete message back within a given time, ActivityManager kills that process and prints out the log.
 
@@ -78,7 +78,10 @@ frameworks/base/services/java/com/android/server/am/ActivityManagerService.java
 
 ### 超时检测
 
-#### 在5秒内没有响应输入的事件（例如，按键按下，屏幕触摸） 
+#### 1 在5秒内没有响应输入的事件（例如，按键按下，屏幕触摸） 
+
+当前处于激活状态的应用程序会通过调用setInputWindows函数把把当前获得焦点的Activity窗口设置到InputDispatcher的mFocusedWindow中去，InputReader通过调用getEvent向Linux内核InputEvent驱动获取输入事件，经过对输入事件的检查以及结合屏幕方向进一步处理后，再通过调用notifyKey或notifyMotion方式通知InputDispatcher，InputDispatcher从mFocusedWindow获取当前激活状态的窗口，并通过调用sendDispatchSignal把输入事件发送给应用程序。InputDispatcher在发送输入事件前先检查当前激活的Activity窗口是否还在处理前一个输入事件，如果是的话，那就要等待它处理完前一个键盘事件后再来处理新的键盘事件，并且进行5秒超时判断，如果超时，就调用notifyANR通知WindowManager，WindowManager再通知ActivityManager进行处理。
+
 
 **./base/services/input/InputDispatcher.cpp**
 
@@ -177,11 +180,32 @@ onANRLocked->
         File tracesFile = dumpStackTraces(true, firstPids, processStats, lastPids);
 
 
-#### BroadcastReceiver在10秒内没有执行完毕
+#### 2 BroadcastReceiver在10秒内没有执行完毕
 
 /frameworks/base/services/java/com/android/server/am/ActivityManagerService.java
 
-AmS: setBroadcastTimeoutLocked-> handleMessage:BROADCAST_TIMEOUT_MSG -> broadcastTimeoutLocked->appNotResponding->dumpStackTraces
+
+broadcastIntentLocked
+->scheduleBroadcastsLocked
+
+AmS: setBroadcastTimeoutLocked-> handleMessage:BROADCAST_TIMEOUT_MSG -> broadcastTimeoutLocked(true)->appNotResponding->dumpStackTraces
+
+
+广播是在Android中一种广泛运用的用于应用程序之间传输信息的机制，Android中广播机制包括应用程序或框架发送广播消息，Android框架层ActivityManagerService服务分发管理广播信息，以及应用程序或框架注册广播接收器，并接收来它所监听的广播消息。ActivityManagerService服务分发管理广播信息包括无序以及有序两种模式。在无序模式下，ActivityManagerService对广播消息的分发是一种非同步的模式，即不等待一个广播接收器处理完广播消息，就会将广播消息分发给下一个广播接收器。而无序模式类似于一种同步模式，ActivityManagerService会等待一个广播接收器处理完这个广播消息，才会将广播消息分发给下一个广播接收器。有序和无序模式是针对动态注册的广播接收器来说的，而对于静态注册的广播接收器则一律是有序模式。
+
+为了保证系统的响应性和稳定性， ActivityManagerService向各个应用程序或框架注册的广播接收器分发广播消息过程以及广播接收器处理广播消息的过程并不是无限期的，Android针对有序模式的广播接收器的处理设置了固定期限即10秒超时，保证每一个的Receiver的处理时长不超过规定时长，如果超时发生时，ActivityManagerService将会抛出应用程序无响应, 向用户报告当前的广播接收器在处理广播消息时存在无响应状况或者响应时间过长等状况。
+
+Reference: http://blog.csdn.net/windskier/article/details/7251742
+
+#### 3 Service在20秒内没有执行完毕
+
+bumpServiceExecutingLocked -> serviceDoneExecutingLocked ->
+
+handleMessage:SERVICE_TIMEOUT_MSG -> serviceTimeout -> appNotResponding
+
+在Android中，Service是用于后台运行的执行任务的服务。调用者和服务之间没有联系，即使调用者退出了，服务依然在运行。服务默认都是在应用程序的主线程中运行的。如果Service要运行非常耗时或者可能被阻塞的操作时，将会严重影响应用程序的响应性。Android框架层ActivityManagerService服务负责服务的创建与管理。为了保证系统的响应性，Android为服务运行设置了固定期限即20秒超时，ActivityManagerService在收到用户启动服务请求时，将为用户程序创建并启动指定的服务，与此同时将调用系统发送消息服务指定在20秒后发出服务超时消息，应用服务应该在20秒内执行完成，并且通知ActivityManagerService服务执行完成并且删除此超时消息。如果此超时消息未能及时删除，ActivityManagerService将会抛出应用程序无响应错误。
+
+![startService时的调用顺序](http://img.my.csdn.net/uploads/201109/20/0_1316483943xMyx.gif)
 
 ### 超时处理
 
@@ -369,3 +393,6 @@ IntentReceiver执行时间的特殊限制意味着它应该做：在后台里做
 * [Designing for Responsiveness](http://developer.android.com/guide/practices/responsiveness.html)
 * [Android ANR问题的分析和解决](http://wenku.it168.com/d_000083535.shtml)
 * [android anr分析方法](http://blog.csdn.net/gemmem/article/details/7446421)
+* [android Application Component研究之BroadcastReceiver](http://blog.csdn.net/windskier/article/details/7251742)
+* [Android Intent原理分析](http://apps.hi.baidu.com/share/detail/38586591)
+* [Service启动过程过程详解](http://blog.csdn.net/cloudwu007/article/details/6792589)
