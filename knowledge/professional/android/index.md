@@ -44,16 +44,16 @@ title: Android
 
 * [Application Not Responding (ANR)](anr.html)
 * [Java Exception](java-exception.html)
-* [Native Crash/Dalvik VM Crash (Tombstone Log)
-* [Abnormal Binder Threads
-* [High CPU Utilization
+* [Native Crash/Dalvik VM Crash ](Tombstone Log)
+* [Abnormal Binder Threads]
+* [High CPU Utilization]
 
 #### Framework Reboot
 
-* [Android Watchdog fires
-* [Fatal Exception in System Process
-* [Native Crash in System Process
-* [Excessive JNI References
+* [Android Watchdog fires]
+* [Fatal Exception in System Process]
+* [Native Crash in System Process]
+* [Excessive JNI References]
 
 ### Android Debugging Mechanism
 
