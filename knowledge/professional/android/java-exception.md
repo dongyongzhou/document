@@ -296,3 +296,41 @@ RuntimeInit.UncaughtHandler->handleApplicationCrash
 Use this to log a message when a thread exits due to an uncaught exception.  
 The framework catches these for the main threads, 
 so this should only matter for threads created by applications.
+
+
+#### Collect logs..
+
+Mainlogs
+
+/dalvik/vm/Thread.cpp
+
+static void threadExitUncaughtException(Thread* self, Object* group)
+
+/dalvik/vm/Exception.cpp
+
+->void dvmLogExceptionStackTrace()
+
+W/dalvikvm( 2686): threadid=1: thread exiting with uncaught exception (group=0x40a5c9d8)
+E/AndroidRuntime( 2686): FATAL EXCEPTION: main
+E/AndroidRuntime( 2686): com.android.development.BadBehaviorActivity$BadBehaviorException: Whatcha gonna do, whatcha gonna do
+
+eventlogs:
+
+
+    public void handleApplicationCrash(IBinder app, ApplicationErrorReport.CrashInfo crashInfo) {
+        ProcessRecord r = findAppProcess(app, "Crash");
+        final String processName = app == null ? "system_server"
+                : (r == null ? "unknown" : r.processName);
+
+        EventLog.writeEvent(EventLogTags.AM_CRASH, Binder.getCallingPid(),
+                processName,
+                r == null ? -1 : r.info.flags,
+                crashInfo.exceptionClassName,
+                crashInfo.exceptionMessage,
+                crashInfo.throwFileName,
+                crashInfo.throwLineNumber);
+
+        addErrorToDropBox("crash", r, processName, null, null, null, null, null, crashInfo);
+
+        crashApplication(r, crashInfo);
+    }

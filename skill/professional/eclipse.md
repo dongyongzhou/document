@@ -6,9 +6,16 @@ title: Eclipse operation
 # Eclipse
  
 ## Reference
-
  
 * [List of key bindings](http://help.eclipse.org/indigo/index.jsp?topic=%2Forg.eclipse.platform.doc.user%2Freference%2Fref-keybindings.htm)
+
+## 调试专题
+
+### 内存泄露
+
+* [Eclipse Memory Analyzer](http://www.eclipse.org/mat/)
+* [使用 Eclipse Memory Analyzer 检测内存泄漏问题](http://blog.csdn.net/moneyice/article/details/2644503)
+* [使用 Eclipse Memory Analyzer 进行堆转储文件分析](http://www.ibm.com/developerworks/cn/opensource/os-cn-ecl-ma/index.html)
 
 ## Eclipse 快捷操作
 

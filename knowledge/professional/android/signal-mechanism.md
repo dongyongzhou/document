@@ -39,10 +39,31 @@ A signal is a small message that notifies a process that an event of some type h
 
 1. 重用SIGUSR1 和 SIGUSR2两个信号
 2. 需要连续产生相同的信号而又要处理时，在期间加入延迟
+3. 特殊处理SIGQUIT信号：dumping the thread stacks
 
 ## Android信号如何产生
 
 To be continued...
+
+SIGUSR1、SIGUSR2、SIGQUIT信号三个信号是在VM层进行定义以及处理的。
+
+/dalvik/vm/SignalCatcher.cpp
+
+    static void* signalCatcherThreadStart(void* arg)
+    {
+
+        case SIGQUIT:
+            handleSigQuit();
+            break;
+        case SIGUSR1:
+            handleSigUsr1();
+            break;
+#if defined(WITH_JIT) && defined(WITH_JIT_TUNING)
+        case SIGUSR2:
+            handleSigUsr2();
+            break;
+
+
 
 ### 如何发送
 

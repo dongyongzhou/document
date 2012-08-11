@@ -231,6 +231,8 @@ File tracesFile = dumpStackTraces(true, firstPids, processStats, lastPids);
 
 **保存内容：**
 
+./base/services/java/com/android/server/am/ActivityManagerService.java
+
 - First collect all of the stacks of the most important pids.
 
             if (firstPids != null) {
@@ -249,13 +251,35 @@ File tracesFile = dumpStackTraces(true, firstPids, processStats, lastPids);
 
 实现方式为Process.sendSignal(firstPids.get(i), Process.SIGNAL_QUIT);
 
+
+/dalvik/vm/SignalCatcher.cpp
+
+signalCatcherThreadStart
+
+static void* signalCatcherThreadStart(void* arg)
+
+        switch (rcvd) {
+        case SIGQUIT:
+            handleSigQuit();
+            break;
+        case SIGUSR1:
+            handleSigUsr1();
+            break;
+    #if defined(WITH_JIT) && defined(WITH_JIT_TUNING)
+        case SIGUSR2:
+            handleSigUsr2();
+            break;
+    #endif
+    
+
 保存位置：/data/anr/trace.txt->trace_<process-name>
 
 **那么保存的进程有哪些呢？**
 
+
 // Dump thread traces as quickly as we can, starting with "interesting" processes.
 
-            firstPids.add(app.pid);
+     firstPids.add(app.pid);
 
 先保存本进程的PID
 
@@ -289,8 +313,7 @@ File tracesFile = dumpStackTraces(true, firstPids, processStats, lastPids);
 
 保存位置： logcat main buffer
 
-        Slog.e(TAG, info.toString());
-
+    Slog.e(TAG, info.toString());
 
 
     E/ActivityManager(  344): ANR in com.android.development (com.android.development/.BadBehaviorActivity)
