@@ -42,6 +42,15 @@ result
     .txt
     .txt
 
+### 截取子串2
+
+截取"log_2012-07-22_00-26-09.txt"子串："_2012-07-22_00-26-09"
+
+method1: start from "_", and end with "."
+
+method2: str[3..-5]
+
+
 ## 字符串比较
 
 ### 结束字符串比较

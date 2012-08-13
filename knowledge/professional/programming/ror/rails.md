@@ -10,6 +10,10 @@ title: Rails
 * [The Ruby Toolbox](https://www.ruby-toolbox.com/)
 * [The RubyonRails API](http://api.rubyonrails.org/)
 
+## Rails 数据库迁移
+
+* [Rails 数据库迁移](migrate.html)
+
 ## Rails 运行模式
 
 ### development

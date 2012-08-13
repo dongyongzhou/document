@@ -287,9 +287,22 @@ handleApplicationCrash->crashApplicationv->mHandler.sendMessage(SHOW_ERROR_MSG)
 RuntimeInit.UncaughtHandler->handleApplicationCrash
 
     private static class UncaughtHandler implements Thread.UncaughtExceptionHandler {
+
                 // Bring up crash dialog, wait for it to be dismissed
                 ActivityManagerNative.getDefault().handleApplicationCrash(
                         mApplicationObject, new ApplicationErrorReport.CrashInfo(e));
+            } catch (Throwable t2) {
+                try {
+                    Slog.e(TAG, "Error reporting crash", t2);
+                } catch (Throwable t3) {
+                    // Even Slog.e() fails!  Oh well.
+                }
+            } finally {
+                // Try everything to make sure this process goes away.
+                Process.killProcess(Process.myPid());
+                System.exit(10);
+            }
+
 
 可见RuntimeInit也是继承UncaughtExceptionHandler接收处理未捕捉异常。通过实现 UncaughtExceptionHandler就可以达到目的。
 
