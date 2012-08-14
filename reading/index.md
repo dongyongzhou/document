@@ -30,6 +30,10 @@ title: Reading
 
 * [荀子-劝学篇](xunzi-quanxue.html)
 
+## 儿童读物
+
+* 《你看起来很好吃》：宫西达也
+
 ##参考资料
 
 * [国学网](http://www.guoxue.com/)
