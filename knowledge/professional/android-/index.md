@@ -78,6 +78,10 @@ title: Android
 * [Android Source Code Structure](android-code-structure.html)
 * [Android Source Code Building](android-code-building.html)
 
+## Tools
+
+* [androidscreencast](http://code.google.com/p/androidscreencast/)
+
 ## Refernece & Resource
 
 * [Android 源代码在线查看](http://source.android.com/source/downloading.html)
