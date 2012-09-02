@@ -44,6 +44,26 @@ global references available to the VM.  (This should only be enabled
 on the emulator.) 
 
 
+LocalRefs:addLocalReference(GetSuperclass/ToReflectedMethod): DeleteLocalRef
+
+GlobalRefs:NewGlobalRef, DeleteGlobalRef,
+
+WeakGlobalRefs:will be GC in short of memory
+
+
+AddLocalReferenceFailure
+
+use of deleted local reference
+
+use of deleted global reference
+
+use of deleted weak global reference
+
+Invalid indirect reference
+
+Excessive JNI global references
+
+
 ### Where is the detecting
 
 ./dalvik/vm/Jni.cpp:                    LOGW("Excessive JNI global references (%d)", count);

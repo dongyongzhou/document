@@ -133,3 +133,30 @@ or put the xxxx to /var/www location.
     PassengerRuby /usr/local/rvm/wrappers/ruby-1.8.7-p352/ruby
     PassengerDefaultUser www-data
     +PassengerAnalyticsLogGroup www-data
+
+
+
+
+## Unexpected error in mod_passenger: Cannot spawn application
+
+Internal Server Error
+
+The server encountered an internal error or misconfiguration and was unable to complete your request.
+
+Please contact the server administrator, [no address given] and inform them of the time the error occurred, and anything you might have done that may have caused the error.
+
+More information about this error may be available in the server error log.
+
+/var/log/apache2/error.log
+
+[ pid=22235 thr=139869518600000 file=ext/apache2/Hooks.cpp:862 time=2012-08-31 00:18:14.61 ]: Unexpected error in mod_passenger: Cannot spawn application '/var/www/graveyard': The spawn server died unexpectedly, and restarting it failed.
+  Backtrace:
+     in 'virtual Passenger::SessionPtr Passenger::ApplicationPool::Client::get(const Passenger::PoolOptions&)' (Client.h:742)
+     in 'Passenger::SessionPtr Hooks::getSession(const Passenger::PoolOptions&)' (Hooks.cpp:294)
+     in 'int Hooks::handleRequest(request_rec*)' (Hooks.cpp:563)
+
+
+### analysis
+
+...to be continued.
+### solution

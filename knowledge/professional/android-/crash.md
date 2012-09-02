@@ -36,6 +36,7 @@ new Thread() {
 ### Crash the native process
 
 // For some reason, the JVM needs two of these to get the hint
+
                 Log.i(TAG, "Native crash pressed -- about to kill -11 self");
                 Process.sendSignal(Process.myPid(), 11);
                 Process.sendSignal(Process.myPid(), 11);

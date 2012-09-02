@@ -175,7 +175,7 @@ Android Dalvik应用收到该信号后，**会打印改应用中所有线程的�
 
 要点是：
 
-要产生core dump并终止某进程，我们需要 连续发送两次改信号，并且中间间隔在0.2秒到3秒之间。
+要产生core dump并终止某进程，我们需要连续发送两次改信号，并且中间间隔在0.2秒到3秒之间。
 如果间隔过小， Android可能无法接收第一个signal。如果时间过久，android将简单的终止进程，而没有 core dump产生。
 
     F/libc    (19226): Fatal signal 6 (SIGABRT) at 0x00004709 (code=0)

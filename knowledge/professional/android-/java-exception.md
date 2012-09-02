@@ -310,7 +310,6 @@ Use this to log a message when a thread exits due to an uncaught exception.
 The framework catches these for the main threads, 
 so this should only matter for threads created by applications.
 
-
 #### Collect logs..
 
 Mainlogs
@@ -326,6 +325,7 @@ static void threadExitUncaughtException(Thread* self, Object* group)
 W/dalvikvm( 2686): threadid=1: thread exiting with uncaught exception (group=0x40a5c9d8)
 E/AndroidRuntime( 2686): FATAL EXCEPTION: main
 E/AndroidRuntime( 2686): com.android.development.BadBehaviorActivity$BadBehaviorException: Whatcha gonna do, whatcha gonna do
+
 
 eventlogs:
 

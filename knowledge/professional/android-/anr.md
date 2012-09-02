@@ -211,6 +211,21 @@ handleMessage:SERVICE_TIMEOUT_MSG -> serviceTimeout -> appNotResponding
 
 appNotResponding中
 
+#### 0 slowxx 
+
+Got it from new dumpstate.c 
+
+The activity manager has a feature when launching an app every 500ms, 
+where it collects the current stack traces of the app if it hasn't 
+finished launching. It will dump the stack traces to /data/anr/ 
+slowXX.txt 
+
+    final void logAppTooSlow(ProcessRecord app, long startTime, String msg) {
+        String tracesPath = SystemProperties.get("dalvik.vm.stack-trace-file", null);
+
+    getprop dalvik.vm.stack-trace-file
+   /data/anr/traces.txt
+
 #### 1 dumpStackTraces
 
 File tracesFile = dumpStackTraces(true, firstPids, processStats, lastPids);
@@ -251,7 +266,6 @@ File tracesFile = dumpStackTraces(true, firstPids, processStats, lastPids);
 
 实现方式为Process.sendSignal(firstPids.get(i), Process.SIGNAL_QUIT);
 
-
 /dalvik/vm/SignalCatcher.cpp
 
 signalCatcherThreadStart
@@ -275,7 +289,6 @@ static void* signalCatcherThreadStart(void* arg)
 保存位置：/data/anr/trace.txt->trace_<process-name>
 
 **那么保存的进程有哪些呢？**
-
 
 // Dump thread traces as quickly as we can, starting with "interesting" processes.
 
@@ -309,7 +322,29 @@ static void* signalCatcherThreadStart(void* arg)
 
 - Next measure CPU usage.
 
-    Process.sendSignal(stats.pid, Process.SIGNAL_QUIT);
+        final ProcessStats processStats = new ProcessStats(true);
+        File tracesFile = dumpStackTraces(true, firstPids, processStats, lastPids);
+            // Next measure CPU usage.
+            if (processStats != null) {
+                processStats.init();
+                System.gc();
+                processStats.update();
+
+
+
+        String cpuInfo = null;
+        if (MONITOR_CPU_USAGE) {
+            updateCpuStatsNow();
+            synchronized (mProcessStatsThread) {
+                cpuInfo = mProcessStats.printCurrentState(anrTime);
+            }
+            info.append(processStats.printCurrentLoad());
+            info.append(cpuInfo);
+        }
+
+        info.append(processStats.printCurrentState(anrTime));
+
+
 
 保存位置： logcat main buffer
 
@@ -396,6 +431,27 @@ tombstoneNoCrash_xx
 
 说明主线程在等待下条消息进入消息队列
 
+vm/Thread.h
+
+enum ThreadStatus {
+
+    THREAD_UNDEFINED    = -1,       /* makes enum compatible with int32_t */
+
+    /* these match up with JDWP values */
+    THREAD_ZOMBIE       = 0,        /* TERMINATED */
+    THREAD_RUNNING      = 1,        /* RUNNABLE or running now */
+    THREAD_TIMED_WAIT   = 2,        /* TIMED_WAITING in Object.wait() */
+    THREAD_MONITOR      = 3,        /* BLOCKED on a monitor */
+    THREAD_WAIT         = 4,        /* WAITING in Object.wait() */
+    /* non-JDWP states */
+    THREAD_INITIALIZING = 5,        /* allocated, not yet running */
+    THREAD_STARTING     = 6,        /* started, not yet on thread list */
+    THREAD_NATIVE       = 7,        /* off in a JNI native method */
+    THREAD_VMWAIT       = 8,        /* waiting on a VM resource */
+    THREAD_SUSPENDED    = 9,        /* suspended, usually by GC or debugger */
+};
+
+Java Debugging Wireless Protocol 
 
 ## How to fix
 
