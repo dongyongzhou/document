@@ -148,9 +148,17 @@ struct list_head {
 
 struct task_struct {
 
-	const struct sched_class *sched_class;
+	const struct sched_class *sched_class;//调度类
+
+
+fair_sched_class
+
+idle_sched_class
+
 
 static const struct sched_class rt_sched_class;
+
+每个cpu有一个运行队列
 
 
 ## Reference
