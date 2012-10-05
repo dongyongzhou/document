@@ -12,15 +12,17 @@ title: Rails 数据库迁移
 
 ### Creating a Migration
 
-$ rails generate migration AddModeToStandardLogs mode:string
+* Create a Standalone Migration
+
+    $ rails generate migration AddModeToStandardLogs mode:string
 
       invoke  active_record
       create    db/migrate/20120813055814_add_mode_to_standard_logs.rb
 
 
-$ rails generate migration AddModeToInfoLogs mode:string
+   $ rails generate migration AddModeToInfoLogs mode:string
 
-/db/migrate/20120813055814_add_mode_to_standard_logs.rb
+    /db/migrate/20120813055814_add_mode_to_standard_logs.rb
 
       class AddModeToStandardLogs < ActiveRecord::Migration
         def self.up
@@ -31,6 +33,10 @@ $ rails generate migration AddModeToInfoLogs mode:string
           remove_column :standard_logs, :mode
         end
       end
+
+* Create a Standalone Migration with more columns.
+
+    $ rails generate migration AddDetailsToInfoLogs device_type:string phase:string completion:string
 
 ### Running Migrations
 

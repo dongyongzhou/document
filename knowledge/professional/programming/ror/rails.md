@@ -9,6 +9,7 @@ title: Rails
 * [RailsCast](http://railscasts.com/)
 * [The Ruby Toolbox](https://www.ruby-toolbox.com/)
 * [The RubyonRails API](http://api.rubyonrails.org/)
+* [Rails Guide中文](http://guides.ruby-china.org/)
 
 ## Rails 数据库迁移
 

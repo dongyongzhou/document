@@ -24,9 +24,10 @@ Java
 
 C++
 
-## Bash Script
+## shell Script
 
 Bash Script
+* [Linux command](shell/command.html)
 
 ## Python Script
 

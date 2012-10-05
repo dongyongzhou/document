@@ -145,7 +145,13 @@ Sending Email in controllers
 By inserting a call to UserMailer.welcome_email in the specify method.
     UserMailer.welcome_email(@user).deliver
 
-### 3. Configuration
+### 2. Receive email
+
+* [Receiving Incoming Email in Rails 3 – choosing the right approach](http://steve.dynedge.co.uk/2010/09/07/incoming-email-in-rails-3-choosing-the-right-approach/)
+
+
+
+### 4. Configuration
 
 Action Mailer Configuration for GMail.
 Adding the following to appropriate config/environments/$RAILS_ENV.rb file:

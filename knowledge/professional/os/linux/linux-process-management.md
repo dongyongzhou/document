@@ -132,10 +132,14 @@ struct task_struct {
 
 
 
-struct list_head {
-	struct list_head *next, *prev;
-};
+	struct list_head {
+		struct list_head *next, *prev;
+	};
 
+
+线程链表:
+
+	struct list_head thread_group;
 
 ### 进程链表中的插入和删除
 
