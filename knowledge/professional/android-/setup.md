@@ -36,6 +36,29 @@ binaries
     $ export PATH=~/bin:$PATH
     $ curl http://android.git.kernel.org/repo > ~/bin/repo
     $ chmod a+x ~/bin/repo
+
+## Loading Android source code project into Eclipse
+
+    $ cp development/ide/eclipse/.classpath .
+
+- a: New->java project->location for the ap->finish (better, not to ruin the original source code)
+- b: Import project.	(Fast)
+
+[reference](http://wenku.baidu.com/view/e16845f9700abb68a982fb75.html?from_page=view&from_mod=download)
+
+### setup eclipse
+
+eclipse.ini under the installation place.
+
+    -vmargs
+    -Xms256m
+    -Xmx1024m
+    -XX:MaxPermSize=512m
+
+
+## Creating Android app project from Android app source code.
+
+
 ## Problems
 
 ### /usr/bin/ld: cannot find -lz
