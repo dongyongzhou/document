@@ -85,8 +85,8 @@ title: Android
 
 ## Android Notes
 
+* [About No SDCARD RW permission for System process](about-system-rw-SDCARD-permission.html)
 * [About source ./build/envsetup.sh ](about-source-envsetup.html)
-
 
 ## Refernece & Resource
 
