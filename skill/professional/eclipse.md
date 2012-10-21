@@ -21,6 +21,11 @@ title: Eclipse operation
 
 The list of available key bindings in Eclipse depends on many factors, including what view or editor is selected, whether a dialog is open, what plug-ins are installed, and what operating and windowing system is being used. At any time, you can obtain a list of available key bindings using Key Assist (  Help > Key Assist... or Ctrl+Shift+L). The following tables list some popular key bindings available in the Eclipse SDK.
 
+
+- 错误添加类：CTL+SHIFT+O
+- 注释办法：CTL+SHIFT+/
+- 排版：CTL+SHIFT+F
+
 - Ctrl+1 快速修复
 - Ctrl+D: 删除当前行 
 - Ctrl+Alt+↓ 复制当前行到下一行(复制增加)
