@@ -83,6 +83,11 @@ title: Android
 
 * [androidscreencast](http://code.google.com/p/androidscreencast/)
 
+## Android Notes
+
+* [About source ./build/envsetup.sh ](about-source-envsetup.html)
+
+
 ## Refernece & Resource
 
 * [Android 源代码在线查看](http://source.android.com/source/downloading.html)
