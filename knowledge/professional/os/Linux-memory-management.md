@@ -235,3 +235,6 @@ Vfree释放非连续线性区间
 - Vmalloc/Vfree: 非连续内存区
 
 
+## 5 Refenrence
+
+* [Linux内核--内核地址空间分布和进程地址空间(转)](http://www.cnblogs.com/bizhu/archive/2012/10/09/2717303.html)
