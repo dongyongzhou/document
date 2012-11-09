@@ -38,6 +38,16 @@ title: Rails 数据库迁移
 
     $ rails generate migration AddDetailsToInfoLogs device_type:string phase:string completion:string
 
+* Set default value.
+
+change the created migration
+
+       def self.up
+         add_column :info_logs, :mode, :string, :default => "uploading"
+       end
+
+
+
 ### Running Migrations
 
 $ rake db:migrate VERSION=20120813055814

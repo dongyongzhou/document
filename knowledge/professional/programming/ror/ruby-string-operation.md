@@ -10,6 +10,24 @@ title: ruby-string-operation
 
 使用String 的[]方法访问字符串子串
 
+## 字符串的长度
+
+str.length => integer
+
+## 判断字符串中是否包含另一个串
+
+str.include? other_str
+
+ => true or false 
+
+
+## 字符串匹配
+
+str.match(pattern) =>
+
+ matchdata or nil 
+
+
 ### 取第N个字符
 
 - str[N]：返回它的十进制字符编码
