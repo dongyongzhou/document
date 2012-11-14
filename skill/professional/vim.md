@@ -17,3 +17,7 @@ title: Vim operation
 - $ 代表一行的结尾处
 -  ^ 代表一行的开头处
  
+### 新窗口
+
+- vsp file_name:竖向打开
+- sp file_name：横向打开
