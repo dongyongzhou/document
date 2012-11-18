@@ -346,14 +346,14 @@ No free on module exit
 #####5.4.4.2 Phone stress test
 
 - Long Run
+
     
     my $dev_op = "xxxx"
     my $clearcommand= "adb $dev_op shell \"echo clear > /sys/kernel/debug/kmemleak"";
     my $scancommand="adb $dev_op shell \"echo scan > /sys/kernel/debug/kmemleak"";
     my $readcommand="adb $dev_op shell \"cat /sys/kernel/debug/kmemleak"";
     my $adb_dfs = "adb $dev_op shell mount -t debugfs none /sys/kernel/debug";
-
-
+    
     system($adb_dfs);
     while($i >=0 ){
 	    print "starting iteration $i\n";
@@ -369,7 +369,7 @@ No free on module exit
 
  result example
     
-	unreferenced object 0xe51ba980 (size 128):
+  	unreferenced object 0xe51ba980 (size 128):
   	comm "kworker/0:2", pid 307, jiffies 4294937792 (age 335.690s)
  	 hex dump (first 32 bytes):
   	  00 c0 21 e6 00 10 00 00 00 00 00 00 00 00 00 00  ..!.............
