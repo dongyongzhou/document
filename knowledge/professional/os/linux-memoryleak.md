@@ -199,6 +199,29 @@ Kmemleak can also be disabled at boot-time by passing "kmemleak=off" on the kern
 
 - special Case
 
+
+- result example
+
+    
+	unreferenced object 0xe51ba980 (size 128):
+  	comm "kworker/0:2", pid 307, jiffies 4294937792 (age 335.690s)
+ 	 hex dump (first 32 bytes):
+  	  00 c0 21 e6 00 10 00 00 00 00 00 00 00 00 00 00  ..!.............
+  	  00 00 00 00 00 00 00 00 00 00 00 00 10 c3 37 c0  ..............7.
+ 	 backtrace:
+ 	   [<c013bc38>] kmem_cache_alloc_trace+0x160/0x21c
+ 	   [<c0378608>] usb_ept_alloc_req+0x2c/0xb8
+  	   [<c037c5c8>] usb_diag_alloc_req+0x8c/0xdc
+  	   [<c02cce64>] diagfwd_connect+0x28/0xd4
+   	   [<c0379f1c>] usb_config_work_func+0x28/0xa0
+   	   [<c00a9928>] process_one_work+0x27c/0x484
+       [<c00a9d40>] worker_thread+0x210/0x3b0
+       [<c00adbd8>] kthread+0x80/0x8c
+  	   [<c000efa0>] kernel_thread_exit+0x0/0x8
+   	   [<ffffffff>] 0xffffffff
+
+
+
 ##6 Summary
 
 ##7 Reference
