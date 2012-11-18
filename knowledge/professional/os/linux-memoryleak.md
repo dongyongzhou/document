@@ -17,6 +17,18 @@ Lets disscuss How to detect Kernel Memory leak
 
 A memory leak has symptoms similar to a number of other problems and generally can only be diagnosed by a programmer with access to the program source code.
 
+###2.1 Linux memory management
+
+alloc in need, and free in no need  
+
+based on page frame management 
+
+![](memory-management.png)
+
+- alloc big space:  alloc_pages/free_page:buddy algorithm
+- alloc data struct::kmalloc/kfree：slab algorithm
+- Non continuous memory area:Vmalloc/Vfree: 
+
 ###2.2 Memory mode for C++ and Java
 
 - local variable: saved in Stack(fast for access)
@@ -53,16 +65,14 @@ A memory leak has symptoms similar to a number of other problems and generally c
 
 ###3.2 kernel memory leaks in linux kernel 
 
-allocations:
+allocations and free
 
-     kmalloc/kzalloc
-     vmalloc
-     kmem_cache_alloc
-     per_cpu
+- kmalloc/kzalloc ->kfree
+- vmalloc         ->Vfree
+- per_cpu
 
-release:
+- kmem_cache_alloc->kmem_cache_free
 
-    free
 
 ##4 How to detect Memory Leak
 
@@ -341,29 +351,25 @@ No free on module exit
 
 ![](kmemleak-example.png)
 
-
-
 #####5.4.4.2 Phone stress test
 
 - Long Run
-
     
-    my $dev_op = "xxxx"
-    my $clearcommand= "adb $dev_op shell \"echo clear > /sys/kernel/debug/kmemleak"";
-    my $scancommand="adb $dev_op shell \"echo scan > /sys/kernel/debug/kmemleak"";
-    my $readcommand="adb $dev_op shell \"cat /sys/kernel/debug/kmemleak"";
-    my $adb_dfs = "adb $dev_op shell mount -t debugfs none /sys/kernel/debug";
+        my $dev_op = "xxxx"
+        my $clearcommand= "adb $dev_op shell \"echo clear > /sys/kernel/debug/   kmemleak"";
+        my $scancommand="adb $dev_op shell \"echo scan > /sys/kernel/debug/  kmemleak"";
+        my $readcommand="adb $dev_op shell \"cat /sys/kernel/debug/kmemleak"";
+        my $adb_dfs = "adb $dev_op shell mount -t debugfs none /sys/kernel/debug";
     
-    system($adb_dfs);
-    while($i >=0 ){
-	    print "starting iteration $i\n";
-	    system($clearcommand);
-	    system($scancommand);
-	    system($readcommand);
-	    print "buddy\n";
-	    $i++;
-	    sleep(5);
-	}
+        system($adb_dfs);
+        while($i >=0 ){
+    	    print "starting iteration $i\n";
+    	    system($clearcommand);
+    	    system($scancommand);
+    	    system($readcommand);
+    	    $i++;
+    	    sleep(5);
+    	}
 
 - special Case
 
@@ -385,7 +391,6 @@ No free on module exit
        [<c00adbd8>] kthread+0x80/0x8c
   	   [<c000efa0>] kernel_thread_exit+0x0/0x8
    	   [<ffffffff>] 0xffffffff
-
 
 ####5.4.5 Summary
 

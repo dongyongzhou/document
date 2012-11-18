@@ -228,13 +228,37 @@ Linux内核有为非连续内存区保留的线性地址空间（VMALLOC_START~V
 
 Vfree释放非连续线性区间
 
-总结：
+## 5 总结
 
-- alloc_pages/free_page:buddy算法，分配大空间
-- kmalloc/kfree：slab，分配数据结构
-- Vmalloc/Vfree: 非连续内存区
+###5.1 内存管理
 
+####5.1.1 分区：zones
 
-## 5 Refenrence
+* 原因：
+
+存在硬件制约：一些页框由于自身的物理地址的原因不能被一些任务所使用，例如
+
+    ISA总线的DMA控制器只能对ram的前16M寻址
+    在一些具有大容量ram的32位计算机中，CPU不能直接访问所有的物理存储器，因为线性地址空间不够
+
+	Linux把物理存储器划分为4个区
+		ZONE_DMA 			-0~16MB->3GB~3GB+16MB
+		ZONE_DMA32  (未见用）
+		ZONE_NORMAL  		-16MB~896MB -> 3GB+16MB~3GB+896MB 
+		ZONE_HIGHMEM
+
+####5.1.2 分页
+###5.2 动态内存分配
+
+按需分配，不需要时释放
+
+以页框管理为基本
+![](memory-management.png)
+
+- 分配大空间:  alloc_pages/free_page:buddy算法，
+- 分配数据结构:kmalloc/kfree：slab，
+- 非连续内存区:Vmalloc/Vfree: 
+
+## 6 Refenrence
 
 * [Linux内核--内核地址空间分布和进程地址空间(转)](http://www.cnblogs.com/bizhu/archive/2012/10/09/2717303.html)
