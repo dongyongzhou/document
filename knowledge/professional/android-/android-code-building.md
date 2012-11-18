@@ -33,70 +33,69 @@ http://en.wikipedia.org/wiki/Mr._Clean
 
 build/core/main.mk
 
-# -------------------------------------------------------------------
-# This is used to to get the ordering right, you can also use these,
-# but they're considered undocumented, so don't complain if their
-# behavior changes.
+     # -------------------------------------------------------------------
+     # This is used to to get the ordering right, you can also use these,
+     # but they're considered undocumented, so don't complain if their
+     # behavior changes.
 
-.PHONY: prebuilt
-prebuilt: $(ALL_PREBUILT)
+     .PHONY: prebuilt
+     prebuilt: $(ALL_PREBUILT)
 
-# An internal target that depends on all copied headers
-# (see copy_headers.make).  Other targets that need the
-# headers to be copied first can depend on this target.
+     # An internal target that depends on all copied headers
+     # (see copy_headers.make).  Other targets that need the
+     # headers to be copied first can depend on this target.
 
-.PHONY: all_copied_headers
-all_copied_headers: ;
+     .PHONY: all_copied_headers
+     all_copied_headers: ;
 
-# All the droid stuff, in directories
-.PHONY: files
-files: prebuilt \
-        $(modules_to_install) \
-        $(modules_to_check) \
-        $(INSTALLED_ANDROID_INFO_TXT_TARGET)
+     # All the droid stuff, in directories
+     .PHONY: files
+     files: prebuilt \
+             $(modules_to_install) \
+             $(modules_to_check) \
+             $(INSTALLED_ANDROID_INFO_TXT_TARGET)
+     
+     # -------------------------------------------------------------------
 
-# -------------------------------------------------------------------
+     .PHONY: checkbuild
+     checkbuild: $(modules_to_check)
 
+     .PHONY: ramdisk
+     ramdisk: $(INSTALLED_RAMDISK_TARGET)
 
-.PHONY: checkbuild
-checkbuild: $(modules_to_check)
+     .PHONY: systemtarball
+     systemtarball: $(INSTALLED_SYSTEMTARBALL_TARGET)
 
-.PHONY: ramdisk
-ramdisk: $(INSTALLED_RAMDISK_TARGET)
+     .PHONY: boottarball
+     boottarball: $(INSTALLED_BOOTTARBALL_TARGET)
 
-.PHONY: systemtarball
-systemtarball: $(INSTALLED_SYSTEMTARBALL_TARGET)
+     .PHONY: userdataimage
+     userdataimage: $(INSTALLED_USERDATAIMAGE_TARGET)
 
-.PHONY: boottarball
-boottarball: $(INSTALLED_BOOTTARBALL_TARGET)
+     ifneq (,$(filter userdataimage, $(MAKECMDGOALS)))
+     $(call dist-for-goals, userdataimage, $(BUILT_USERDATAIMAGE_TARGET))
+     endif
 
-.PHONY: userdataimage
-userdataimage: $(INSTALLED_USERDATAIMAGE_TARGET)
+     .PHONY: userdatatarball
+     userdatatarball: $(INSTALLED_USERDATATARBALL_TARGET)
 
-ifneq (,$(filter userdataimage, $(MAKECMDGOALS)))
-$(call dist-for-goals, userdataimage, $(BUILT_USERDATAIMAGE_TARGET))
-endif
+     .PHONY: persistimage
+     persistimage: $(INSTALLED_PERSISTIMAGE_TARGET)
 
-.PHONY: userdatatarball
-userdatatarball: $(INSTALLED_USERDATATARBALL_TARGET)
+     .PHONY: persisttarball
+     persisttarball: $(INSTALLED_PERSISTTARBALL_TARGET)
 
-.PHONY: persistimage
-persistimage: $(INSTALLED_PERSISTIMAGE_TARGET)
+     .PHONY: bootimage
+     bootimage: $(INSTALLED_BOOTIMAGE_TARGET)
 
-.PHONY: persisttarball
-persisttarball: $(INSTALLED_PERSISTTARBALL_TARGET)
+     .PHONY: cacheimage
+     cacheimage: $(INSTALLED_CACHEIMAGE_TARGET)
 
-.PHONY: bootimage
-bootimage: $(INSTALLED_BOOTIMAGE_TARGET)
+     .PHONY: tombstonesimage
+     tombstonesimage: $(INSTALLED_TOMBSTONESIMAGE_TARGET)
 
-.PHONY: cacheimage
-cacheimage: $(INSTALLED_CACHEIMAGE_TARGET)
-
-.PHONY: tombstonesimage
-tombstonesimage: $(INSTALLED_TOMBSTONESIMAGE_TARGET)
-
-.PHONY: aboot
-aboot: $(INSTALLED_BOOTLOADER_TARGET)
+     .PHONY: aboot
+     aboot: $(INSTALLED_BOOTLOADER_TARGET)
 
 
 ## Android Source Code Build Result
