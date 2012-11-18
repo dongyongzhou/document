@@ -399,11 +399,6 @@ No free on module exit
 >     Page allocations 
 >     ioremap 
 
-* memory-management
-
-> - alloc big space:  alloc\_pages/free_page:buddy algorithm
-> - alloc data struct::kmalloc/kfree：slab algorithm
-> - Non continuous memory area:Vmalloc/Vfree: 
 
 ##6 Summary
 
