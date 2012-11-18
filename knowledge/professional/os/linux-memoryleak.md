@@ -25,7 +25,7 @@ based on page frame management
 
 ![](memory-management.png)
 
-- alloc big space:  alloc_pages/free_page:buddy algorithm
+- alloc big space:  alloc\_pages/free_page:buddy algorithm
 - alloc data struct::kmalloc/kfree：slab algorithm
 - Non continuous memory area:Vmalloc/Vfree: 
 
@@ -68,10 +68,10 @@ based on page frame management
 allocations and free
 
 - kmalloc/kzalloc ->kfree
+- kzalloc== kmalloc() + memset() 
 - vmalloc         ->Vfree
-- per_cpu
-
-- kmem_cache_alloc->kmem_cache_free
+- per\_cpu
+- kmem\_cache\_alloc->kmem\_cache_free
 
 
 ##4 How to detect Memory Leak
@@ -121,7 +121,7 @@ These are cases where an allocated block doesn't need to be freed (some cases in
 
 ####5.2.1 Allocation
 
-The memory allocations via **kmalloc, vmalloc, kmem_cache_alloc and
+The memory allocations via **kmalloc, vmalloc, kmem\_cache_alloc and
 friends** are **traced** and the pointers, together with additional
 information like size and stack trace, are stored in a **prio search tree**.
 
@@ -387,18 +387,36 @@ No free on module exit
 
 ####5.4.5 Summary
 
-* Checking regions/Functions
+* tracked regions/Functions
 
-     
-     kmalloc/kzalloc
-     vmalloc
-     kmem_cache_alloc
-     per_cpu
+>      kmalloc/kzalloc
+>      vmalloc
+>      kmem_cache_alloc
+>      per_cpu
 
-[Page allocations and ioremap are not tracked]
+* not tracked
 
+>     Page allocations 
+>     ioremap 
+
+* memory-management
+
+> - alloc big space:  alloc\_pages/free_page:buddy algorithm
+> - alloc data struct::kmalloc/kfree：slab algorithm
+> - Non continuous memory area:Vmalloc/Vfree: 
 
 ##6 Summary
+
+Linux kernel have already added memory leak detector- **kmemleak**
+
+It could trace the memory objects from **kmalloc, kzalloc,vmalloc, kmem_cache_alloc,per_cpu** etc.
+
+Linux dynamic memory management.
+
+- alloc big space: alloc\_pages/free_page:buddy algorithm(not tracked)
+- alloc data struct::kmalloc/kfree：slab algorithm(tracked)
+- Non continuous memory area:Vmalloc/Vfree(tracked)
+
 
 ##7 Reference
 
