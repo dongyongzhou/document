@@ -8,7 +8,7 @@ title: Document
 * [Programming](knowledge/professional/programming)
 * [Hardware](knowledge/professional/hardware)
 * [Operating System](knowledge/professional/os)
-* [Android](knowledge/professional/android-)
+* [Android](knowledge/professional/android)
 * [Software Engineering](knowledge/professional/softwareengineer)
 * [Server](knowledge/professional/server)
 * [Database](knowledge/professional/database)
