@@ -29,16 +29,16 @@ title: Document
 
 * [开发环境设置](skill/professional/environment)
 
-Debug
+### Debug
 
 * [TRACE32-ICD](skill/professional/TRACE32-ICD.html)
 
-version control
+### version control
 
 * [git](skill/professional/git.html)
 * [repo](skill/professional/repo.html)
 
-Editor
+### Editor
 
 * [VIM操作](skill/professional/vim.html)
 * [CTAGS操作](skill/professional/ctags.html)
