@@ -206,17 +206,15 @@ block is not considered a leak. One example is __vmalloc().
 CONFIG_DEBUG_KMEMLEAK in "Kernel hacking" has to be enabled. 
 
 * make menuconfig
-    
-     Kernel hacking  --->
-     [ ] Kernel memory leak detector
-     (400) Maximum kmemleak early log entries
+
+>     Kernel hacking --->
+>     [ ] Kernel memory leak detector   
+>     (400) Maximum kmemleak early log entries
 
 * Increase the config option "Maximum kmemleak early log entires" value to a sufficiently large number like 1200. The default value of 400 may not work correctly in all configurations.
 
-     
-     CONFIG_DEBUG_KMEMLEAK=y
-     CONFIG_DEBUG_KMEMLEAK_EARLY_LOG_SIZE=1200
-
+>     CONFIG_DEBUG_KMEMLEAK=y
+>     CONFIG_DEBUG_KMEMLEAK_EARLY_LOG_SIZE=1200
 
 ###5.4 Usage
 
@@ -226,7 +224,7 @@ CONFIG_DEBUG_KMEMLEAK in "Kernel hacking" has to be enabled.
 
 Upon reboot, Check if your debugfs is mounted. Otherwise mount it. 
 
-    mount -t debugfs nodev /sys/kernel/debug/
+>     # mount -t debugfs nodev /sys/kernel/debug/
 
 If all is well, you should see a file kmemleak under your debugfs mounted location.
 
@@ -238,19 +236,16 @@ number of new unreferenced objects found.
 
 - To display the details of all the possible memory leaks:
 
-     
-     # cat /sys/kernel/debug/kmemleak
+>      # cat /sys/kernel/debug/kmemleak
 
 
 - To trigger an intermediate memory scan:
 
-     
-     # echo scan > /sys/kernel/debug/kmemleak
+>      # echo scan /sys/kernel/debug/kmemleak
 
 - To clear the list of all current possible memory leaks:
 
-     
-     # echo clear > /sys/kernel/debug/kmemleak
+>      # echo clear /sys/kernel/debug/kmemleak
 
 
 New leaks will then come up upon reading /sys/kernel/debug/kmemleak again.
@@ -280,8 +275,6 @@ Kmemleak can also be disabled at boot-time by passing "kmemleak=off" on the kern
 Memory may be allocated or freed before kmemleak is initialised and
 these actions are stored in an early log buffer. The size of this buffer
 is configured via the **CONFIG_DEBUG_KMEMLEAK_EARLY_LOG_SIZE**(400->1200) option.
-
-
 
 ####5.4.4 Testing
 
@@ -334,20 +327,20 @@ No free on module exit
        }
 
 
-* Module insmod and active init
-     
-     # insmod kmemleak-test.ko
-     # echo clear > /sys/kernel/debug/kmemleak
-     # echo scan > /sys/kernel/debug/kmemleak
-     # cat /sys/kernel/debug/kmemleak
+* Module insmod and active init 
+
+>      # insmod kmemleak-test.ko
+>      # echo clear /sys/kernel/debug/kmemleak
+>      # echo scan /sys/kernel/debug/kmemleak
+>      # cat /sys/kernel/debug/kmemleak
 
 
 * Module rmmod and active exit
      
-     # rmmod kmemleak-test
-     # echo clear > /sys/kernel/debug/kmemleak
-     # echo scan > /sys/kernel/debug/kmemleak
-     # cat /sys/kernel/debug/kmemleak
+>      # rmmod kmemleak-test
+>      # echo clear /sys/kernel/debug/kmemleak
+>      # echo scan /sys/kernel/debug/kmemleak
+>      # cat /sys/kernel/debug/kmemleak
 
 ![](kmemleak-example.png)
 
