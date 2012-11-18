@@ -139,6 +139,10 @@ Once all pointers on the gray list have been scanned, every block of memory reac
 
 * Increase the config option "Maximum kmemleak early log entires" value to a sufficiently large number like 1200. The default value of 400 may not work correctly in all configurations.
 
+     
+     CONFIG_DEBUG_KMEMLEAK=y
+     CONFIG_DEBUG_KMEMLEAK_EARLY_LOG_SIZE=1200
+
 
 ###5.4 Usage
 
