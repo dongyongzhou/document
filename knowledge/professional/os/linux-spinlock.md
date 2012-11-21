@@ -1,6 +1,6 @@
 ---
 layout: master
-title: Linux Crash
+title: Linux spinlock
 ---
 
 ## Overview

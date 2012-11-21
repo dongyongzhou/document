@@ -3,11 +3,51 @@ layout: master
 title: Linux Debug
 ---
 
-## Overview
+##1 Overview
 
 To be continued.
 
-## Debuging Method
+
+##2 Consepts
+
+
+###2.1 Common ARM Exceptions
+
+* Data abort: initiated when trying to **access** bad memory locations/Limited on access permission.
+* Prefetch (instruction) abort: initiated when trying to **read the next instruction** from a bad memory location.
+* Undefined instruction abort: initiated when trying to **execute** bad instruction code.
+
+
+
+###2.2 Virtual kernel memory layout:
+
+>       vector  : 0xffff0000 - 0xffff1000   (   4 kB)
+>       fixmap  : 0xfff00000 - 0xfffe0000   ( 896 kB)
+>       vmalloc : 0xdd000000 - 0xff000000   ( 544 MB)
+>       lowmem  : 0xc0000000 - 0xdcb00000   ( 459 MB)
+>       pkmap   : 0xbfe00000 - 0xc0000000   (   2 MB)
+>       modules : 0xbf000000 - 0xbfe00000   (  14 MB)
+>         .text : 0xc0008000 - 0xc0860d98   (8548 kB)
+>         .init : 0xc0861000 - 0xc0898c40   ( 224 kB)
+>         .data : 0xc089a000 - 0xc0957b20   ( 759 kB)
+>          .bss : 0xc0b00024 - 0xc0ce1820   (1926 kB)
+
+kernel/Documentation/arm/memory.txt
+
+##3 Debuging Method
+
+
+###3.1 Linux Kernel Debug Configs
+
+
+* CONFIG_DEBUG_SPINLOCK
+> With this option enabled, the kernel catches operations on **uninitialized** spinlocks and various other errors (such as **unlocking a lock twice**).
+
+* CONFIG_DEBUG_SPINLOCK_SLEEP
+> This option enables a check for attempts to sleep while holding a spinlock. In fact, it complains if you call a function that could potentially sleep, even if the call in question would not sleep.
+
+* CONFIG_DEBUG_STACKOVERFLOW
+
 
 ### Watchdog Bark
 

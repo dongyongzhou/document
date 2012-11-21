@@ -21,10 +21,13 @@ title: Operating System
 * [Linux debugfs file system](debugfs.html)
 * [Linux Debug](debug.html)
 * [Linux Kernel Crash](linux-crash.html)
-* [Linux Dead Lock](linux-deadlock.html)
+* [Linux SPIN Lock](linux-spinlock.html)
 * [Linux Memory Leak](linux-memoryleak.html)
-
 * [UNIX signal](unix-signal.html)
+
+## Debugging
+
+* [Linux-errors](Linux-errors.html)
 
 ## Development
 
