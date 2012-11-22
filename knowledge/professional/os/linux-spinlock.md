@@ -5,54 +5,60 @@ title: Linux spinlock
 
 ## Overview
 
-Linux内核崩溃内存转储有多个开源项目工具:
+The spin-lock is safe only when you _also_ use the lock itself to do locking across CPU's, which implies that EVERYTHING that touches a shared variable has to agree about the spinlock they want to use.
 
-- LKCD
 
-LKCD stands for Linux Kernel Crash Dump. This tool allows the Linux system to write
-the contents of its memory when a crash occurs, so that they can be later analyzed for
-the root cause of the crash.
+- spin_lock_init(lock) 一个自旋锁时可使用接口函数将其初始化为锁定状态 
+- spin_lock(lock) 用于锁定自旋锁如果成功则返回否则循环等待自旋锁变为空闲
+- spin_unlock(lock) 释放自旋锁lock重新设置自旋锁为锁定状态 
+- spin_is_locked(lock) 判断当前自旋锁是否处于锁定状态 
+- spin_unlock_wait(lock) 循环等待、直到自旋锁lock变为可用状态 
+- spin_trylock(lock) 尝试锁定自旋锁lock如不成功则返回0否则锁定并返1
+- spin_can_lock(lock) 判断自旋锁lock是否处于空闲状态
 
-LKCD(Linux Kernel Crash Dump) 是 Linux 下第一个内核崩溃内存转储项目，它最初由 SGI 的工程师开发和维护。它提供了一种可靠的方法来发现、保存和检查系统的崩溃。LKCD 作为 Linux 内核的一个补丁，它一直以来都没有被接收进入内核的主线。目前该项目已经完全停止开发。
 
-- Kdump 
 
-Kdump is a much more flexible tool, with extended network-aware capabilities. It aims
-to replace LKCD, while providing better scalability. Indeed, Kdump supports network
-dumping to a range of devices, including local disks, but also NFS areas, CIFS shares
-or FTP and SSH servers. This makes if far more attractive for deployment in large
-environments, without restricting operations to a single server per subnet.
+排队自旋锁(FIFO Ticket Spinlock)是 Linux 内核 2.6.25 版本中引入的一种新型自旋锁，它解决了传统自旋锁由于无序竞争导致的“公平性”问题。
 
-Kdump 是一种基于 kexec 的Linux内核崩溃转储机制，目前它已经被内核主线接收，成为了内核的一部分，它也由此获得了绝大多数 Linux 发行版的支持。与传统的内存转储机制不同不同，基于 Kdump 的系统工作的时候需要两个内核，一个称为系统内核，即系统正常工作时运行的内核；另外一个称为捕获内核，即正常内核崩溃时，用来进行内存转储的内核。 这个机制的原理是在内存中保留一块区域，这块区域用来存放capture kernel，当前的内核发生crash后，通过kexec把保留区域的capture kernel运行起来，由capture kernel负责把crash kernel的完整信息--包括CPU寄存器、堆栈数据等--转储到文件中，文件的存放位置可以是本地磁盘，也可以是网络。
 
-## Kdump
+LINUX 2.6.35版本将spin lock实现更改为 ticket lock.
 
-### Kernels
+spin_lock数据结构除了用于内核调试之外字段为raw_spinlock rlock。 
+ticket spinlock将rlock字段分解为如下两部分  
+Next是下一个票号
+Owner是允许使用自旋锁的票号。
 
-- Standard (production) kernel - kernel we normally work with
-- Crash (capture) kernel - kernel specially used for collecting crash dumps5
+加锁时CPU取Next并将rlock.Next + 1。将Next与Owner相比较
+若相同
+则加锁成功
+否则循环等待、直到Next = rlock.Owner为止。
 
-### components
+解锁则直接将Owner + 1即可。
 
-**Kexec**
 
-Kexec is a fastboot mechanism that allows booting a Linux kernel from the context of an
-already running kernel without going through BIOS. BIOS can be very time consuming,
-especially on big servers with numerous peripherals. This can save a lot of time for
-developers who end up booting a machine numerous times.
 
-**Kdump**
+表 1. 排队自旋锁 API
 
-Kdump is a new kernel crash dumping mechanism and is very reliable. The crash dump
-is captured from the context of a freshly booted kernel and not from the context of the
-crashed kernel. Kdump uses Kexec to boot into a second kernel whenever the system
-crashes. This second kernel, often called a crash or a capture kernel, boots with very
-little memory and captures the dump image.
+		宏	底层实现函数	描述
 
-The first kernel reserves a section of memory that the second kernel uses to boot. Kexec
-enables booting the capture kernel without going through BIOS hence the contents of
-the first kernel’s memory are preserved, which is essentially the kernel crash dump.
+	spin_lock_init	无	将锁置为初始未使用状态(值为 0)
+	spin_lock	__raw_spin_lock	忙等待直到 Owner 域等于本地票据序号
+	spin_unlock	__raw_spin_unlock	Owner 域加 1，将锁传给后续等待线程
+	spin_unlock_wait	__raw_spin_unlock_wait	不申请锁，忙等待直到锁处于未使用状态
+	spin_is_locked	__raw_spin_is_locked	测试锁是否处于使用状态
+	spin_trylock	__raw_spin_trylock	如果锁处于未使用状态，获得锁；否则直接返回
+
+
+
+LDREX和STREX指令的应用。
+
+DREX和STREX指令是在V6以后才出现的，代替了V6以前的swp指令。可以让bus监控LDREX和STREX指令之间有无其它CPU和DMA来存取过这个地址，若有的话STREX指令的第一个寄存器里设置为1（动作失败），若没有，指令的第一个寄存器里设置为0（动作成功）。
+
+
+LDREX和STREX是通过ARM内核的一个叫Exclusive Monitor的机制实现的，EM是一个状态机。
+LDREX指令将Monitor置为Exclusive状态，STREX指令将Exclusive状态置回为Open状态，由此保证访问的唯一性。
+但是在进程切换时，可能导致EM被打乱，因此需要执行CLREX指令，清除Exclusive Monitor。
 
 ## Reference
 
-[Linux Kernel Crash Book](http://www.dedoimedo.com/computers/crash-book.html#purchase)
+[Ticket spinlocks](http://lwn.net/Articles/267968/)

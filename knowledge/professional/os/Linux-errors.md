@@ -5,6 +5,9 @@ title: Linux errors
 
 ## Overview
 
+1,spinlock
+2,gic interrupt handling processdure
+3,IPI
 
 ### BUG: spinlock bad magic on CPU#1, swapper/1/0
 
