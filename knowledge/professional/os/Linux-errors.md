@@ -33,9 +33,13 @@ kernel/lib/spinlock_debug.c
 		dump_stack
 
 
-
-
 ### Exception stack(0xd8e65f48 to 0xd8e65f90)
+
+
+### Kernel panic - not syncing: Fatal exception in interrupt
+\
+
+Kernel panic - not syncing: Fatal exception
 
 
 
@@ -83,6 +87,13 @@ kernel/lib/spinlock_debug.c
 						unwind_backtrace
 							dump_backtrace_entry
 			oops_exit();
+	        if (in_interrupt())
+                panic("Fatal exception in interrupt");
+        	if (panic_on_oops)
+                panic("Fatal exception");
+        	if (ret != NOTIFY_STOP)
+                do_exit(SIGSEGV);
+
 
 
 ./kernel/panic.c

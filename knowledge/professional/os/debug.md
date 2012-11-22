@@ -14,8 +14,11 @@ To be continued.
 ###2.1 Common ARM Exceptions
 
 * Data abort: initiated when trying to **access** bad memory locations/Limited on access permission.
+> 	Data Aborts (common case)
+
 * Prefetch (instruction) abort: initiated when trying to **read the next instruction** from a bad memory location.
 * Undefined instruction abort: initiated when trying to **execute** bad instruction code.
+> Prefetch Aborts/Undefined instructions (Cases that usually indicate a bad device or memory errors/corruption)
 
 
 
@@ -34,7 +37,7 @@ To be continued.
 
 kernel/Documentation/arm/memory.txt
 
-##3 Debuging Method
+##3 Debuging Method& featues
 
 
 ###3.1 Linux Kernel Debug Configs
@@ -47,6 +50,11 @@ kernel/Documentation/arm/memory.txt
 > This option enables a check for attempts to sleep while holding a spinlock. In fact, it complains if you call a function that could potentially sleep, even if the call in question would not sleep.
 
 * CONFIG_DEBUG_STACKOVERFLOW
+
+
+
+Additional Kernel Debug Features: slub debug,  spinlock etc
+
 
 
 ### Watchdog Bark
@@ -80,6 +88,9 @@ General way to check the sanity of the variable status in kernel
 CONFIG_BUG needs to be set
 
 If CONFIG_DEBUG_BUGVERBOSE is set, it is printing the filename and line number showing where the BUG line is and causes a kernel panic; otherwise, it is just hanging.
+
+
+**Explicit kernel BUGs** (will use undefined instruction panic handler, but will print out a “kernel BUG at” message)
 
 - Oops message
 
