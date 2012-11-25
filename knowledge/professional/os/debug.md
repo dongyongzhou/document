@@ -37,6 +37,82 @@ To be continued.
 
 kernel/Documentation/arm/memory.txt
 
+
+###2.3 Exceptions
+
+Events that alters the normal sequence of execution and force the processor to execute special instructions in a privileged state
+
+####2.3.1 Classify
+
+#####2.3.1.1 Synchronous Exceptions
+
+- FAULT
+
+Program allowed to restart after condition is corrected. No loss of continuity
+
+    E.g. Page FAULT
+
+- TRAPS
+ 
+Triggered when there is no need to re-execute the terminated instruction
+ 
+- ABORT
+
+Serious Error, Program terminated
+
+    Ex. divide by zero
+
+#####2.3.1.2 Asynchronous
+
+- Interrupts
+
+> An interrupt or an exception handler is not a process. It is a kernel control path
+
+
+####2.3.2 Exception Handling
+
+
+ARMv7 has 8 Different Exceptions
+	
+ 	1.reset(svc), 0x00
+	2.undefined instruction(Und), 0x04
+	3.supervisor call (svc), 0x08
+	4.pre-fetch abort(adt), 0x0C
+	5.data abort(adt), 0x10
+	6.not used, 0x14
+	7.irq(irq) 0x18
+	8.fiq(fiq) 0x1C
+
+
+
+Two step Process in Linux
+
+	Exception Stub – Stack Maintenance and Switch to SVC Mode
+	Exception Specific Op (ASM) -> Exception Handler (C Code)
+
+
+
+- Data Abort:
+
+  	- Data Access Transaction Failed
+ 	- Load/Store Instructions
+ 	- Precise: Internal Aborts from the core
+		– MMU Protection Fault
+
+ 	- Imprecise: typically External Aborts
+		– Unrecoverable
+
+- Pre-fetch Abort:
+ 
+	- Unable to fetch instruction from Memory
+
+Architecture returns information in
+
+	FSR (Fault Status Register) of MMU
+	FAR (Fault Address Register)
+
+
+
 ##3 Debuging Method& featues
 
 
@@ -57,7 +133,7 @@ Additional Kernel Debug Features: slub debug,  spinlock etc
 
 
 
-### Watchdog Bark
+###3.2 Watchdog Bark
 
 If the Linux kernel cannot schedule the watchdog kicking work queue because either the processor is **spinning around in an int-locked state** or the **processor is hanging due to a bus freeze**, watchdog bark FIQ is invoked.
 
@@ -79,18 +155,62 @@ For Crash dumps
 - Interrupt Status
 - Kernel Global Work Queue
 
-### Kernel – Panic
+Checking
+
+- Check list of process stacks, generally safe to ignore those with schedule() as their most recent function call.
+- Focus on stacks with preempt_schedule – this means something had to be forcefully pre-empted – didn’t call a sleeping API. 
+- Focus on mutex_lock calls
+- Focus on softirq threads & threaded ISRs
+
+
+
+###3.3 Kernel – Panic
+
+Occurs when the system has hit some fatal condition
+
+Generally the system could not access memory
+
+
+- WARN_ON
+
+
+System has detected something bad but not fatal 
+
+Should not be ignored!
+
+Generally give the location where the warning occurred
+
+	WARNING: at 
+
 
 - BUG() or BUG_ON(<condition>)
 
+Variation on kernel panic
+
+Programmer put some checks in to detect bad state
+
+If bad state occurs, kernel intentionally dereferences NULL pointer to crash System
+
+Will see **__bug** in the backtrace
+
+
 General way to check the sanity of the variable status in kernel
 
-CONFIG_BUG needs to be set
+**CONFIG_BUG** needs to be set
 
-If CONFIG_DEBUG_BUGVERBOSE is set, it is printing the filename and line number showing where the BUG line is and causes a kernel panic; otherwise, it is just hanging.
+If **CONFIG\_DEBUG_BUGVERBOSE** is set, it is printing the filename and line number showing where the BUG line is and causes a kernel panic; otherwise, it is just hanging.
 
 
-**Explicit kernel BUGs** (will use undefined instruction panic handler, but will print out a “kernel BUG at” message)
+**Explicit kernel BUGs** (will use undefined instruction panic handler, but will print out a “**kernel BUG at**” message)
+
+
+
+- Scheduling while atomic
+
+When handling and IRQ or interrupts are disabled can’t call schedule
+
+IRQs and interrupts are supposed to be quick, scheduling is long
+
 
 - Oops message
 
@@ -103,15 +223,16 @@ Oops message is generated from:
     Oops – Bad syscall
 
 - Page fault
+	
+ll
 
     arch/arm/mm/fault.c
-
     1 Alignment exception
     2 Unhandled prefetch abort
     3 Unable to handle kernel address (kernel page fault)
     4 Unable to handle page fault (user page fault)
 
-### Kernel – Low Memory Killer
+###3.4 Kernel – Low Memory Killer
 
 **Description**
 
@@ -127,10 +248,25 @@ It sends SIGKILL to the process to kill it. More debug messages could be printed
 
 This is an important performance tuning point.
 
-### Kernel – sys/proc fs List
+###3.5 Kernel – sys/proc fs List
 
-### Kernel – Apps Hardware Watchdog
+###3.6 Kernel – Apps Hardware Watchdog
 
+###3.7 Memory corruption
+
+Some driver stomping on to memory 
+
+How to detect	
+
+**CONFIG_SLUB_DEBUG_ON** – Kernel debug 
+
+Look for poison/redzone overwritten warning in kernel log
+
+Write after free symptom
+
+Code review 
+
+	Who allocates and releases memory 
 
 ## Debuging datas
 
