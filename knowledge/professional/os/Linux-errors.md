@@ -9,15 +9,20 @@ title: Linux errors
 2,gic interrupt handling processdure
 3,IPI
 
+## cases
 ### BUG: spinlock bad magic on CPU#1, swapper/1/0
 
-> [    4.636836] [(1980-01-07 18:29:45.308783335 UTC)] BUG: spinlock bad magic on CPU#1, swapper/1/0
-> [    4.637133] [(1980-01-07 18:29:45.309078335 UTC)]  lock: irq_controller_lock, rawlock 0x1, .magic: dead4ead, .owner: swapper/1/0, .owner_cpu: 1
-> [    4.642224] [(1980-01-07 18:29:45.314170001 UTC)] [<c001523c>] (unwind_backtrace+0x0/0x12c) from [<c027fda0>] (do_raw_spin_unlock+0x20/0xc0)
-> [    4.654788] [(1980-01-07 18:29:45.326733334 UTC)] [<c027fda0>] (do_raw_spin_unlock+0x20/0xc0) from [<c05e9478>] (_raw_spin_unlock+0x8/0x34)
-> [    4.667283] [(1980-01-07 18:29:45.339228334 UTC)] [<c05e9478>] (_raw_spin_unlock+0x8/0x34) from [<c00084bc>] (gic_handle_irq+0x48/0xbc)
-> [    4.679434] [(1980-01-07 18:29:45.351378333 UTC)] [<c00084bc>] (gic_handle_irq+0x48/0xbc) from [<c05e9a80>] (__irq_svc+0x40/0x70)
+		
+> 	[    4.636836] [(1980-01-07 18:29:45.308783335 UTC)] BUG: spinlock bad magic on CPU#1, swapper/1/0
+> 	[    4.637133] [(1980-01-07 18:29:45.309078335 UTC)]  lock: irq_controller_lock, rawlock 0x1, .magic: dead4ead, .owner: swapper/1/0, .owner_cpu: 1
+> 	[    4.642224] [(1980-01-07 18:29:45.314170001 UTC)] [<c001523c>] (unwind_backtrace+0x0/0x12c) from [<c027fda0>] (do_raw_spin_unlock+0x20/0xc0)
+> 	[    4.654788] [(1980-01-07 18:29:45.326733334 UTC)] [<c027fda0>] (do_raw_spin_unlock+0x20/0xc0) from [<c05e9478>] (_raw_spin_unlock+0x8/0x34)
+> 	[    4.667283] [(1980-01-07 18:29:45.339228334 UTC)] [<c05e9478>] (_raw_spin_unlock+0x8/0x34) from [<c00084bc>] (gic_handle_irq+0x48/0xbc)
+> 	[    4.679434] [(1980-01-07 18:29:45.351378333 UTC)] [<c00084bc>] (gic_handle_irq+0x48/0xbc) from [<c05e9a80>] (__irq_svc+0x40/0x70)
 
+	gic_handle_irq
+	raw_spin_unlock
+	_raw_spin_unlock
 
 kernel/lib/spinlock_debug.c
 
@@ -31,6 +36,8 @@ kernel/lib/spinlock_debug.c
 		printk(KERN_EMERG "BUG: spinlock %s on CPU#%d, %s/%d\n"
 		printk(KERN_EMERG " lock: %ps, .magic: %08x, .owner: %s/%d,
 		dump_stack
+
+
 
 
 ### Exception stack(0xd8e65f48 to 0xd8e65f90)
@@ -101,6 +108,62 @@ Kernel panic - not syncing: Fatal exception
 	oops_exit
 	print_oops_end_marker
 		printk(KERN_WARNING "---[ end trace %016llx ]---\n",
+
+
+### Unable to handle kernel NULL pointer dereference at virtual address 00000004
+
+
+	[    6.112893] [(1980-01-07 20:19:08.816761669 UTC)] Unable to handle kernel NULL pointer dereference at virtual address 00000028
+	[    6.118781] [(1980-01-07 20:19:08.822646668 UTC)] pgd = d8920000
+	[    6.124876] [(1980-01-07 20:19:08.828743335 UTC)] [00000028] *pgd=28ad5831, *pte=00000000, *ppte=00000000
+	[    6.134323] [(1980-01-07 20:19:08.838190002 UTC)] Internal error: Oops: 17 [#1] PREEMPT SMP ARM
+	[    6.142999] [(1980-01-07 20:19:08.846865001 UTC)] Modules linked in:
+
+
+./arch/arm/mm/fault.c
+
+
+	do_bad_area(do_translation_fault/do_sect_fault)/do_page_fault(do_translation_fault)
+		__do_kernel_fault
+			"Unable to handle kernel %s at virtual address %08lx\n",
+			show_pte(mm, addr);
+			die("Oops", regs, fsr);: Oops.  The kernel tried to access some page that wasn't present.
+		
+
+
+
+###  pagealloc: memory corruption
+
+	[    8.202431] [(1980-01-07 20:23:02.544105001 UTC)] pagealloc: memory corruption
+	[    8.202459] [(1980-01-07 20:23:02.544130001 UTC)] c15d3000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+	[    8.202479] [(1980-01-07 20:23:02.544150001 UTC)] c15d3010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+	[    8.202541] [(1980-01-07 20:23:02.544211667 UTC)] [<c001523c>] (unwind_backtrace+0x0/0x12c) from [<c0142184>] (kernel_map_pages+0xec/0x16c)
+	[    8.202576] [(1980-01-07 20:23:02.544245001 UTC)] [<c0142184>] (kernel_map_pages+0xec/0x16c) from [<c011ab3c>] (get_page_from_freelist+0x468/0x5bc)
+	[    8.202606] [(1980-01-07 20:23:02.544276667 UTC)] [<c011ab3c>] (get_page_from_freelist+0x468/0x5bc) from [<c011b228>] (__alloc_pages_nodemask+0x110/0x748)
+	[    8.202638] [(1980-01-07 20:23:02.544308334 UTC)] [<c011b228>] (__alloc_pages_nodemask+0x110/0x748) from [<c0132c70>] (handle_pte_fault+0x174/0xb28)
+	[    8.202669] [(1980-01-07 20:23:02.544340001 UTC)] [<c0132c70>] (handle_pte_fault+0x174/0xb28) from [<c0133b60>] (handle_mm_fault+0xec/0x108)
+	[    8.202701] [(1980-01-07 20:23:02.544370001 UTC)] [<c0133b60>] (handle_mm_fault+0xec/0x108) from [<c05decfc>] (do_page_fault+0x1e4/0x42c)
+	[    8.202731] [(1980-01-07 20:23:02.544400001 UTC)] [<c05decfc>] (do_page_fault+0x1e4/0x42c) from [<c0008414>] (do_DataAbort+0x34/0x94)
+	[    8.202761] [(1980-01-07 20:23:02.544431667 UTC)] [<c0008414>] (do_DataAbort+0x34/0x94) from [<c05dd5f4>] (__dabt_usr+0x34/0x40)
+
+./mm/compaction.c
+
+	map_pages
+
+./mm/page_alloc.c
+
+
+	free_pages_prepare
+	prep_new_page
+
+./mm/debug-pagealloc.c
+
+	kernel_map_pages->
+	unpoison_pages->
+	unpoison_page->
+	check_poison_mem
+		printk(KERN_ERR "pagealloc: memory corruption\n");
+
 
 ## Reference
 

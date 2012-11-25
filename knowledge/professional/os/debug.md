@@ -164,73 +164,7 @@ Checking
 
 
 
-###3.3 Kernel – Panic
 
-Occurs when the system has hit some fatal condition
-
-Generally the system could not access memory
-
-
-- WARN_ON
-
-
-System has detected something bad but not fatal 
-
-Should not be ignored!
-
-Generally give the location where the warning occurred
-
-	WARNING: at 
-
-
-- BUG() or BUG_ON(<condition>)
-
-Variation on kernel panic
-
-Programmer put some checks in to detect bad state
-
-If bad state occurs, kernel intentionally dereferences NULL pointer to crash System
-
-Will see **__bug** in the backtrace
-
-
-General way to check the sanity of the variable status in kernel
-
-**CONFIG_BUG** needs to be set
-
-If **CONFIG\_DEBUG_BUGVERBOSE** is set, it is printing the filename and line number showing where the BUG line is and causes a kernel panic; otherwise, it is just hanging.
-
-
-**Explicit kernel BUGs** (will use undefined instruction panic handler, but will print out a “**kernel BUG at**” message)
-
-
-
-- Scheduling while atomic
-
-When handling and IRQ or interrupts are disabled can’t call schedule
-
-IRQs and interrupts are supposed to be quick, scheduling is long
-
-
-- Oops message
-
-    arch/arm/kernel/trap.c
-
-Oops message is generated from:
-
-    Oops – Undefined instruction
-    Oops – Bad mode
-    Oops – Bad syscall
-
-- Page fault
-	
-ll
-
-    arch/arm/mm/fault.c
-    1 Alignment exception
-    2 Unhandled prefetch abort
-    3 Unable to handle kernel address (kernel page fault)
-    4 Unable to handle page fault (user page fault)
 
 ###3.4 Kernel – Low Memory Killer
 
@@ -267,6 +201,110 @@ Write after free symptom
 Code review 
 
 	Who allocates and releases memory 
+
+
+
+
+##4 Kernel Error machanism
+
+- bug
+- oops
+- panic
+
+Occurs when the system has hit some fatal condition
+
+Generally the system could not access memory
+
+
+###4.1 WARN_ON
+
+
+System has detected something bad but not fatal 
+
+Should not be ignored!
+
+Generally give the location where the warning occurred
+
+	WARNING: at 
+
+
+###4.2 BUG() or BUG_ON(<condition>)
+
+bug属于轻微错误，比如在spin_lock期间调用了sleep，导致潜在的死锁问题，等等
+
+Variation on kernel panic
+
+Programmer put some checks in to detect bad state
+
+If bad state occurs, kernel intentionally dereferences NULL pointer to crash System
+
+Will see **__bug** in the backtrace
+
+
+General way to check the sanity of the variable status in kernel
+
+**CONFIG_BUG** needs to be set
+
+If **CONFIG\_DEBUG_BUGVERBOSE** is set, it is printing the filename and line number showing where the BUG line is and causes a kernel panic; otherwise, it is just hanging.
+
+
+**Explicit kernel BUGs** (will use undefined instruction panic handler, but will print out a “**kernel BUG at**” message)
+
+
+
+- Scheduling while atomic
+
+When handling and IRQ or interrupts are disabled can’t call schedule
+
+IRQs and interrupts are supposed to be quick, scheduling is long
+
+
+###4.3 Oops message
+
+oops代表某一用户进程出现错误，需要杀死用户进程。这时如果用户进程占用了某些信号锁，所以这些信号锁将永远不会得到释放，这会导致系统潜在的不稳定性。
+
+    arch/arm/kernel/trap.c
+
+Oops message is generated from:
+
+    Oops – Undefined instruction
+    Oops – Bad mode
+    Oops – Bad syscall
+
+
+###4.4 panic
+
+panic是严重错误，代表整个系统崩溃
+
+
+	kernel/panic.c
+
+panic_on_oops
+
+	Kernel panic - not syncing: Fatal exception
+
+
+in_interrupt
+
+	Kernel panic - not syncing: Fatal exception in interrupt
+
+
+
+- Page fault
+	
+ll
+
+    arch/arm/mm/fault.c
+    1 Alignment exception
+    2 Unhandled prefetch abort
+    3 Unable to handle kernel address (kernel page fault)
+    4 Unable to handle page fault (user page fault)
+
+
+
+
+
+
 
 ## Debuging datas
 
