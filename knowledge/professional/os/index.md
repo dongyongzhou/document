@@ -14,6 +14,11 @@ title: Operating System
 * [Understanding Linux Kernel](linux.html)
 * [Linux memory management](Linux-memory-management.html)
 
+## Linux startup
+
+* [machine types](mach-types.html)
+* [LK booting](lk.html)
+
 ## Special Subject
 
 * [Linux sysfs file system](sysfs.html)
