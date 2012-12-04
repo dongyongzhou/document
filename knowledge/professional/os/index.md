@@ -29,6 +29,7 @@ title: Operating System
 * [Linux SPIN Lock](linux-spinlock.html)
 * [Linux Memory Leak](linux-memoryleak.html)
 * [UNIX signal](unix-signal.html)
+* [Machine_desc callings](machine-desc.html)
 
 ## Debugging
 

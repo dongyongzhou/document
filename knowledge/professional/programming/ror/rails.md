@@ -11,6 +11,12 @@ title: Rails
 * [The RubyonRails API](http://api.rubyonrails.org/)
 * [Rails Guide中文](http://guides.ruby-china.org/)
 
+
+## subjects
+
+* [ROR route](rails-route.html)
+* [ROR download](rails-download.html)
+
 ## Rails 数据库迁移
 
 * [Rails 数据库迁移](migrate.html)

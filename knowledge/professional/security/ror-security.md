@@ -162,3 +162,6 @@ self.delete_all "updated_at < '#{time.to_s(:db)}' OR created_at < '#{2.days.ago.
 ## reference
 
 http://article.yeeyan.org/bilingual/17603
+
+
+[Rails每周一题(七)：Security Guide（中）](http://rails-weekly.group.iteye.com/group/wiki/1815-rails-questions-weekly-7-security-guide-two)
