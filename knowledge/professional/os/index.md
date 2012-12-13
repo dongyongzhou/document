@@ -19,6 +19,11 @@ title: Operating System
 * [machine types](mach-types.html)
 * [LK booting](lk.html)
 
+## File System
+
+* [FAT File System](fat.html)
+
+
 ## Special Subject
 
 * [Linux sysfs file system](sysfs.html)
