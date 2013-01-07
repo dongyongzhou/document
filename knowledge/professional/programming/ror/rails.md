@@ -16,6 +16,7 @@ title: Rails
 
 * [ROR route](rails-route.html)
 * [ROR download](rails-download.html)
+* [ROR 获取URL信息](rails-url-info.html)
 
 ## Rails 数据库迁移
 

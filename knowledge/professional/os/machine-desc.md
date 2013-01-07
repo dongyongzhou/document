@@ -175,6 +175,21 @@ called in
 
 start_kernel()--->setup_arch()--->init_very_early()--->init_early()->
 
+
+
+### .reserve
+
+
+	start_kernel()--->setup_arch()
+					--->init_very_early()
+					--->arm_memblock_init->reserve
+					--->paging_init->devicemaps_init->mdesc->map_io
+					--->restart[mdesc->]
+					--->handle_irq[mdesc->]
+					--->init_early[mdesc->]
+
+
+
 ##__init
 
 ### definition
