@@ -38,6 +38,7 @@ title: Document
 ### version control
 
 * [git](skill/professional/git.html)
+* [git repository deployment](skill/professional/git-repository-deploy.html)
 * [repo](skill/professional/repo.html)
 
 ### Editor
