@@ -37,6 +37,8 @@ Python Script
 
 Perl Script
 
+* [Perl](perl/perl.html)
+
 ## Development tools
 
 * [Scintilla](http://www.scintilla.org/)
