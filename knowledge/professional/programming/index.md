@@ -28,6 +28,7 @@ C++
 
 Bash Script
 * [Linux command](shell/command.html)
+* [Linux bash scripting](shell/bash.html)
 
 ## Python Script
 
