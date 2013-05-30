@@ -34,7 +34,6 @@ title: Document
 ### Debug
 
 * [TRACE32-ICD](skill/professional/TRACE32-ICD.html)
-* [Lauterbach](skill/professional/Lauterbach.html)
 
 ### version control
 

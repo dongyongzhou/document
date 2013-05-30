@@ -7,9 +7,12 @@ title: Perl
 
 
 
+
 ## Resources
 
-* [Problems](ror/ror-problem.html)
+
+* [cpan](http://www.cpan.org/)
+* [perldoc](http://perldoc.perl.org)
 
 ## Numeric Literals
 
