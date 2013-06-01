@@ -25,7 +25,18 @@ newgrp groupname
 
 username -g　groupname username
 
+### 增加群组
 
+ 建立一个群组名为“testgroup"，设置"abc"为管理员
+
+	[root@localhost fsy]# groupadd testgroup
+	[root@localhost fsy]# gpasswd testgroup
+	Changing the password for group testgroup
+	New Password: 
+	Re-enter new password: 
+	[root@localhost fsy]# gpasswd -A abc testgroup
+
+username -g　groupname username
 ## 文件操作
 
 
