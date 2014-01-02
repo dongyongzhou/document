@@ -101,3 +101,7 @@ build/core/main.mk
 ## Android Source Code Build Result
 
 ## Reference
+
+- [http://tools.android.com/tech-docs/new-build-system](http://tools.android.com/tech-docs/new-build-system)
+- [http://tools.android.com/tech-docs/new-build-system/build-system-concepts](http://tools.android.com/tech-docs/new-build-system/build-system-concepts)
+- [https://github.com/android/platform_build/blob/master/core/build-system.html](https://github.com/android/platform_build/blob/master/core/build-system.html)
