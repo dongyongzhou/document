@@ -22,6 +22,7 @@ title: Android
 * [Activity](activity.html)
 * [Broadcast](broadcast.html)
 * [Android Error Handling Mechanism](error-handling-mechanism.html)
+* [Android APP permission handling machanism](permission-handling-mechanism.html)
 
 ### Android Application
 
