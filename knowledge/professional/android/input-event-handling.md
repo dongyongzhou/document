@@ -15,6 +15,46 @@ contents
 
 ## Architecture
 
+### Frameworks
+
+#### WindowManagerService
+
+WindowManagerService
+->InputManager->nativeInit
+
+#### InputManager
+
+
+Framework/base/services/jni/com_android_server_InputManager.java
+
+nativeInit==android_server_InputManager_nativeInit 
+
+->NativeInputManager-> new EventHub/InputManager
+
+InputManager类主要是负责管理input Event，有InputReader从EventHub读取事件，然后交给InputDispatcher进行分发
+
+在InputManager中的initialize的初始化了两个线程。一个是inputReaderThread，负责从EventHub中读取事件，另外一个是InputDispatcherThread线程，主要负责分发读取的事件去处理
+
+#### EventHub
+
+
+EventHub就是Input子系统的HAL层了，负责将linux的所有的input设备打开并负责轮询读取他们的上报的数据
+
+Framework/base/services/input/EventHub.cpp 
+
+在eventHub初始化的时候直接进入到scanDevices Locked。而在内核里面所有的input device在注册的时候都会在linux的文件系统下的/dev/input 下面，代码中的while循环会对DEVICE_PATH(/dev/input)下的所有的设备节点调用openDeviceLocked 方法
+
+首先通过open系统调用得到设备节点的文件描述符，然后新构造一个叫InputDeviceIdentifier类。接着通过对刚才得到的设备节点描述下ioctl的命令获取设备的一些简单信息，譬如：设备的名字，设备驱动的版本号，设备的唯一id，和描述符轮询的方式。得到的这些信息保存在InputDeviceIdentifier类里面。最后又构造了一个Device类，其中设备描述符和刚才的构造InputDeviceIdentifier类作为参数重新构造了Device类。然后在构造成功了Device类又会通过ioctl系统调用获取input设备的一些比较重要的参数。比如：设备上报事件的类型是相对事件还是绝对事件，相对事件一般是指像鼠标滑动，绝对事件就好比触摸屏上报的坐标，设备所属的class等一些比较重要的信息。举一些例子：INPUT_DEVICE_CLASS_KEYBOARD(按键类型)，INPUT_DEVICE_CLASS_CURSOR(带游标类型：鼠标和轨迹球等)，INPUT_DEVICE_CLASS_ TOUCH(触摸类型：单点触摸或多点触摸)，INPUT_DEVICE_CLASS_TOUCH_MT(这个类型特指多 点触摸)等。如果一个设备的驱动没有指明设备的类型的话，那么他在
+android中上报的数据时不会被处理的。这个函数的最后是将input设备的文件描述符加入到轮询的集合中去，如果接收到事件就会去处理。
+
+#### InputDispatcher
+
+dispatchOnce
+
+#### InputReader
+
+ReaderOnce
+
 ### Android2.2之前
 
 - KeyQ： WmS内部类，继承于KeyInputQueue。创建KeyQ对象后，立即启动一个线程(对应对象)，不断调用native方法读取用户的UI操作消息，比如按键、触摸屏等，并放到消息队列QueueEvent中。
@@ -309,5 +349,6 @@ main thread即ActivityThread，开始时就会进入一个Looper循环中，然�
 
 ##Reference
 
-[Android应用程序键盘（Keyboard）消息处理机制分析（三）](http://blog.csdn.net/yuleslie/article/details/7079448)
-
+- [Android应用程序键盘（Keyboard）消息处理机制分析（三）](http://blog.csdn.net/yuleslie/article/details/7079448)
+- [Android Input子系统架构](http://wenku.baidu.com/link?url=HYz5l-L6X7F2SaKmx5NzFL8rtVJVCU7s8NC_XkeB7k7CkFKCnihlAtj_T8unM4hq6XhCXzk3Ycn2T1K_Feh6qiRIXEZqvskSb_0i7b-uqQ7)
+- [安卓4.1: input系统从frameworks到kernel](http://blog.chinaunix.net/uid-27167114-id-3347185.html)
