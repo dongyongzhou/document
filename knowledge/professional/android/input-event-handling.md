@@ -15,7 +15,12 @@ contents
 
 ## Architecture
 
+![](android-input-2.png)
+![](android-input-1.png)
+
 ### Frameworks
+
+
 
 #### WindowManagerService
 
@@ -56,6 +61,10 @@ dispatchOnce
 #### InputReader
 
 ReaderOnce
+
+#### Input driver
+
+![](http://hi.csdn.net/attachment/201110/14/0_1318572622UpnZ.gif)
 
 ### Android2.2之前
 
