@@ -97,8 +97,32 @@ build/core/main.mk
      .PHONY: aboot
      aboot: $(INSTALLED_BOOTLOADER_TARGET)
 
+### 1.3 Building command 
+
+Source ./build/envsetup.sh
+
+      - croot: Changes directory to the top of the tree.
+
+      - m: Makes from the top of the tree.
+      - mm: Builds all of the modules in the current directory.
+      - mmm: Builds all of the modules in the supplied directories.
+      - cgrep: Greps on all local C/C++ files.
+      - jgrep: Greps on all local Java files.
+      - resgrep: Greps on all local res/*.xml files.
+      - godir: Go to the directory containing a file.
+
+
+- make systemimage: system.img
+- make userdataimage: userdata.img
+- make ramdisk: ramdisk.img
+- make snod : package ../system into system.img (with this command, it will build a new system.img very quickly. well, you cannot use “make snod” for all the situations. it would not check the dependences. if you change some code in the framework which will effect other applications)
 
 ## Android Source Code Build Result
+
+- out/target/product/generic/system/app: Android系统自带的App
+- out/target/product/generic/system/bin: Android系统的一些可执行文件，例如C编译的可执行文件
+- out/target/product/generic/system/lib: 动态链接库文件
+- out/target/product/generic/system/lib/hw: 硬件抽象层（HAL）接口文件
 
 ## Reference
 

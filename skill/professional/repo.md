@@ -29,6 +29,13 @@ Repo is not meant to replace Git, only to make it easier to work with Git in the
 In working with the Android source files, you will use Repo for **across-network operations**. For example, with a single Repo command you can download files from multiple repositories into your local working directory.
 
 
+AOSP是由许许多项目组成的，例如，在Android 4.2中，就包含了329个项目，每一个项目都是一个独立的Git仓库。这意味着，如果我们要创建一个AOSP分支来做feature开发，那么就需要到每一个子项目去创建对应的分支。这显然不能手动地到每一个子项目里面去创建分支，必须要采用一种自动化的方式来处理。这些自动化处理工作就是由Repo工具来完成的。当然，Repo工具所负责的自动化工作不只是创建分支那么简单，查看分支状态、提交代码、更新代码等基础Git操作它都可以完成。
+
+Repo命令想操作的是AOSP。这就要求Repo命令要知道AOSP都包含有哪些子项目，并且要知道这些子项目的名称、仓库地址是什么。换句话说，就是Repo命令要知道AOSP所有子项目的Git仓库元信息。我们知道，AOSP也是不断地迭代法变化的，例如，它的每一个版本所包含的子项目可能都是不一样的。这意味着需要通过另外一个Git仓库来管理AOSP所有的子项目的Git仓库元信息。这个Git仓库在AOSP里面就称为Manifest仓库。
+
+- Repo仓库:Repo工具的那些Python脚本本身也是一个Git仓库
+- Manifest仓库:管理AOSP所有的子项目的Git仓库元信息。这个Git仓库在AOSP里面就称为Manifest仓库
+- AOSP子项目仓库:Android下的子项目Git仓库
 ### Gerrit
 
 Gerrit is a **web-based code review system** for projects that use git. 
@@ -381,6 +388,7 @@ See 'repo help --all' for a complete list of recognized commands.
 ## reference
 
 * [Version Control with Repo and Git](http://source.android.com/source/version-control.html)
+* [Android源代码仓库及其管理工具Repo分析](http://blog.csdn.net/luoshengyang/article/details/18195205)
 
 
 
