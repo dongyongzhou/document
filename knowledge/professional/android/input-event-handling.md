@@ -18,17 +18,31 @@ contents
 ![](android-input-2.png)
 ![](android-input-1.png)
 
-### Frameworks
+## Overview
+
+#### Android2.2之前
+
+- KeyQ： WmS内部类，继承于KeyInputQueue。创建KeyQ对象后，立即启动一个线程(对应对象)，不断调用native方法读取用户的UI操作消息，比如按键、触摸屏等，并放到消息队列QueueEvent中。
+- InputDispatcherThread：也是WmS内部类。也会创建一个线程，不断从消息队列QueueEvent中取出用户消息，过滤后发送给当前活动的客户端程序。
+- 应用窗口对象ViewRoot都包含一个W子类，是一个Binder类，InputDispatcherThread通过IPC方式调用W所提供的函数，从而发送消息给客户窗口。
+
+#### Android2.3之后
+
+获取消息：使用C++实现，包括消息的加工
+
+应用添加窗口->本地创建一个ViewRoot对象->通过IPC调用WmS中的Session对象的addWindow方法，从而请求WmS创建一个窗口->WmS将窗口信息保存在内部一个窗口列表InputMonitor->使用InputManager把窗口信息传递给InputDispatcher对象，并通过JNI传递到NativeInputManager
+
+- InputReader线程C++：system_progress中，持续调用输入设备驱动读取用户输入的消息。
+- InputDispatcherThread（C++）： 从消息队列中取出消息，根据NativeInputManager确定当前活动窗口。两种方式派发。
+- 使用Linux PIPE机制传递消息对客户端。一是PIPE直接发送到客户窗口，例如触摸屏信息；另一是先派发到WMS中，由WMS经过一定的处理（例如系统按键消息HOME、电话按键等），如果WMS没有处理再派发到窗口。
 
 
-
-#### WindowManagerService
+### WindowManagerService
 
 WindowManagerService
 ->InputManager->nativeInit
 
-#### InputManager
-
+### InputManager
 
 Framework/base/services/jni/com_android_server_InputManager.java
 
@@ -40,8 +54,7 @@ InputManager类主要是负责管理input Event，有InputReader从EventHub读�
 
 在InputManager中的initialize的初始化了两个线程。一个是inputReaderThread，负责从EventHub中读取事件，另外一个是InputDispatcherThread线程，主要负责分发读取的事件去处理
 
-#### EventHub
-
+### EventHub
 
 EventHub就是Input子系统的HAL层了，负责将linux的所有的input设备打开并负责轮询读取他们的上报的数据
 
@@ -49,38 +62,22 @@ Framework/base/services/input/EventHub.cpp
 
 在eventHub初始化的时候直接进入到scanDevices Locked。而在内核里面所有的input device在注册的时候都会在linux的文件系统下的/dev/input 下面，代码中的while循环会对DEVICE_PATH(/dev/input)下的所有的设备节点调用openDeviceLocked 方法
 
-首先通过open系统调用得到设备节点的文件描述符，然后新构造一个叫InputDeviceIdentifier类。接着通过对刚才得到的设备节点描述下ioctl的命令获取设备的一些简单信息，譬如：设备的名字，设备驱动的版本号，设备的唯一id，和描述符轮询的方式。得到的这些信息保存在InputDeviceIdentifier类里面。最后又构造了一个Device类，其中设备描述符和刚才的构造InputDeviceIdentifier类作为参数重新构造了Device类。然后在构造成功了Device类又会通过ioctl系统调用获取input设备的一些比较重要的参数。比如：设备上报事件的类型是相对事件还是绝对事件，相对事件一般是指像鼠标滑动，绝对事件就好比触摸屏上报的坐标，设备所属的class等一些比较重要的信息。举一些例子：
+首先通过open系统调用得到设备节点的文件描述符，然后新构造一个叫InputDeviceIdentifier类。接着通过对刚才得到的设备节点描述下ioctl的命令获取设备的一些简单信息，譬如：设备的名字，设备驱动的版本号，设备的唯一id，和描述符轮询的方式。得到的这些信息保存在InputDeviceIdentifier类里面。最后又构造了一个Device类，其中设备描述符和刚才的构造InputDeviceIdentifier类作为参数重新构造了Device类。然后在构造成功了Device类又会通过ioctl系统调用获取input设备的一些比较重要的参数。比如：设备上报事件的类型是相对事件还是绝对事件，相对事件一般是指像鼠标滑动，绝对事件就好比触摸屏上报的坐标，设备所属的class等一些比较重要的信息。
 
-INPUT_DEVICE_CLASS_KEYBOARD(按键类型)，INPUT_DEVICE_CLASS_CURSOR(带游标类型：鼠标和轨迹球等)，INPUT_DEVICE_CLASS_ TOUCH(触摸类型：单点触摸或多点触摸)，INPUT_DEVICE_CLASS_TOUCH_MT(这个类型特指多 点触摸)等。如果一个设备的驱动没有指明设备的类型的话，那么他在
-android中上报的数据时不会被处理的。这个函数的最后是将input设备的文件描述符加入到轮询的集合中去，如果接收到事件就会去处理。
+- INPUT_DEVICE_CLASS_KEYBOARD(按键类型)
+- INPUT_DEVICE_CLASS_CURSOR(带游标类型：鼠标和轨迹球等)
+- INPUT_DEVICE_CLASS_ TOUCH(触摸类型：单点触摸或多点触摸)
+- INPUT_DEVICE_CLASS_TOUCH_MT(这个类型特指多点触摸)
 
-#### InputDispatcher
+如果一个设备的驱动没有指明设备的类型的话，那么在android中上报的数据时不会被处理的。这个函数的最后是将input设备的文件描述符加入到轮询的集合中去，如果接收到事件就会去处理。
+
+### InputDispatcher
 
 dispatchOnce
 
-#### InputReader
+### InputReader
 
 ReaderOnce
-
-#### Input driver
-
-![](http://hi.csdn.net/attachment/201110/14/0_1318572622UpnZ.gif)
-
-### Android2.2之前
-
-- KeyQ： WmS内部类，继承于KeyInputQueue。创建KeyQ对象后，立即启动一个线程(对应对象)，不断调用native方法读取用户的UI操作消息，比如按键、触摸屏等，并放到消息队列QueueEvent中。
-- InputDispatcherThread：也是WmS内部类。也会创建一个线程，不断从消息队列QueueEvent中取出用户消息，过滤后发送给当前活动的客户端程序。
-- 应用窗口对象ViewRoot都包含一个W子类，是一个Binder类，InputDispatcherThread通过IPC方式调用W所提供的函数，从而发送消息给客户窗口。
-
-### Android2.3之后
-
-获取消息：使用C++实现，包括消息的加工
-
-应用添加窗口->本地创建一个ViewRoot对象->通过IPC调用WmS中的Session对象的addWindow方法，从而请求WmS创建一个窗口->WmS将窗口信息保存在内部一个窗口列表InputMonitor->使用InputManager把窗口信息传递给InputDispatcher对象，并通过JNI传递到NativeInputManager
-
-- InputReader线程C++：system_progress中，持续调用输入设备驱动读取用户输入的消息。
-- InputDispatcherThread（C++）： 从消息队列中取出消息，根据NativeInputManager确定当前活动窗口。两种方式派发。
-- 使用Linux PIPE机制传递消息对客户端。一是PIPE直接发送到客户窗口，例如触摸屏信息；另一是先派发到WMS中，由WMS经过一定的处理（例如系统按键消息HOME、电话按键等），如果WMS没有处理再派发到窗口。
 
 
 ## 代码及机制分析

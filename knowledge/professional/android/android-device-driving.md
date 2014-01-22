@@ -21,14 +21,20 @@ title: android-device-driving
 
 ### 接口机制
 
-- 一是通过proc文件系统来访问
+- 一是通过procfs文件系统来访问
+	
+	procfs读写格式不一样，代表不同的操作，应用程序中读到了这个文件的内容一般还需要进行字符串解析，而在写入时需要先用字符串 格式化按指定的格式写入字符串进行操作
 - 二是通过传统的设备文件的方法来访问
+
+	file_operations： read、write、IOCTL、llseek...
 - 三是通过sysfs文件系统来访问
+	
+	sysfs属性文件, 设计原则是一个属性文件只做一件事情， sysfs 属性文件一般只有一个值，直接读取或写入。系统化
 
 ### Device Class
 
-#### Input class
-
+- input_dev
+- timed_output_class
 
 ## Android device HAL
 Android的硬件抽象层，简单来说，就是对Linux内核驱动程序的封装，向上提供接口，屏蔽低层的实现细节。
@@ -42,15 +48,28 @@ Linux内核源代码版权遵循GNU License，而Android源代码版权遵循Apa
 也正是由于这个分层的原因，Android被踢出了Linux内核主线代码树中。Android放在内核空间的驱动程序对硬件的支持是不完整的，把Linux内核移植到别的机器上去时，由于缺乏硬件抽象层的支持，硬件就完全不能用了，这也是为什么说Android是开放系统而不是开源系统的原因。
 
 
-### libhardware_legacy
 
-### stub
+Android的HAL的实现需要通过JNI(Java Native Interface)，JNI简单来说就是java程序可以调用C/C++写的动态链接库，这样的话，HAL可以使用C/C++语言编写，效率更高。
 
-### Android standard device HALs
+### libhardware_legacy(old)
+libhardware_legacy 是将 *.so 文件当作shared library来使用，在runtime（JNI 部份）以 direct function call 使用 HAL module。通过直接函数调用的方式，来操作驱动程序。
+
+JNI->libhardware_legacy.so->内核驱动接口
+
+- hardware/libhardware_legacy
+
+### Stub(New)
+HAL stub 是一种代理人（proxy）的概念，stub 虽然仍是以 *.so檔的形式存在，但HAL已经将 *.so 档隐藏起来了。Stub 向 HAL提供操作函数（operations），而 runtime 则是向 HAL 取得特定模块（stub）的 operations，再callback 这些操作函数。这种以 indirect function call 的架构，让HAL stub 变成是一种包含关系，即 HAL 里包含了许许多多的 stub（代理人）。Runtime 只要说明类型，即 module ID，就可以取得操作函数。对于目前的HAL，可以认为Android定义了HAL层结构框架，通过几个接口访问硬件从而统一了调用方式。
+
+JNI->通用硬件模块->硬件模块->内核驱动接口
+JNI->libhardware.so->xxx.xxx.so->kernel，具体来说：android frameworks中JNI调用hardware.c中定义的hw_get_module函数来获取硬件模块，然后调用硬件模块中的方法，硬件模块中的方法直接调用内核接口完成相关功能
+
+- hardware/libhardware/->libhardware.so
+/hardware/libhardware/include/hardware/hardware.h
 
 - Framework/base/services/input
-- hardware/libhardware/modules
-- hardware/libhardware_legacy
+	system/lib/libinput.so
+
 
 ### Add device HAL
 1. 在hardware/libhardware/include/hardware目录，新建xxxhal.h文件

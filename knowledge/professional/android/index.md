@@ -3,22 +3,23 @@ layout: master
 title: Android
 ---
 
-## Android Research
+## Android Architecture
 
 * [Android Architecture(to be continued...)](android-architecture.html)
 
-### Android Linux Kernel
+### Android Linux Kernel/Driver
 
 * [Android Linux Kernel Overview(to be continued...)](android-linux-kernel.html)
 * [Android Device Driving](android-device-driving.html)
 
-### Android User-Space Native
+### Android User-Space Native/JNI
 
 * [Android user-space Native Overview(to be continued...)](android-native.html)
 * [Dalvik](dalvik.html)
 
 ### Android Application Framework
 
+* [Android Input event handling](input-event-handling.html)
 * [Android application framework Overview](android-framework-overview.html)
 * [Activity](activity.html)
 * [Broadcast](broadcast.html)
@@ -32,12 +33,13 @@ title: Android
 * [Android application Development](android-application-development.html)
 * [Android application signapk](android-application-signapk.html)
 
-### Android special subject
+## Android special subject
+
+### Booting
 
 * [Android Startup Sequence](startup.html)
 * [Android Signal mechanism](signal-mechanism.html)
 * [Android Reboot](android-reboot.html)
-* [Android Input event handling](input-event-handling.html)
 
 ### Android Security Mechanism
 
