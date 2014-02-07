@@ -3,7 +3,7 @@ layout: master
 title: git
 ---
 
-##1 Reference
+## Reference
 
 * [Pro Git](http://progit.org/book/)
 * [Git Community Book 中文版](http://gitbook.liuhui998.com/index.html)
@@ -12,6 +12,59 @@ When need help while using Git, there are three ways to get the manual page (man
     $ git help <verb>
     $ git <verb> --help
     $ man git-<verb>
+
+##1 Git Basics
+
+###1.1 Git features
+
+- Snapshots, Not Differences
+- Nearly Every Operation Is Local
+- Git Has Integrity
+- Git Generally Only Adds Data
+- The Three States:working directory/staging area/git directory
+
+###1.2 Git Environment
+
+####1.2.1 Configurations
+
+- /etc/gitconfig file: Contains values for every user on the system and all their
+ repositories. If you pass the option--system to git config, it reads and writes
+ from this file specifically.
+- ~/.gitconfig file: Specific to your user. You can make Git read and write to this
+ file specifically by passing the --global option.
+- config file in the git directory (that is, .git/config) of whatever repository you’re
+ currently using: Specific to that single repository. Each level overrides values in
+ the previous level, so values in .git/config trump those in /etc/gitconfig.
+
+####1.2.2 Set up
+
+- Identity
+
+		$ git config --global user.name "John Doe"
+		$ git config --global user.email johndoe@example.com
+
+- Editor
+		
+		$ git config --global core.editor vi
+
+- Diff Tool
+
+use to resolve
+merge conflicts
+		
+		$ git config --global merge.tool vimdiff
+
+####1.2.3 Check Settings
+check settings for all three config levels, and config for specified key value.
+		
+		$ git config --list
+		$ git config user.name
+
+###1.3 Git Help
+			
+			$ git help <verb>
+			$ git <verb> --help
+			$ man git-<verb>
 
 ##2 Environment Setting
 
@@ -88,7 +141,14 @@ If you modify a file after you run git add, you have to run git add again to sta
 
 ###3.3 Ignoring Files
 
+To ignore the file to be added or statused.
+
 create a file listing patterns to match them named .gitignore.
+
+- Globle Git: ~/.gitignore
+- Local Git: .gitignore 
+- Git exclude: .git/info/exclude
+
 
 ###3.4 Viewing Your Staged and Unstaged Changes
 
@@ -97,6 +157,10 @@ To see what you’ve changed but not yet staged, type git diff with no other arg
     $ git diff
 
 If you want to see what you’ve staged that will go into your next commit, you can use git diff --cached. (In Git versions 1.6.1 and later, you can also use git diff --staged, which may be easier to remember.) This command compares your staged changes to your last commit: 
+
+- git diff：是查看working tree与index file的差别的。
+- git diff --cached：是查看index file与commit的差别的。
+- git diff HEAD：是查看working tree和commit的差别的。（你一定没有忘记，HEAD代表的是最近的一次commit的信息）
 
 ###3.5 Committing Your Changes
 
@@ -113,12 +177,15 @@ Providing the -a option to the git commit command makes Git automatically stage 
 
 ###3.6 Removing Files
 
-To remove a file from Git, you have to remove it from your tracked files (more accurately, remove it from your staging area) and then commit. The git rm command does that and also removes the file from your working directory so you don’t see it as an untracked file next time around.
+Delete the file from working and staged space:
 
-If you modified the file and added it to the index already, you must force the removal with the -f option. 
+    $ git rm [file]
 
-Another useful thing you may want to do is to keep the file in your working tree but remove it from your staging area. 
-To do this, use the --cached option:
+Delete the file being modified and staged from working working and staged space:
+
+    $ git rm [file] -f
+
+Delete the file only from staged space:
 
     $ git rm --cached [file]
 
@@ -128,12 +195,23 @@ You can pass files, directories, and file-glob patterns to the git rm command. T
 
 ###3.7 Moving Files
 
+Rename a file
+
     $ git mv file_from file_to
 
 
 ###3.8 Viewing the Commit History
 
     $ git log
+
+
+- -p, which shows the diff introduced in each commit.
+- -N, which limits the output to only the last N entries:
+- --stat,to see some abbreviated stats for each commit
+- --pretty. changes the log output to formats other than the default. A few prebuilt options are available for you to use. The oneline option prints
+each commit on a single line, which is useful if you’re looking at a lot of commits.
+In addition, the short, full, and fuller options show the output in roughly the same
+format but with less or more information, respectively:
 
 ###3.9 Undoing Things
 
@@ -152,6 +230,11 @@ You can pass files, directories, and file-glob patterns to the git rm command. T
     $ git checkout -- <file>
 
 ###3.10 Working with Remotes
+
+**Remote** repositories are versions of your project that are hosted
+on the Internet or network somewhere. You can have several of them, each of which
+generally is either read-only or read/write for you.
+
 
 Managing remote repositories includes knowing how to 
 1. add remote repositories, 
@@ -177,15 +260,13 @@ Notice that only the origin remote with an SSH URL(git@github.com:<who>/<reposit
 
     $ git fetch [remote-name]
 
-If you clone a repository, the command automatically adds that remote repository under the name origin. 
-So, git fetch origin fetches any new work that has been pushed to that server since you cloned (or last fetched from) it. 
+It fetches any new work that has been pushed to that server since you cloned (or last fetched from) it. 
 It’s important to note that the fetch command pulls the data to your local repository — it doesn’t automatically merge it with any of your work or modify what you’re currently working on. 
 You have to merge it manually into your work when you’re ready.
 
-git pull??
-If you have a branch set up to track a remote branch (see the next section and Chapter 3 for more information), you can use the git pull command to automatically fetch and then merge a remote branch into your current branch. This may be an easier or more comfortable workflow for you.
+    $ git pull [remote-name] [branch-name]
 
-Running git pull generally fetches data from the server you originally cloned from and automatically tries to merge it into the code you’re currently working on.
+It fetches data from the server you originally cloned from and automatically tries to merge it into the code you’re currently working on.
 
 ####3.10.4 Pushing to Your Remotes
 
@@ -214,24 +295,111 @@ Base usage:
 
 Generate a patch for the last commit.
 
-###3.11 git am patch
+###3.12 git am patch
 
 merge patch file into the source code.
 
     $ cd source-code
     $ git-am xxx.patch
 
-##4 Tagging
+###3.13 Tagging
+
+Git has the ability to tag specific points in history as being important.
+Generally, people use this functionality to mark release points (v1.0, and so on).
+
+####3.13.1 List tags
 
 $ git tag
 
-To be continued
+####3.13.2 Creating Tag
+
+Git uses two main types of tags: lightweight and annotated. 
+
+- A lightweight tag is very much like a branch that doesn’t change — it’s just a pointer to a specific commit.
+- Annotated tags, however, are stored as full objects in the Git database. They’re checksummed;
+contain the tagger name, e-mail, and date; have a tagging message; and can
+ be signed and verified with GNU Privacy Guard (GPG). 
+
+It’s generally recommended
+that you create annotated tags so you can have all this information; but if you want a
+temporary tag or for some reason don’t want to keep the other information, lightweight
+tags are available too.
+
+####3.13.3 Annotated Tags
+		
+		$ git tag -a tagname -m "tag message"
+		$ git tag
+		$ git show tagname
+####3.13.4 Signed Tags
+		
+		$ git tag -s tagname -m "tag message"
+		$ git tag
+		$ git show tagname
+
+####3.13.5 Lightweight Tags
+		
+		$ git tag v1.4-lw
+		$ git tag
+
+####3.13.6 Verifying Tags
+To verify a signed tag, you use 
+
+		$ git tag -v [tag-name]
+
+####3.13.7 Tagging Later
+
+Now, suppose you forgot to tag the project at tagname, You can add it after the fact. To tag that commit, you specify the
+commit checksum (or part of it) at the end of the command:
+		
+		$ git tag -a tagname commit-checksum
+
+####3.13.8 Sharing Tags
+
+By default, the git push command doesn’t transfer tags to remote servers. You will
+have to explicitly push tags to a shared server after you have created them. This process
+is just like sharing remote branches you can run 
+		
+		$ git push origin [tagname]
 
 
-## Tips and Tricks
 
-Auto-Completion
-Git Aliases
+If you have a lot of tags that you want to push up at once, you can also use the
+--tags option to the git push command.
+		
+		$ git push origin --tags
+
+###3.14 Tips and Tricks
+
+
+####3.14.1 Auto-Completion
+
+If you use the Bash shell, Git comes with a nice auto-completion script you can enable.
+Download the Git source code, and look in the contrib/completion directory; there
+should be a file called git-completion.bash. Copy this file to your home directory,
+and add this to your .bashrc file:
+
+source ˜/.git-completion.bash
+
+If you want to set up Git to automatically have Bash shell completion for all users,
+copy this script to the /opt/local/etc/bash completion.d directory on Mac systems
+or to the /etc/bash completion.d/ directory on Linux systems. This is a directory of
+scripts that Bash will automatically load to provide shell completions.
+If you’re usingWindows with Git Bash, which is the default when installing Git on
+Windows with msysGit, auto-completion should be preconfigured.
+
+Press the Tab key when you’re writing a Git command, and it should return a set of
+suggestions for you to pick from:
+
+####3.14.2 Git Aliases
+
+Git doesn’t infer your command if you type it in partially. If you don’t want to type
+the entire text of each of the Git commands, you can easily set up an alias for each
+command using git config. Here are a couple of examples you may want to set up:
+$ git config --global alias.co checkout
+$ git config --global alias.br branch
+$ git config --global alias.ci commit
+$ git config --global alias.st status
+
 
 * [Tips and Tricks](http://progit.org/book/ch2-7.html)
 
