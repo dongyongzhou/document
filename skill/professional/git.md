@@ -15,6 +15,44 @@ When need help while using Git, there are three ways to get the manual page (man
 
 ##1 Git Basics
 
+###1.0 Git Objects
+
+Object parts: type size content
+
+type: blob tree commit tag
+
+####1.0.1 Blob
+
+content: store file data.
+
+		$ git show 6ff87c4664
+
+####1.0.2 tree
+content: a bunch of pointers pointing to blob or tree 
+
+每一个条目包括：mode、对象类型、SHA1值 和名字(这串条目是
+按名字排序的)。它用来表示一个目录树的内容。
+
+		$ git ls-tree fb3a8bdd0ce
+####1.0.3 commit
+pointing to a tree object
+
+		$ git show -s --pretty=raw 2be7fcb476
+
+- 一个tree　对象: tree对象的SHA1签名, 代表着目录在某一时间点的内容.
+- 父对象(parent(s)): 提交(commit)的SHA1签名代表着当前提交前一步的项目历史. 上面的那个例子就只有一
+个父对象; 合并的提交(merge commits)可能会有不只一个父对象. 如果一个提交没有父对象, 那么我们就叫
+ 它“根提交"(root commit), 它就代表着项目最初的一个版本(revision). 每个项目必须有至少有一个“根提
+ 交"(root commit). 一个项目可能有多个"根提交“，虽然这并不常见(这不是好的作法).
+- 作者: 做了此次修改的人的名字,　还有修改日期.
+- 提交者（committer): 实际创建提交(commit)的人的名字, 同时也带有提交日期. TA可能会和作者不是同一
+个人; 例如作者写一个补丁(patch)并把它用邮件发给提交者, 由他来创建提交(commit).
+
+####1.0.4 tag
+一个标签对象包括一个对象名(译者注:就是SHA1签名), 对象类型, 标签名, 标签创建人的名字("tagger"), 还有一条可
+能包含有签名(signature)的消息. 你可以用git cat-file 命令来查看这些信息
+
+		$ git cat-file tag v1.5.0
 ###1.1 Git features
 
 - Snapshots, Not Differences
@@ -400,6 +438,289 @@ $ git config --global alias.br branch
 $ git config --global alias.ci commit
 $ git config --global alias.st status
 
+##4 Branching
+
+diverge from the main line of development and continue to do work without messing with that
+main line.
+
+Because a branch in Git is in actuality a simple file that contains the 40 character
+SHA–1 checksum of the commit it points to, branches are cheap to create and destroy.
+Creating a new branch is as quick and simple as writing 41 bytes to a file (40 characters
+and a newline).
+
+###4.0 git branch
+
+The git branch command does more than just create and delete branches. If you
+run it with no arguments, you get a simple listing of your current branches:
+
+		$ git branch
+		* master
+		  test
+		  test2
+
+To see the last commit on each
+branch, you can run git branch v:
+
+		$ git branch -v
+		* master 4bf2877 branch3 commit 2
+		  test   de9f098 branch test
+		  test2  67bb1ef branch test2
+
+
+To see which branches are already merged into the branch you’re
+on, you can run git branch merged:
+		
+		$ git branch --merged
+
+To see all the branches that contain work you haven’t yet merged in, you can run
+		
+		git branch --no-merged
+
+Because it contains work that isn’t merged in yet,
+trying to delete it with git branch -d will fail
+
+###4.1 git branch branchname
+
+This creates a new pointer at the same commit you’re currently on. The git branch command
+only created a new branch— it didn’t switch to that branch
+
+.git/HEAD keeps a pointer to the local
+branch you’re currently on.
+
+###4.2 git checkout branchname
+
+To switch to an existing branch, run the git checkout command.
+This moves HEAD to point to the branchname
+
+git checkout -b branchname == git branch branchname + git checkout branchname
+
+**note** that if your working directory or staging area has
+uncommitted changes that conflict with the branch you’re checking out, Git won’t let
+you switch branches.
+
+Git resets your working directory to look like the snapshot
+of the commit that the branch you check out points to. It adds, removes, and modifies
+files automatically to make sure your working copy is what the branch looked like on
+your last commit to it.
+
+###4.2 git merge branchname
+
+Once you have complete the working and committing in branchname.
+
+All you have to do is check out the
+branch you wish to merge into and then run the git merge command:
+
+If the commit on the
+branch you’re on isn’t a direct ancestor of the branch you’re merging in,
+
+Git does a simple three-way merge, using the two snapshots
+pointed to by the branch tips and the common ancestor of the two.
+
+Git automatically creates a new commit object that contains the merged
+work.
+
+####4.2.1 Merge conflicts
+
+If you changed the same part of the
+same file differently in the two branches you’re merging together, Git won’t be able to
+merge them cleanly.
+
+		$ git merge test2
+		Auto-merging test.c
+		CONFLICT (content): Merge conflict in test.c
+		Automatic merge failed; fix conflicts and then commit the result.
+
+Git hasn’t automatically created a new merge commit. It has paused the process
+while you resolve the conflict. If you want to see which files are unmerged at any point
+after a merge conflict, you can run git status:
+
+		$ git status
+		# On branch master
+		# You have unmerged paths.
+		#   (fix conflicts and run "git commit")
+		#
+		# Unmerged paths:
+		#   (use "git add <file>..." to mark resolution)
+		#
+		#       both modified:      test.c
+		#
+		no changes added to commit (use "git add" and/or "git commit -a")
+
+Anything that has merge conflicts and hasn’t been resolved is listed as unmerged.
+Git adds standard conflict-resolution markers to the files that have conflicts, so you can
+open them manually and resolve those conflicts.
+
+		<<<<<<< HEAD
+		        printf("End\n");
+		=======
+		>>>>>>> test2
+				printf("TBD\n");
+
+
+In order to resolve the conflict, you have to either choose
+one side or the other or merge the contents yourself.
+
+This resolution has a little of each section, and I’ve fully removed the <<<<<<<,
+=======, and >>>>>>> lines. After you’ve resolved each of these sections in each conflicted
+file, run** git add** on each file to mark it as resolved. Staging the file marks it as
+resolved in Git. If you want to use a graphical tool to resolve these issues, you can run
+git mergetool, which fires up an appropriate visual merge tool and walks you through
+the conflicts:
+
+verify that everything that had conflicts has been
+staged, you can type **git commit **to finalize the merge commit. The commit message
+by default looks something like this:
+
+
+####4.3 git branch -d branchname
+
+Once the branchname is not used anymore, Delete it.
+
+####4.4 Remote branches
+
+Remote branches are references to the state of branches on your remote repositories.
+
+Remote branches act as bookmarks to remind you where the branches on your remote repositories were the last time you connected to them.
+
+
+##### 4.4.1 Remote
+
+master branch locally
+
+##### 4.4.2 Local
+
+master branch, locally
+
+origin/master, remote branch status, saving the last remote master based on the last communication. maybe out of date.
+
+#####4.4.3 git fetch remotename
+
+synchronize work with remote
+		
+		git fetch remotename [branchname]
+
+This command looks up which server remotename is, fetches any
+data from it that you don’t yet have, and updates your local database, moving your
+origin/master pointer to its new, more up-to-date position.
+
+To merge it into the local master branch
+		
+		git checkout master
+		git merge remotename/branchname
+
+If have fetched a new branch, to make it local but not merge into current branch.
+		
+		$ git checkout -b serverfix origin/serverfix
+
+#####4.4.4 git remote add
+
+
+#####4.4.5 git push
+
+have to explicitly push the branches you want to share.
+		
+		
+		git push remotename branchname
+		or git push [remotename] [localbranch]:[remotebranch]
+
+or push a local branch into a remote branch that is named differently
+
+		or git push origin branchname:branchname2
+
+
+Git automatically expands the branchname
+out to refs/heads/branchname:refs/heads/branchname,
+
+		git push remotename refs/heads/branchname:refs/heads/branchname
+
+NOTE: What about pushing the commits to review web site??
+
+
+#####4.4.6 tracking branch
+
+		git checkout -b [branch] [remotename]/[branch].
+
+The first branch could be different from the last one.
+
+Git version 1.6.2 or later, you can also use the --track shorthand:
+
+		$ git checkout --track origin/serverfix
+
+Checking out a local branch from a remote branch automatically creates what is called
+a tracking branch. 
+
+Tracking branches are local branches that have a direct relationship
+to a remote branch. 
+
+If you’re on a tracking branch and type git push, Git automatically
+knows which server and branch to push to. Also, running git pull while on one of these branches fetches all the remote references and then automatically merges in the
+corresponding remote branch.
+
+#####4.4.7 Deleting Remote Branches
+
+
+		git push [remotename] :[branch]
+
+
+###4.5 Rebase
+
+In Git, there are two main ways to integrate changes from one branch into another: the
+merge and the rebase
+
+The easiest way to integrate the branches is the merge
+command. It performs a three-way merge between the two latest branch snapshots and the most recent common ancestor of the two, creating a new snapshot
+(and commit). 
+
+Rebase way is taking the patch of the change that was
+introduced in other branch and reapply it on top of current commit of the current branch.
+
+merge will keeps all the commits of the other branch.
+
+With the
+rebase command, you can take all the changes that were committed on one branch and
+replay them on another one.
+		
+		$ git checkout experiment
+		$ git rebase master: it will apply the commit as a patch to the master branch one by one.
+		$ git checkout master: go back to the master branch and do a fast-forward merge
+		$ git merge experiment
+
+Difference between merge and rebase
+
+it’s only the history that is different. Rebasing replays changes
+from one line of work onto another in the order they were introduced, whereas merging
+takes the endpoints and merges them together.
+
+
+
+**common one:**
+
+		git rebase [basebranch] [topicbranch] 
+
+ which checks out the topic branch (in
+this case, server) for you and replays it onto the base branch (master):
+
+
+**Conplex one:**
+
+		$ git checkout client
+		$ git rebase --onto master server client
+		$ git checkout master
+		$ git merge client
+
+This basically says, “Check out the client branch, figure out the patches from
+the common ancestor of the client and server branches, and then replay them onto
+master.”
+
+**Note:**
+
+if you only rebase commits that have never been available publicly, then
+you’ll be fine. If you rebase commits that have already been pushed publicly, and
+people may have based work on those commits, then you may be in for some frustrating
+trouble.
+69
+
+## Reference
 
 * [Tips and Tricks](http://progit.org/book/ch2-7.html)
 
