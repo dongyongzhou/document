@@ -719,6 +719,31 @@ you’ll be fine. If you rebase commits that have already been pushed publicly, 
 people may have based work on those commits, then you may be in for some frustrating
 trouble.
 69
+## QA
+
+### ! [remote rejected] HEAD -> refs/for/xxxx (not Signed-off-by author/committer/uploader)
+
+**Discriptions**
+
+remote: Processing changes: refs: 1, done 
+To ssh://xxxxx
+ ! [remote rejected] HEAD -> refs/for/xxxx(not Signed-off-by author/committer/uploader)
+
+**Solutions**
+
+Should: git commit -s
+
+
+Refix:
+
+git commit --amend -s
+git push
+
+
+### ANCESTOR NOT ON BRANCH
+
+should rebase in the gerrit. there is a button there.
+
 
 ## Reference
 
