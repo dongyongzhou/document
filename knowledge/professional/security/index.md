@@ -10,6 +10,10 @@ title: security
 * [session](session.html) 
 * [Security of Ruby on Rails](ror-security.html) 
 
+## DRM
+
+* [Widevine](widevine.html) 
+* 
 ## Deployment 
 
 * [Base Security Configuration for server deployment](base-security-configuration.html)

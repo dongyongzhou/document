@@ -745,6 +745,17 @@ git push
 should rebase in the gerrit. there is a button there.
 
 
+### error: unpack failed: error Missing tree 
+
+Descriptions: checkout an commit, change it and push to amend it.
+
+error: unpack failed: error Missing tree 17a7a8ac5938ccdd9802763021effe88e928c1f5
+fatal: Unpack error, check server log
+To ssh://guopingy@review-android.quicinc.com:29418/kernel/msm-3.10.git
+ ! [remote rejected] HEAD -> refs/for/msm-3.10 (n/a (unpacker error))
+
+Solutions.
+
 ## Reference
 
 * [Tips and Tricks](http://progit.org/book/ch2-7.html)

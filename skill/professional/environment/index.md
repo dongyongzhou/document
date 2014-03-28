@@ -109,6 +109,37 @@ Terminal:Xterm
 select ANSI Color
 select Use color scheme
 
+##4 setup adb on Ubuntu
+
+### problem
+	xxx@xxx-gv:~$ adb devices
+	List of devices attached 
+	????????????    no permissions
+	
+	xx@xxx-gv:~$ adb shell
+	error: insufficient permissions for device
+	dongyong@dongyong-gv:~$ lsusb
+	Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+	Bus 002 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+	Bus 003 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+	Bus 004 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+	Bus 001 Device 002: ID 8087:0024 Intel Corp. Integrated Rate Matching Hub
+	Bus 002 Device 002: ID 8087:0024 Intel Corp. Integrated Rate Matching Hub
+	Bus 003 Device 044: ID 05c6:9025 xxx, Inc. 
+
+### solutions
+
+Bus 003 Device 044: ID 05c6:9025 xxx, Inc. 
+	
+	$sudo vim /etc/udev/rules.d/70-android.rules	
+	SUBSYSTEM=="usb", ATTRS{idVendor}=="05c6", ATTRS{idProduct}=="9025",MODE="0666"
+
+	$sudo chmod 777 /etc/udev/rules.d/70-android.rules	
+	$sudo service udev restart	
+	sudo ./adb kill-server	
+	./adb devices
+	./adb root 	
+
 ##问题及解决
 
 - [Eclipse](eclipse-problem.html)
