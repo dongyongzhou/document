@@ -34,6 +34,7 @@ title: Document
 ### Debug
 
 * [TRACE32-ICD](skill/professional/TRACE32-ICD.html)
+* [TRACE32-Debugger](skill/professional/TRACE32-Debugger.html)
 
 ### version control
 
