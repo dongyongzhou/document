@@ -14,7 +14,8 @@ title: Programming Language
 
 ## C
 
-* [条件编译](conditional_compile.html)
+* [条件编译](C/conditional_compile.html)
+* [编译相关](C/compilation.html)
 
 ## Java
 
