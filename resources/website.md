@@ -37,3 +37,11 @@ title: Website
 * [中国科学技术大学电子邮件系统](http://email.ustc.edu.cn/sindex.html)
 * [中国科学技术大学研究生信息平台](http://yjs.ustc.edu.cn/)
 * [软件学院信息平台](http://enroll.sse.ustc.edu.cn/sseweb/Login.aspx)
+
+## 开放课程
+
+* [中国科大研究生开放课程](http://ocw.ustc.edu.cn/)
+* [加利福尼亚大学伯克利分校：操作系统和系统编程](http://ocw.ustc.edu.cn/keChengShow.php?kcId=54)
+* [中国科大电子线路](http://www.bb.ustc.edu.cn/jpkc/xiaoji/xxdzxl/index.htm#)
+* [中国科大精品课程](http://www.bb.ustc.edu.cn/jpkc/)
+* [麻省理工学院的“开放式课程网页](http://www.myoops.org/cocw/mit/index.htm)
