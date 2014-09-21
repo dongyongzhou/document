@@ -5,9 +5,10 @@ title: Document
 
 ## 专业知识
 
-* [Programming](knowledge/professional/programming)
 * [Hardware](knowledge/professional/hardware)
+* [Computer System](knowledge/professional/cs)
 * [Operating System](knowledge/professional/os)
+* [Programming](knowledge/professional/programming)
 * [Android](knowledge/professional/android)
 * [Software Engineering](knowledge/professional/softwareengineer)
 * [Server](knowledge/professional/server)

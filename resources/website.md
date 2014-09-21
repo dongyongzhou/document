@@ -45,3 +45,4 @@ title: Website
 * [中国科大电子线路](http://www.bb.ustc.edu.cn/jpkc/xiaoji/xxdzxl/index.htm#)
 * [中国科大精品课程](http://www.bb.ustc.edu.cn/jpkc/)
 * [麻省理工学院的“开放式课程网页](http://www.myoops.org/cocw/mit/index.htm)
+* [MIT Operating System Engineering 6.828](http://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-828-operating-system-engineering-fall-2006/)

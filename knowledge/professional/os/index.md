@@ -8,6 +8,7 @@ title: Operating System
 * [Operating System Concept](os-concept.html)
 * [Introduction](os-concept/os-introduction.html)
 * [Concurrency](os-concept/os-concurrency.html)
+* [Operating System Engineering MIT-6.828](MIT-6.828.html)
 
 ## Linux
 
