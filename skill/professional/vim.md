@@ -21,3 +21,28 @@ title: Vim operation
 
 - vsp file_name:竖向打开
 - sp file_name：横向打开
+
+### 二进制文件
+
+1：这两个命令都可以以十六进制打印输出 二进制文件内容。可以指定偏移和打印格式等
+hexdump  xxd
+区别：注意xxd是little-endian显示的，hexdump则是big-endian显示的
+
+
+2：Linux下的二进制查看和编辑
+启动vim编辑二进制文件时加上 -b 参数，vim -b datafile
+文件中有很多字符不可显示，使用Hex格式显示其值，:set display=uhex
+文件中也许没那么多换行符。你可以关闭 'wrap' 选项来获得总览的效果 :set nowrap
+
+
+3：总结vim编辑二进制文件(使用xxb)的方法：
+
+ 1）. 用vim -b 打开文件
+
+ 2）. 使用:%!xxd命令
+
+ 3）. 编辑文件（只编辑右边字符不会保存）后使用:%xxd -r 把文件转换为二进制
+
+ 4）. :wq保存并退出文件
+                    ...p....
+
