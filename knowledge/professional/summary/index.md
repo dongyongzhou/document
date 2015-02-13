@@ -4,14 +4,11 @@ title: 知识体系结构
 ---
 # Tasklist
 
-1. 个人简历优势准备
-2. 知识体系总结
-3. ARM
-2. 
-
 # 编程
 ## C
+
 文件结构
+
 数据类型, const	
 
 变量的存储方法： 
@@ -19,19 +16,20 @@ title: 知识体系结构
 	auto(默认) :动态变量
 	static    ：静态变量/函数。 如何实现仅限于本文件调用呢？
 	register  ：只有局部动态变量和形式参数可以作为register变量 
-	extern     :默认。
+	extern    ：默认。
 
 编译：
 
 预处理 define include ifxxx
 
-	ATPCS
-	r0~r3 用于传参，r0用于返回值
+ATPCS
+
+	r0~r3  用于传参，r0用于返回值
 	r4~r11 通用变量寄存器，
-	 r12 临时过渡寄存器
-	r13 堆栈指针
-	r14 连接寄存器
-	r15 PC 
+	r12    临时过渡寄存器
+	r13    堆栈指针
+	r14    连接寄存器
+	r15    PC 
 
 所以函数内的局部变量最好不要超过12个
 
@@ -54,9 +52,7 @@ title: 知识体系结构
 logn + 1 
 
 - AVL 平衡二叉树
-
 - 红黑树
-
 
 #### 图形结构：多对多
 
@@ -74,13 +70,14 @@ logn + 1
 ## 算法
 
 Data structure: List, array, stack, queue, tree, graph, hash, sorting, searching
-算法:计算过程/计算步骤的序列，这些步骤将输入转化为输出/计算过程就是怎样达到所期望的I/O关系
-算法分析:概率分析和随机算法/中值和顺序统计
-算法设计:
-排序和顺序统计: 堆排序/快速排序/计数排序/Bucket Sort
-数据结构: 
-红黑树
-高级设计与分析技术:动态规划/贪心法/平摊分析
+
+	算法:计算过程/计算步骤的序列，这些步骤将输入转化为输出/计算过程就是怎样达到所期望的I/O关系
+	算法分析:概率分析和随机算法/中值和顺序统计
+	算法设计:
+	排序和顺序统计: 堆排序/快速排序/计数排序/Bucket Sort
+	数据结构: 
+	红黑树
+	高级设计与分析技术:动态规划/贪心法/平摊分析
 
 ### 排序
 #### 内部排序
@@ -159,9 +156,62 @@ http://blog.chinaunix.net/uid-24227137-id-3398999.html
 	8，重新对丢弃的前一次已译码指令取指
 	9，待流水线满，开始继续执行
 
-## Debug
+# Compiling and Debugging
 
-JTAG :
+### 文件格式
+
+#### BIN文件
+
+- raw binary 文件，这种文件只包含机器码。
+- 执行raw binary很简单，只需要将程序加载到其起始地址，就可以执行
+
+#### ELF文件
+
+- 除了机器码外，还包含其它额外的信息，如段的加载地址，运行地址，重定位表，符号表等。
+- 执行ELF程序则需要一个ELF Loader
+
+### 编译工具
+CC: Turn C/S into .o
+
+LD: Link .o into ELF
+
+OBJCPY: copy raw binary out. 
+$(OBJCOPY) -O binary -R .note -R .comment -S xxx.elf xxx.bin
+
+	#将 xxx.elf 转换为 xxx.bin
+	#使用 -O binary (或--out-target=binary) 输出为原始的二进制文件
+	#使用 -R .note  (或--remove-section)    输出文件中不要.note这个section，缩小了文件尺寸
+	#使用 -S        (或 --strip-all)        输出文件中不要重定位信息和符号信息，缩小了文件尺寸
+
+
+nm
+
+- nm elf文件         #得到符号表
+
+objdump
+
+- objdump -D elf文件 #反汇编，且汇编代码与源码混排
+- objdump -b binary -m powerpc uboot.bin #反汇编bin文件(机器码)
+
+
+### Linux编译后的文件格式
+
+http://blog.chinaunix.net/attachment/201110/8/24148050_1318041180lm98.png
+
+     vmlinux        ELF文件可用来调试
+     vmlinux.bin    BIN文件，没直接用过
+
+     zImage/vmlinuz/bzimage
+          将vmlinux.bin压缩，并加上一段解压代码得到的
+
+     uImage         
+          uboot专用的内核镜像，在zImage前加了一个64字节的头，描述内核版本、加载地址
+          生成时间，文件大小等等。 其0x40后的内容和zImage一样
+          它是由uboot的工具mkImage生成的。
+
+
+
+## JTAG
 
 	TDI
 	TDO

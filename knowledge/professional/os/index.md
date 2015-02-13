@@ -14,6 +14,7 @@ title: Operating System
 
 * [Understanding Linux Kernel](linux.html)
 * [Linux memory management](Linux-memory-management.html)
+* [ARM Linux Power Management](linux-power-management.html)
 
 ## Linux startup
 
@@ -23,7 +24,6 @@ title: Operating System
 ## File System
 
 * [FAT File System](fat.html)
-
 
 ## Special Subject
 
