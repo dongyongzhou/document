@@ -100,6 +100,11 @@ title: Android
 * [which application sends the notification](which-app-send-notification.html)
 * [Command Line Debugging Mode](command-line.html)
 
+
+## Android Wear
+
+* [Android wear](/wear)
+
 ## Refernece & Resource
 
 * [Android 源代码在线查看](http://source.android.com/source/downloading.html)

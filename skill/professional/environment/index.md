@@ -140,6 +140,30 @@ Bus 003 Device 044: ID 05c6:9025 xxx, Inc.
 	./adb devices
 	./adb root 	
 
+##4 setup adb on windows
+
+Thinking of the VID/PID has or have been changed.
+
+Reference for adb device
+
+USB\VID_05C6&PID_9025&REV_0228&MI_01
+USB\VID_05C6&PID_9025&MI_01
+
+for new one
+
+USB\VID_271D&PID_9025&REV_0228&MI_01
+
+
+1. find android_winusb.inf under adb driver, Add as follow:
+
+%CompositeAdbInterface%     = USB_Install, USB\VID_271D&PID_9025&MI_01
+
+2. 右击我的电脑->属性->高级->环境变量，添加 ANROID_SDK_HOME 环境变量。如果你有 android SDK, 就设成 SDK 的路径；如果没有，那也没关系，设为你觉得方便的任何路径。
+3. 在前面设置的 ANDROID_SDK_HOME 对应的路径下，寻找 .android 目录，如果没有就创建一个；在 .android 目录下新建一个文件，叫adb_usb.ini, 记住，后缀是 "ini" 哦；添加前面获得的 VID 到 adb_usb.ini 中，如 0xAAAA。
+4. install adb driver with the specific path.
+5. dos cmd, adb kill-server, adb start-server, adb devices；
+6. adb devices 如果没显示。那么把2.的“adb_usb.ini” 拷贝到“C:\Users\<username>\.android”
+
 ##问题及解决
 
 - [Eclipse](eclipse-problem.html)

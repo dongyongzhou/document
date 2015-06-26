@@ -52,6 +52,10 @@ title: Document
 * [Eclipse操作](skill/professional/eclipse.html)
 * [文档操作](skill/professional/document.html)
 
+### Others
+
+* [Linux command](skill/professional/linux-command.html)
+* 
 ### Reference
 
 * [参考资料](skill/professional/reference.html)
