@@ -5,6 +5,13 @@ title: command-line
 
 ## Overview
 
+## Getprop
+
+adb device, and the device is ro.boot.serialno
+
+	cat /sys/class/android_usb/android0/iSerial
+	or getprop ro.boot.serialno
+
 
 ## Commands
 
