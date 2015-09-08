@@ -37,9 +37,24 @@ title: TRACE32-Debugger
         (see SYStem.CpuAccess and SYStem.MemAccess)
 
 
+## T32 FLASH
+
+### Reference
+
+	http://www2.lauterbach.com/pdf/emmcflash.pdf
+	http://www.ibm.com/developerworks/cn/linux/l-trace32/index.html
+
+
+## T32 Commands
+
+data.load.elf: Loading an ELF image sets the program counter to the entry point of the image, if present.
+
+data.load.binary: Loading a binary image does not change the program counter or any symbols that are currently loaded.
+
+
 
 ## 参考资料
 
 - debugger_arm.pdf
 - training_debugger.pdf
-
+- http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0452c/CIHDBIBC.html
