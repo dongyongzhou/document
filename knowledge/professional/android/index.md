@@ -41,8 +41,9 @@ title: Android
 * [Android Signal mechanism](signal-mechanism.html)
 * [Android Reboot](android-reboot.html)
 
-### Android Security Mechanism
+### Android Security
 
+* [Android Security](android-security.html)
 * [Android Rooting principle(to be continued...)](android-rooting.html)
 
 ### Android Error Handling Mechanism
@@ -103,7 +104,7 @@ title: Android
 
 ## Android Wear
 
-* [Android wear](/wear)
+* [Android wear](wear/)
 
 ## Refernece & Resource
 
