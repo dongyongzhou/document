@@ -5,6 +5,10 @@ title: Android User Space Debugging
 
 ## Overview
 
+- [dumpsys](https://source.android.com/devices/tech/debug/dumpsys.html)
+- [RAM Use](https://source.android.com/devices/tech/debug/procstats.html)
+
+
 ## Android User Space Errors
 
 ### Non – Framework Errors

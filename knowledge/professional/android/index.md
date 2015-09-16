@@ -43,8 +43,7 @@ title: Android
 
 ### Android Security
 
-* [Android Security](android-security.html)
-* [Android Rooting principle(to be continued...)](android-rooting.html)
+* [Android Security](security/)
 
 ### Android Error Handling Mechanism
 
@@ -72,6 +71,8 @@ title: Android
 * [Logcat](logcat.html)
 * [Adb shell am](am.html)
 * [Android User Space Debugging](debugging.html)
+https://source.android.com/devices/tech/debug/dumpsys.html
+
 * [Android Trace File](trace-file.html)
 * [Android Tombstone](tombstone.html)
 * [Android Watchdog](watchdog.html)
