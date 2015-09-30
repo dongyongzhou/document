@@ -87,6 +87,44 @@ Android.mk
      include $(call all-makefiles-under, $(LOCAL_PATH))
 
 
+3. How to solve Error: This attribute must be localized. (at 'text' with value 'BOTTOM_LEFT')
+
+**Decription**
+
+xml
+
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BOTTOM_LEFT" />
+
+**Analysis**
+
+Best practice for Android apps is to define all of the non-dynamic content in resource files. This lets you define different resource files for different languages, for example. Normally, this is just a recommendation and the Android SDK doesn't complain if you hard-code values in your layout xml. The Android source build system, however, requires that all strings be defined in a "values" resource. This is probably intended to protect system builders from accidentally leaving content in a system image that won't display in the user's chosen language.
+
+
+**solution 1**
+
+ use
+
+	LOCAL_MODULE_TAGS := tests
+in the Android.mk to omits the localization check.
+
+Another way is to disable localization check in build system. Comment the line 81 in build/core/package.mk
+
+	#LOCAL_AAPT_FLAGS := $(LOCAL_AAPT_FLAGS) -z
+
+**solution 2**
+
+What you need to do is move those string values out of the layout and define them in res/values/ instead. The usual place for string values is in res/values/strings.xml, but the actual file can be named anything you like as long as it's in that directory.
+
+For example, in res/values/string.xml:
+
+<string name="topLeftContent">TOP_LEFT</string>
+And in your main.xml layout, refer to the content by name:
+
+    android:text="@string/topLeftContent"
+For more details on the how and why of this, see Google's documentation on Localization in Android.
 
 ## Reference
 

@@ -118,10 +118,30 @@ Cryptography - Modified the default implementations of SecureRandom and Cipher.R
 
 **Security Fixes**. Android 5.0 also includes fixes for Android-specific vulnerabilities. Information about these vulnerabilities has been provided to Open Handset Alliance members, and fixes are available in Android Open Source Project. To improve security, some devices with earlier versions of Android may also include these fixes.
 
+
+### Android 6.0
+
+
+Android M preview builds and documentation are now available
+[https://developer.android.com/preview/overview.html]
+
+https://developer.android.com/preview/support.html#release-notes
+
+**runtime permissions**. 
+The most visible securityrelated
+change is, of course,
+runtime permissions [https://developer.android.com/preview/behaviorchanges.
+html#behaviorruntimepermissions]
+
+**redesigned keystore**
+the
+redesigned keystore (credential storage) and related APIs.
+
+ 
 ## Reference
 
 * [Security Enhancements](http://source.android.com/devices/tech/security/enhancements/index.html)
-* 
+* [keystore-redesign-in-android-m](http://nelenkov.blogspot.com/2015/06/keystore-redesign-in-android-m.html)
 * 
 
 
