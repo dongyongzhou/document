@@ -43,3 +43,13 @@ https://source.android.com/devices/tech/security/verifiedboot/verified-boot.html
 ## Refernece & Resource
 
 https://static.googleusercontent.com/media/source.android.com/en//devices/tech/security/reports/Google_Android_Security_2014_Report_Final.pdf
+
+There are two great books.
+ 
+- The first is Nikolay Elenkov's "Android Security Internals". He also writes a blog, called Android Explorations, which describes (in several posts) the keystore in depth. 
+
+	[http://nelenkov.blogspot.com/](http://nelenkov.blogspot.com/)
+
+- The second is "Android Internals" by Jonathan Levin, which discusses the keystore daemon. 
+
+	[http://newandroidbook.com/index.php](http://newandroidbook.com/index.php)
